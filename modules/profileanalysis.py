@@ -62,7 +62,7 @@ class userprofile(object):
             url = krapiurl
             masterdatadir = '../krapi/masterdata'
         
-        resp = requests.get(f'{url}/user/{userid}/profile')
+        resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
         data = json.loads(resp.content)
         self.name = data['user']['userGamedata']['name']
         if not recordname(qqnum, userid, self.name):
@@ -208,11 +208,11 @@ def r30(userid, private=False, server='jp', qqnum='未知'):
     if int(userid) < 10000000:
         event = currentevent('jp')
         eventid = event['id']
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={userid}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={userid}', timeout=10)
         ranking = json.loads(resp.content)
         userid = ranking['rankings'][0]['userId']
         private = True
-    resp = requests.get(f'{url}/user/{userid}/profile')
+    resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
     data = json.loads(resp.content)
     name = data['user']['userGamedata']['name']
     if not recordname(qqnum, userid, name):
@@ -277,10 +277,10 @@ def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未�
         if not verifyid(targetid):
             return '你这ID有问题啊'
         resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
-                            f'ranking?targetUserId={targetid}')
+                            f'ranking?targetUserId={targetid}', timeout=10)
     else:
         resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
-                            f'ranking?targetRank={targetrank}')
+                            f'ranking?targetRank={targetrank}', timeout=10)
     try:
         data = json.loads(resp.content)
         ranking = data['rankings'][0]['userRankMatchSeason']
@@ -953,7 +953,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     elif server == 'kr':
         url = krapiurl
 
-    resp = requests.get(f'{url}/user/{userid}/profile')
+    resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
     data = json.loads(resp.content)
     name = data['user']['userGamedata']['name']
     if not recordname(qqnum, userid, name):

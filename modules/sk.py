@@ -78,7 +78,7 @@ def eventtrack():
         try:
             conn = sqlite3.connect('data/events.db')
             c = conn.cursor()
-            resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=1&lowerLimit=99')
+            resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=1&lowerLimit=99', timeout=10)
             ranking = json.loads(resp.content)
             for rank in ranking['rankings']:
                 targetid = rank['userId']
@@ -99,7 +99,7 @@ def eventtrack():
                 except sqlite3.IntegrityError:
                     c.execute(f'update names set name=? where userid=?', (name, str(targetid)))
 
-            resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=101&lowerLimit=99')
+            resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=101&lowerLimit=99', timeout=10)
             ranking = json.loads(resp.content)
             for rank in ranking['rankings']:
                 targetid = rank['userId']
@@ -224,7 +224,7 @@ def chafang(targetid=None, targetrank=None, private=False, server='jp'):
     event = currentevent(server)
     eventid = event['id']
     if targetid is None:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
         ranking = json.loads(resp.content)
         targetid = ranking['rankings'][0]['userId']
         private = True
@@ -324,7 +324,7 @@ def drawscoreline(targetid=None, targetrank=None, targetrank2=None, starttime=0,
     event = currentevent(server)
     eventid = event['id']
     if targetid is None:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
         ranking = json.loads(resp.content)
         targetid = ranking['rankings'][0]['userId']
 
@@ -341,7 +341,7 @@ def drawscoreline(targetid=None, targetrank=None, targetrank2=None, starttime=0,
     for raw in cursor:
         name = raw[1]
     if targetrank2 is not None:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank2}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank2}', timeout=10)
         ranking = json.loads(resp.content)
         targetid2 = ranking['rankings'][0]['userId']
         cursor = c.execute(f'SELECT * from "{prefix}{eventid}" where userid=?', (targetid2,))
@@ -407,7 +407,7 @@ def getstoptime(targetid=None, targetrank=None, returnjson=False, private=False,
         prefix = 'tw'
     if not returnjson:
         if targetid is None:
-            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}')
+            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
             ranking = json.loads(resp.content)
             targetid = ranking['rankings'][0]['userId']
             private = True
@@ -494,7 +494,7 @@ def getranks():
         for rank in rankline:
             if rank != 100000000:
                 try:
-                    resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={rank}')
+                    resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={rank}', timeout=10)
                     ranking = json.loads(resp.content)
                     ss[now][rank] = ranking['rankings'][0]['score']
                 except:
@@ -653,9 +653,9 @@ def oldsk(targetid=None, targetrank=None, secret=False, server='jp', simple=Fals
                 return '查不到捏，可能是不给看'
             else:
                 targetid = bind[1]
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetUserId={targetid}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetUserId={targetid}', timeout=10)
     else:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
     ranking = json.loads(resp.content)
     try:
         name = ranking['rankings'][0]['name']
@@ -699,7 +699,7 @@ def oldsk(targetid=None, targetrank=None, secret=False, server='jp', simple=Fals
             upper = rankline[i - 2]
         else:
             upper = rankline[i - 1]
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={upper}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={upper}', timeout=10)
         ranking = json.loads(resp.content)
         linescore = ranking['rankings'][0]['score']
         deviation = (linescore - score) / 10000
@@ -709,7 +709,7 @@ def oldsk(targetid=None, targetrank=None, secret=False, server='jp', simple=Fals
             lower = rankline[i + 1]
         else:
             lower = rankline[i]
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={lower}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={lower}', timeout=10)
         ranking = json.loads(resp.content)
         linescore = ranking['rankings'][0]['score']
         deviation = (score - linescore) / 10000
@@ -763,9 +763,9 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
                 return '查不到捏，可能是不给看'
             else:
                 targetid = bind[1]
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetUserId={targetid}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetUserId={targetid}', timeout=10)
     else:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}')
+        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
     ranking = json.loads(resp.content)
     if ranking == {'status': 'maintenance_in'}:
         return '维护中'
@@ -840,7 +840,7 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         else:
             upper = rankline[i - 1]
         try:
-            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={upper}')
+            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={upper}', timeout=10)
             ranking = json.loads(resp.content)
             linescore = ranking['rankings'][0]['score']
         except IndexError:
@@ -854,7 +854,7 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         else:
             lower = rankline[i]
         try:
-            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={lower}')
+            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={lower}', timeout=10)
             ranking = json.loads(resp.content)
             linescore = ranking['rankings'][0]['score']
         except IndexError:
@@ -899,7 +899,7 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
 def teamcount():
     event = currentevent('jp')
     eventid = event['id']
-    resp = requests.get(f'{apiurl}/api/cheerful-carnival-team-count/{eventid}')
+    resp = requests.get(f'{apiurl}/api/cheerful-carnival-team-count/{eventid}', timeout=10)
     data = json.loads(resp.content)
 
     with open('masterdata/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
@@ -954,7 +954,7 @@ def bindid(qqnum, userid, server):
         c.execute(sql_add, (str(qqnum), str(userid), 0))
     conn.commit()
     conn.close()
-    return "绑定成功！"
+    return "绑定成功！\n请不要以任何目的绑定挂哥账号，这可能导致你的qq被bot拉黑（如果你在正常绑定自己的账号请忽略该提示）"
 
 def setprivate(qqnum, isprivate, server):
     if server == 'jp':
