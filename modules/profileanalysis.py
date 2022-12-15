@@ -126,15 +126,19 @@ class userprofile(object):
                 diffculty = 3
             else:
                 diffculty = 4
-            if playResult == 'full_perfect':
-                if result[musicId][diffculty] < 3:
-                    result[musicId][diffculty] = 3
-            elif playResult == 'full_combo':
-                if result[musicId][diffculty] < 2:
-                    result[musicId][diffculty] = 2
-            elif playResult == 'clear':
-                if result[musicId][diffculty] < 1:
-                    result[musicId][diffculty] = 1
+            try:
+                if playResult == 'full_perfect':
+                    if result[musicId][diffculty] < 3:
+                        result[musicId][diffculty] = 3
+                elif playResult == 'full_combo':
+                    if result[musicId][diffculty] < 2:
+                        result[musicId][diffculty] = 2
+                elif playResult == 'clear':
+                    if result[musicId][diffculty] < 1:
+                        result[musicId][diffculty] = 1
+            except KeyError:
+                # 韩服删除了on the rocks等歌曲 但这些歌曲成绩还保留在用户profile数据中 匹配不到歌曲会造成KeyError
+                pass
         for music in result:
             for i in range(0, 5):
                 if result[music][i] == 3:
