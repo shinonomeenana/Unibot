@@ -13,8 +13,8 @@
 ### 获取一台服务器
 你需要一台24h不关机的电脑，否则关机这段时间bot将无法工作
 
-Windows 电脑需要运行 Windows 8 或 Windows server 2012 以上版本的系统（更低版本实测无法运行）
-Linux 有 Ubuntu 20.04 (Python 3.8) 和 Ubuntu 22.04 (Python 3.10) 打包的两个版本，建议使用 Ubuntu 18 或以上系统，在较低版本 Ubuntu 和其他较低版本 linux 中可能提示缺少 GLIBC 对应版本，安装非常麻烦，不推荐使用。
+Windows 电脑需要运行大于等于 Windows 8 或 Windows server 2012 版本的系统（更低版本实测无法运行）
+Linux 有 Ubuntu 20.04 (Python 3.8) 和 Ubuntu 22.04 (Python 3.10) 打包的两个版本，建议使用 Ubuntu 20 或以上系统，在较低版本 Ubuntu 和其他较低版本 linux 中可能提示缺少 GLIBC 对应版本，安装非常麻烦，不推荐使用。
 
 
 ### 下载客户端和申请token
