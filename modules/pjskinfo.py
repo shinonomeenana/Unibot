@@ -4,6 +4,9 @@ import os
 import sqlite3
 import difflib
 import time
+import pymysql
+from modules.mysql_config import *
+import requests
 from mutagen.mp3 import MP3
 import pytz
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
@@ -11,7 +14,7 @@ import yaml
 from emoji2pic.main import Emoji2Pic
 
 from modules.config import loghtml
-from modules.ossupload import uploadLog
+from modules.ossupload import uploadLog, log_api_url, apiEncrypt
 
 
 class musicinfo(object):
@@ -42,35 +45,34 @@ def string_similar(s1, s2):
 
 
 def aliastomusicid(alias):
-    if alias[:1] == ' ':
-        alias = alias[1:]
-    if alias[-1:] == ' ':
-        alias = alias[:-1]
+    alias = alias.strip()
     if alias == '':
         return {'musicid': 0, 'match': 0, 'name': '', 'translate': ''}
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f'SELECT * from pjskalias where alias=? COLLATE NOCASE', (alias,))
-    for row in cursor:
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT * from pjskalias where alias=%s', (alias,))
+    raw = mycursor.fetchone()
+    mycursor.close()
+    mydb.close()
+    if raw is not None:
         with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
         name = ''
         for musics in data:
-            if musics['id'] != row[1]:
+            if musics['id'] != raw[2]:
                 continue
             name = musics['title']
             break
         with open('yamls/translate.yaml', encoding='utf-8') as f:
             trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
         try:
-            translate = trans[row[1]]
+            translate = trans[raw[2]]
             if translate == name:
                 translate = ''
         except KeyError:
             translate = ''
-        conn.close()
-        return {'musicid': row[1], 'match': 1, 'name': name, 'translate': translate}
-    conn.close()
+        return {'musicid': raw[2], 'match': 1, 'name': name, 'translate': translate}
     return matchname(alias)
 
 
@@ -537,25 +539,24 @@ def vocalimg(musicid, alpha):
         img = img.crop((0, 0, cut[0] + 10, cut[1] + 10))
     return img
 
-def pjskset(newalias, oldalias, qqnum=None, username='', qun='群与用户名未知，可能来自旧版分布式'):
+def pjskset(newalias, oldalias, qqnum, username, qun):
     newalias = newalias.strip()
     resp = aliastomusicid(oldalias)
     if resp['musicid'] == 0:
         return "找不到你要设置的歌曲，请使用正确格式：pjskinfo新昵称to旧昵称"
     musicid = resp['musicid']
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f"SELECT * from pjskalias where alias=? COLLATE NOCASE", (newalias,))
-    alreadyin = False
-    for raw in cursor:
-        alreadyin = True
-    if alreadyin:
-        c.execute(f"UPDATE pjskalias SET musicid=? WHERE alias = ? COLLATE NOCASE", (musicid, newalias))
-    else:
-        sql_add = 'insert into pjskalias(ALIAS,MUSICID) values(?, ?)'
-        c.execute(sql_add, (newalias, musicid))
-    conn.commit()
-    conn.close()
+
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    sql = f"insert into pjskalias(ALIAS,MUSICID) values (%s, %s) " \
+          f"on duplicate key update musicid=%s"
+    val = (newalias, musicid, musicid)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     title = ''
@@ -569,19 +570,18 @@ def pjskset(newalias, oldalias, qqnum=None, username='', qun='群与用户名未
     return f"设置成功！{newalias}->{title}\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
 
 
-def pjskdel(alias, qqnum=None, username='', qun='群与用户名未知，可能来自分布式'):
-    if alias[:1] == ' ':
-        alias = alias[1:]
-    if alias[-1:] == ' ':
-        alias = alias[:-1]
+def pjskdel(alias, qqnum, username, qun):
+    alias = alias.strip()
     resp = aliastomusicid(alias)
     if resp['match'] != 1:
         return "找不到你要设置的歌曲，请使用正确格式：pjskdel昵称"
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    c.execute(f"DELETE from pjskalias where alias=? COLLATE NOCASE", (alias,))
-    conn.commit()
-    conn.close()
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute("DELETE from pjskalias where alias=%s", (alias,))
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
     timeArray = time.localtime(time.time())
     Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     if str(qqnum) == '1103479519':
@@ -603,12 +603,15 @@ def pjskalias(alias, musicid=None):
             returnstr = f"{resp['name']} ({resp['translate']})\n匹配度:{round(resp['match'], 4)}\n"
     else:
         returnstr = ''
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f'SELECT * from pjskalias where musicid=? COLLATE NOCASE', (musicid,))
-    for raw in cursor:
-        returnstr = returnstr + raw[0] + "，"
-    conn.close()
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT * from pjskalias where musicid=%s', (musicid,))
+    respdata = mycursor.fetchall()
+    mycursor.close()
+    mydb.close()
+    for raw in respdata:
+        returnstr = returnstr + raw[1] + "，"
     if len(returnstr[:-1]) > 170:
         instance = Emoji2Pic(text=returnstr[:-1] + '\n昵称均为用户添加，与bot和bot主无关\n\n', font='fonts/SourceHanSansCN-Medium.otf', emoji_folder='AppleEmoji')
         textimg = instance.make_img()
@@ -630,15 +633,18 @@ def pjskalias2(alias, musicid=None):
             returnstr = f"{resp['name']} ({resp['translate']})\n匹配度:{round(resp['match'], 4)}\n"
     else:
         returnstr = ''
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f'SELECT * from pjskalias where musicid=? COLLATE NOCASE', (musicid,))
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT * from pjskalias where musicid=%s', (musicid,))
+    respdata = mycursor.fetchall()
+    mycursor.close()
+    mydb.close()
     count = 0
     data = []
-    for raw in cursor:
+    for raw in respdata:
         count += 1
-        data.append({'id': count, 'alias': raw[0]})
-    conn.close()
+        data.append({'id': count, 'alias': raw[1]})
     return data
 
 def txt2html(txt):
@@ -658,12 +664,14 @@ def txt2html(txt):
     txt = ''.join(lines)
     return r'<!doctype html><html><head><meta charset="utf-8"><title>日志</title></head><body>' + txt + '</body></html>'
 
+
 def writelog(text=None):
     today = datetime.datetime.today()
     if text is not None:
         with open(f'logs/{today.year}{str(today.month).zfill(2)}.txt', 'a', encoding='utf-8') as f:
             print(text, file=f)
     logtohtml(f'logs/{today.year}{str(today.month).zfill(2)}.txt')
+
 
 def logtohtml(dir):
     with open(dir, 'r', encoding='utf-8') as f:

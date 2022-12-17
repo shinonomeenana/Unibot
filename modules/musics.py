@@ -6,7 +6,8 @@ import re
 import sqlite3
 import time
 import traceback
-
+import pymysql
+from modules.mysql_config import *
 import aiofiles
 import requests
 from PIL import Image, ImageDraw, ImageFont
@@ -265,39 +266,51 @@ def getchart(musicid, difficulty, theme='white'):
         return path
 
 def getcharttheme(qqnum):
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f'SELECT * from chartprefer where qqnum=?', (qqnum,))
-    for row in cursor:
-        conn.close()
-        return row[1]
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT * from chartprefer where qqnum=%s', (qqnum,))
+    data = mycursor.fetchone()
+    mycursor.close()
+    mydb.close()
+    if data is not None:
+        return data[2]
     return 'white'
 
 def gensvg():
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         musics = json.load(f)
     for music in musics:
-        if not os.path.exists(f'charts/moe/guess/{music["id"]}/master.svg'):
-            genGuessChart(music['id'])
         for diff in ['master', 'expert', 'hard', 'normal', 'easy']:
             if not os.path.exists(f'charts/moe/svg/{music["id"]}/{diff}.svg'):
                 print('生成谱面', music['id'], diff)
                 parse(music['id'], diff, 'svg', False, 'https://assets.unipjsk.com/startapp/music/jacket/%s/%s.png')
 
+def autoGenGuess():
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+    for music in musics:
+        if not os.path.exists(f'charts/moe/guess/{music["id"]}/master.svg'):
+            genGuessChart(music['id'])
 
 
 def setcharttheme(qqnum, theme):
     if theme != 'white' and theme != 'black' and theme != 'color':
         return '白色主题：/theme white\n黑色主题：/theme black\n彩色主题：/theme color'
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    try:
-        c.execute(f'insert into chartprefer (qqnum, prefer) values(?, ?)', (str(qqnum), theme))
-    except sqlite3.IntegrityError:
-        c.execute(f'update chartprefer set prefer=? where qqnum=?', (theme, str(qqnum)))
-    conn.commit()
-    conn.close()
+
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    sql = f"insert into chartprefer (qqnum, prefer) values (%s, %s) " \
+          f"on duplicate key update prefer=%s"
+    val = (str(qqnum), theme, theme)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+
     return f'{theme}主题设置成功'
+
 
 def getsdvxchart(musicid, difficulty):
     try:

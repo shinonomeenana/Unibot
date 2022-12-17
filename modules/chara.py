@@ -4,7 +4,8 @@ import random
 import sqlite3
 import time
 from urllib.parse import quote
-
+import pymysql
+from modules.mysql_config import *
 import aiohttp
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 
@@ -119,17 +120,21 @@ def charainfo(alias, qunnum=''):
     allalias = ''
     if resp[0] == 0:
         return "找不到你说的角色哦"
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f"SELECT * from qunalias where charaid=? AND qunnum=?", (resp[0], qunnum))
-    for row in cursor:
-        qunalias = qunalias + row[1] + "，"
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * from qunalias where charaid=%s AND qunnum=%s", (resp[0], qunnum))
+    data = mycursor.fetchall()
+    for row in data:
+        qunalias = qunalias + row[2] + "，"
 
-    cursor = c.execute(f"SELECT * from charaalias where charaid=?", (resp[0],))
-    for row in cursor:
-        allalias = allalias + row[0] + "，"
+    mycursor.execute("SELECT * from charaalias where charaid=%s", (resp[0],))
+    data = mycursor.fetchall()
+    for row in data:
+        allalias = allalias + row[1] + "，"
 
-    conn.close()
+    mycursor.close()
+    mydb.close()
     return f"{resp[1]}\n全群昵称：{allalias[:-1]}\n本群昵称：{qunalias[:-1]}"
 
 async def getvits(chara, word):
@@ -142,15 +147,17 @@ async def getvits(chara, word):
     else:
         return False, result
 
-def charadel(alias, qqnum=None, username='', qun='群与用户名未知，可能来自分布式'):
+def charadel(alias, qqnum, username, qun):
     resp = aliastocharaid(alias)
     if resp[0] == 0:
         return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    c.execute(f"DELETE from charaalias where alias=?", (alias,))
-    conn.commit()
-    conn.close()
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute("DELETE from charaalias where alias=%s", (alias,))
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
     timeArray = time.localtime(time.time())
     Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     if str(qqnum) == '1103479519':
@@ -159,58 +166,62 @@ def charadel(alias, qqnum=None, username='', qun='群与用户名未知，可能
     writelog(f'[{Time}] {qun} {username}({qqnum}): 删除了{resp[1]}的昵称:{alias}')
     return "删除成功！\n已记录bot文档中公开的实时日志，乱删将被拉黑"
 
+
 def grcharadel(alias, qunnum=''):
-    charaid = 0
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f"SELECT * from qunalias where alias=? AND qunnum=?", (alias, qunnum))
-    for row in cursor:
-        charaid = row[2]
-    if charaid == 0:
-        conn.close()
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    count = mycursor.execute("DELETE from qunalias where alias=%s AND qunnum=%s", (alias, qunnum))
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    if count == 0:
         return "找不到你说的角色哦，如删除全群可用昵称请使用charadel"
-    c.execute(f"DELETE from qunalias where alias=? AND qunnum=?", (alias, qunnum))
-    conn.commit()
-    conn.close()
-    return "删除成功！"
+    else:
+        return "删除成功！"
 
 
 def aliastocharaid(alias, qunnum=''):
     charaid = 0
     name = ''
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f"SELECT * from qunalias where alias=? AND qunnum=?", (alias, qunnum))
-    for row in cursor:
-        charaid = row[2]
-    if charaid == 0:
-        cursor = c.execute(f"SELECT * from charaalias where alias=?", (alias,))
-        for row in cursor:
-            charaid = row[1]
-    if charaid != 0:
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * from qunalias where alias=%s AND qunnum=%s", (alias, qunnum))
+    raw = mycursor.fetchone()
+    if raw is not None:
+        charaid = raw[3]
         name = getcharaname(charaid)
-    conn.close()
+    else:
+        mycursor.execute("SELECT * from charaalias where alias=%s", (alias,))
+        raw = mycursor.fetchone()
+        if raw is not None:
+            charaid = raw[2]
+            name = getcharaname(charaid)
+
+    mycursor.close()
+    mydb.close()
     return charaid, name
 
-def charaset(newalias, oldalias, qqnum=None, username='', qun='群与用户名未知，可能来自分布式'):
+
+def charaset(newalias, oldalias, qqnum, username, qun):
     resp = aliastocharaid(oldalias)
+    print(resp)
     if resp[0] == 0:
         return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"
     charaid = resp[0]
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f"SELECT * from charaalias where alias=?", (newalias,))
-    # 看一下新的昵称在不在 在就更新 不在就增加
-    alreadyin = False
-    for raw in cursor:
-        alreadyin = True
-    if alreadyin:
-        c.execute(f"UPDATE charaalias SET charaid=? WHERE alias= ?", (charaid, newalias))
-    else:
-        sql_add = 'insert into charaalias(ALIAS,CHARAID) values(?, ?)'
-        c.execute(sql_add, (newalias, charaid))
-    conn.commit()
-    conn.close()
+
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    sql = f"insert into charaalias(ALIAS,CHARAID) values (%s, %s) " \
+          f"on duplicate key update charaid=%s"
+    val = (newalias, charaid, charaid)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+
     timeArray = time.localtime(time.time())
     Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     writelog(f'[{Time}] {qun} {username}({qqnum}): {newalias}->{resp[1]}')
@@ -222,20 +233,16 @@ def grcharaset(newalias, oldalias, qunnum):
     if resp[0] == 0:
         return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"
     charaid = resp[0]
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f"SELECT * from qunalias where alias=? AND qunnum=?", (newalias, qunnum))
-    # 看一下新的昵称在不在 在就更新 不在就增加
-    alreadyin = False
-    for raw in cursor:
-        alreadyin = True
-    if alreadyin:
-        c.execute(f"UPDATE qunalias SET charaid=? WHERE alias=? AND qunnum=?", (charaid, newalias, qunnum))
-    else:
-        sql_add = 'insert into qunalias(QUNNUM,ALIAS,CHARAID) values(?, ?, ?)'
-        c.execute(sql_add, (str(qunnum), newalias, charaid))
-    conn.commit()
-    conn.close()
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    sql = f"insert into qunalias(QUNNUM,ALIAS,CHARAID) values(%s, %s, %s) " \
+          f"on duplicate key update charaid=%s"
+    val = (str(qunnum), newalias, charaid, charaid)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
     return f"设置成功！(仅本群可用)\n{newalias}->{resp[1]}"
 
 def get_card(charaid):

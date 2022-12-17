@@ -3,11 +3,11 @@ import os
 import random
 import sqlite3
 import time
-
+import pymysql
 from PIL import Image
 from mutagen.mp3 import MP3
 from pydub import AudioSegment
-
+from modules.mysql_config import *
 from emoji2pic import Emoji2Pic
 from modules.musics import isleak
 from modules.texttoimg import texttoimg
@@ -33,13 +33,18 @@ def getrandomchartold():
 
 
 def guessRank(guessType, typeText):
-    conn = sqlite3.connect('data/pjskguess.db')
-    c = conn.cursor()
+    mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
+                           database='pjskguess', charset='utf8mb4')
+    mycursor = mydb.cursor()
 
-    cursor = c.execute(f'SELECT * from "{guessType}" order by count desc')
+    mycursor.execute(f'SELECT * from `{guessType}` order by count desc')
+    data = mycursor.fetchall()
+    mycursor.close()
+    mydb.close()
     count = 0
     text = typeText + ' TOP20\n'
-    for raw in cursor:
+    for raw in data:
+        raw = raw[1:]
         count += 1
         name = raw[1]
         if len(name) > 10:
@@ -50,6 +55,7 @@ def guessRank(guessType, typeText):
             text += f'{name}({raw[0][:3]}***{raw[0][-3:]}): {raw[2]}次\n'
         if count == 20:
             break
+    print(text)
     instance = Emoji2Pic(text=text + '\n', font='fonts/SourceHanSansCN-Medium.otf', emoji_folder='AppleEmoji')
     textimg = instance.make_img()
     textimg.save(f'piccache/guess{guessType}.jpg')
@@ -58,23 +64,23 @@ def guessRank(guessType, typeText):
 
 
 def recordGuessRank(qqnum, name, guessType):
-    conn = sqlite3.connect('data/pjskguess.db')
-    c = conn.cursor()
+    mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
+                           database='pjskguess', charset='utf8mb4')
+    mycursor = mydb.cursor()
 
-    cursor = c.execute(f'SELECT * from "{guessType}" where qqnum=?', (qqnum,))
-    alreadyin = False
+    mycursor.execute(f'SELECT * from `{guessType}` where qqnum=%s', (qqnum,))
+    data = mycursor.fetchone()
     count = 0
-    for raw in cursor:
-        alreadyin = True
-        count = raw[2]
-    if alreadyin:
-        c.execute(f'UPDATE "{guessType}" SET name=?, count=? WHERE qqnum=?', (name, count + 1, str(qqnum)))
+    if data is not None:
+        count = data[3]
+        mycursor.execute(f'UPDATE `{guessType}` SET name=%s, count=%s WHERE qqnum=%s', (name, count + 1, str(qqnum)))
     else:
-        sql_add = f'insert into "{guessType}"(qqnum,name,count) values(?, ?, ?)'
-        c.execute(sql_add, (str(qqnum), name, count + 1))
+        sql_add = f'insert into `{guessType}` (qqnum, name, count) values(%s, %s, %s)'
+        mycursor.execute(sql_add, (str(qqnum), name, count + 1))
 
-    conn.commit()
-    conn.close()
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
 
 
 def cutchartimgold(musicid, qunnum):
@@ -226,7 +232,6 @@ def cutmusic(assetbundleName, qunnum, reverse=False):
     else:
         cut = music[starttime * 1000: starttime * 1000 + 1700]
     cut.export(f"piccache/{qunnum}.mp3",format="mp3")
-    # TODO: 自动清理音频缓存
 # print(getrandomjacket())
 # cutjacket(getrandomjacket(), 1232232, 140, True)
 

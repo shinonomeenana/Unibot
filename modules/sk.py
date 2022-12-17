@@ -5,7 +5,8 @@ import sqlite3
 import time
 import traceback
 from urllib.parse import quote
-
+import pymysql
+from modules.mysql_config import *
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import matplotlib
 import pytz
@@ -172,44 +173,44 @@ def eventtrack():
 
 
 def recordname(qqnum, userid, name):
-    conn = sqlite3.connect('data/names.db')
-    c = conn.cursor()
+    mydb = pymysql.connect(host=host, port=port, user='username', password=password,
+                           database='username', charset='utf8mb4')
+    mycursor = mydb.cursor()
 
     # 审核游戏昵称
-    cursor = c.execute(f'SELECT * from examresult where name=?', (name,))
-    found = False
-    for raw in cursor:
-        found = True
-        if raw[1]:
+    mycursor.execute('SELECT * from examresult where name=%s', (name,))
+    data = mycursor.fetchone()
+    if data is not None:
+        if data[2]:
             result = True
         else:
             result = False
-    if not found:
+    else:
         try:
             resp = requests.get(f'http://127.0.0.1:5000/exam/{quote(name.replace("/", " "), "utf-8")}')
-            sql_add = f'insert into examresult (name, result) values(?, ?)'
+            sql_add = 'insert into examresult (name, result) values(%s, %s)'
             result = resp.json()['conclusion']
         except:
             traceback.print_exc()
             result = True
         if result:
-            c.execute(sql_add, (name, 1))
+            mycursor.execute(sql_add, (name, 1))
         else:
-            c.execute(sql_add, (name, 0))
+            mycursor.execute(sql_add, (name, 0))
 
     # 记录游戏昵称
-    cursor = c.execute(f'SELECT * from names where qqnum=? and userid=? and name=?', (str(qqnum), str(userid), name))
-    found = False
-    for raw in cursor:
-        found = True
-    if not found:
-        sql_add = f'insert into names (userid, name, qqnum, time, result) values(?, ?, ?, ?, ?)'
+    mycursor.execute('SELECT * from names where qqnum=%s and userid=%s and name=%s', (str(qqnum), str(userid), name))
+    data = mycursor.fetchone()
+    if data is None:
+        sql_add = f'insert into names (userid, name, qqnum, result) values(%s, %s, %s, %s)'
         text = '合规' if result else '不合规'
-        c.execute(sql_add, (str(userid), name, str(qqnum), int(time.time()), text))
+        mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
 
-    conn.commit()
-    conn.close()
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
     return result
+
 
 def chafang(targetid=None, targetrank=None, private=False, server='jp'):
     if server == 'jp':
@@ -921,19 +922,21 @@ def teamcount():
     return text if text != '' else '没有5v5捏'
 
 def getqqbind(qqnum, server):
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
     if server == 'jp':
-        cursor = c.execute(f'SELECT * from bind where qqnum=?', (qqnum,))
+        mycursor.execute('SELECT * from bind where qqnum=%s', (qqnum,))
     elif server == 'tw':
-        cursor = c.execute(f'SELECT * from twbind where qqnum=?', (qqnum,))
+        mycursor.execute('SELECT * from twbind where qqnum=%s', (qqnum,))
     elif server == 'en':
-        cursor = c.execute(f'SELECT * from enbind where qqnum=?', (qqnum,))
+        mycursor.execute('SELECT * from enbind where qqnum=%s', (qqnum,))
     elif server == 'kr':
-        cursor = c.execute(f'SELECT * from krbind where qqnum=?', (qqnum,))
-    for row in cursor:
-        conn.close()
-        return row
+        mycursor.execute('SELECT * from krbind where qqnum=%s', (qqnum,))
+    mycursor.close()
+    mydb.close()
+    data = mycursor.fetchone()
+    return data[1:]
 
 
 def bindid(qqnum, userid, server):
@@ -941,35 +944,26 @@ def bindid(qqnum, userid, server):
         return '你这ID有问题啊'
     if server == 'jp':
         server = ''
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f'SELECT * from {server}bind where qqnum=?', (qqnum,))
-    alreadyin = False
-    for raw in cursor:
-        alreadyin = True
-    if alreadyin:
-        c.execute(f'UPDATE {server}bind SET userid=? WHERE qqnum=?', (userid, qqnum))
-    else:
-        sql_add = f'insert into {server}bind(qqnum,userid,isprivate) values(?, ?, ?)'
-        c.execute(sql_add, (str(qqnum), str(userid), 0))
-    conn.commit()
-    conn.close()
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+        database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    sql = f"insert into {server}bind (qqnum, userid, isprivate) values (%s, %s, %s) " \
+          f"on duplicate key update userid=%s"
+    val = (str(qqnum), str(userid), 0, str(userid))
+    mycursor.execute(sql, val)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
     return "绑定成功！\n请不要以任何目的绑定挂哥账号，这可能导致你的qq被bot拉黑（如果你在正常绑定自己的账号请忽略该提示）"
 
 def setprivate(qqnum, isprivate, server):
     if server == 'jp':
         server = ''
-    conn = sqlite3.connect('pjsk.db')
-    c = conn.cursor()
-    cursor = c.execute(f'SELECT * from {server}bind where qqnum=?', (qqnum,))
-    alreadyin = False
-    for raw in cursor:
-        alreadyin = True
-    if alreadyin:
-        c.execute(f'UPDATE {server}bind SET isprivate=? WHERE qqnum=?', (isprivate, qqnum))
-    else:
-        conn.close()
-        return False
-    conn.commit()
-    conn.close()
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute(f'UPDATE {server}bind SET isprivate=%s WHERE qqnum=%s', (isprivate, qqnum))
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
     return True

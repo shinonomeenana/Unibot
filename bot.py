@@ -17,7 +17,8 @@ from chachengfen import dd_query
 from modules.api import gacha
 from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel, aliastocharaid, get_card, cardidtopic, \
     findcard, getvits
-from modules.config import whitelist, block, msggroup, aliasblock, groupban, asseturl, verifyurl, distributedurl, apiurl
+from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
+from modules.blacklist import *
 from modules.cyo5000 import cyo5000
 from modules.kk import kkwhitelist, kankan, uploadkk
 from modules.lighthouse import add_RDP_port, delete_RDP_port
