@@ -942,12 +942,20 @@ def getqqbind(qqnum, server):
 def bindid(qqnum, userid, server):
     if not verifyid(userid, server):
         return '你这ID有问题啊'
-    if server == 'jp':
-        server = ''
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
         database='pjsk', charset='utf8mb4')
     mycursor = mydb.cursor()
-    sql = f"insert into {server}bind (qqnum, userid, isprivate) values (%s, %s, %s) " \
+
+    if server == 'jp':
+        sqlname = 'bind'
+    elif server == 'tw':
+        sqlname = 'twbind'
+    elif server == 'en':
+        sqlname = 'enbind'
+    elif server == 'kr':
+        sqlname = 'krbind'
+
+    sql = f"insert into {sqlname} (qqnum, userid, isprivate) values (%s, %s, %s) " \
           f"on duplicate key update userid=%s"
     val = (str(qqnum), str(userid), 0, str(userid))
     mycursor.execute(sql, val)

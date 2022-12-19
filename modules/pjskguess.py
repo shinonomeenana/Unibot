@@ -33,6 +33,8 @@ def getrandomchartold():
 
 
 def guessRank(guessType, typeText):
+    if int(guessType) not in [1, 2, 3, 4, 5, 6, 7]:
+        return
     mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
                            database='pjskguess', charset='utf8mb4')
     mycursor = mydb.cursor()
@@ -64,6 +66,8 @@ def guessRank(guessType, typeText):
 
 
 def recordGuessRank(qqnum, name, guessType):
+    if int(guessType) not in [1, 2, 3, 4, 5, 6, 7]:
+        return
     mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
                            database='pjskguess', charset='utf8mb4')
     mycursor = mydb.cursor()
