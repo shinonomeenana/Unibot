@@ -173,8 +173,11 @@ def eventtrack():
 
 
 def recordname(qqnum, userid, name):
-    mydb = pymysql.connect(host=host, port=port, user='username', password=password,
-                           database='username', charset='utf8mb4')
+    try:
+        mydb = pymysql.connect(host=host, port=port, user='username', password=password,
+                            database='username', charset='utf8mb4')
+    except pymysql.err.OperationalError:
+        return True
     mycursor = mydb.cursor()
 
     # 审核游戏昵称
