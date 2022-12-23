@@ -12,7 +12,7 @@ from PIL import Image, ImageFont, ImageDraw, ImageFilter
 from modules.config import vitsapiurl, proxy, vitsvoiceurl
 from modules.gacha import getcharaname
 from modules.otherpics import cardthumnail
-from modules.pjskinfo import writelog
+from modules.pjskinfo import isSingleEmoji, writelog
 from modules.texttoimg import texttoimg
 
 
@@ -205,6 +205,8 @@ def aliastocharaid(alias, qunnum=''):
 
 
 def charaset(newalias, oldalias, qqnum, username, qun):
+    if isSingleEmoji(newalias):
+        return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastocharaid(oldalias)
     print(resp)
     if resp[0] == 0:
@@ -229,6 +231,8 @@ def charaset(newalias, oldalias, qqnum, username, qun):
 
 
 def grcharaset(newalias, oldalias, qunnum):
+    if isSingleEmoji(newalias):
+        return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastocharaid(oldalias)
     if resp[0] == 0:
         return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"

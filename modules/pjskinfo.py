@@ -40,6 +40,24 @@ class musicinfo(object):
         self.fillerSec = 0
 
 
+def isSingleEmoji(content):
+    if len(content) != 1:
+        return False
+    if not content:
+        return False
+    if u"\U0001F600" <= content and content <= u"\U0001F64F":
+        return True
+    elif u"\U0001F300" <= content and content <= u"\U0001F5FF":
+        return True
+    elif u"\U0001F680" <= content and content <= u"\U0001F6FF":
+        return True
+    elif u"\U0001F1E0" <= content and content <= u"\U0001F1FF":
+        return True
+    else:
+        return False
+
+
+
 def string_similar(s1, s2):
     return difflib.SequenceMatcher(None, s1, s2).quick_ratio()
 
@@ -541,6 +559,8 @@ def vocalimg(musicid, alpha):
 
 def pjskset(newalias, oldalias, qqnum, username, qun):
     newalias = newalias.strip()
+    if isSingleEmoji(newalias):
+        return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastomusicid(oldalias)
     if resp['musicid'] == 0:
         return "找不到你要设置的歌曲，请使用正确格式：pjskinfo新昵称to旧昵称"
