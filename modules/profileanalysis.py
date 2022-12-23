@@ -387,7 +387,12 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
         text_coordinate = (int(183 + 3 * 78 - text_width[0] / 2), int(295 + 97 * i - text_width[1] / 2))
         draw.text(text_coordinate, str(profile.masterscore[i + levelmin][3]), fill=(108, 237, 226), font=font_style)
 
-    for i in range(0, 6):
+
+    if diff == 'master':
+        secondRawCount = 6
+    else:
+        secondRawCount = 5
+    for i in range(0, secondRawCount):
         text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 6][0]))
         text_coordinate = (int(683 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
         draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 6][0]), fill=(228, 159, 251), font=font_style)
