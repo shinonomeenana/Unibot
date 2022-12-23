@@ -43,7 +43,7 @@ class userprofile(object):
         self.highScore = 0
         self.masterscore = {}
         self.expertscore = {}
-        for i in range(26, 37):
+        for i in range(26, 38):
             self.masterscore[i] = [0, 0, 0, 0]
         for i in range(21, 32):
             self.expertscore[i] = [0, 0, 0, 0]
@@ -258,9 +258,9 @@ def daibu(targetid=None, secret=False, server='jp', qqnum='未知'):
     # 32ap = profile.masterscore[32][0]
     # 32fc = profile.masterscore[32][1]
     ap33plus = profile.masterscore[33][0] + profile.masterscore[34][0] + profile.masterscore[35][0] + \
-               profile.masterscore[36][0]
+               profile.masterscore[36][0] + profile.masterscore[37][0]
     fc33plus = profile.masterscore[33][1] + profile.masterscore[34][1] + profile.masterscore[35][1] + \
-               profile.masterscore[36][1]
+               profile.masterscore[36][1] + profile.masterscore[37][1]
     if ap33plus != 0:
         text = text + f"\nLv.33及以上AP进度：{ap33plus}/{profile.masterscore[33][3] + profile.masterscore[34][3] + profile.masterscore[35][3] + profile.masterscore[36][3]}"
     if fc33plus != 0:
@@ -387,7 +387,7 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
         text_coordinate = (int(183 + 3 * 78 - text_width[0] / 2), int(295 + 97 * i - text_width[1] / 2))
         draw.text(text_coordinate, str(profile.masterscore[i + levelmin][3]), fill=(108, 237, 226), font=font_style)
 
-    for i in range(0, 5):
+    for i in range(0, 6):
         text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 6][0]))
         text_coordinate = (int(683 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
         draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 6][0]), fill=(228, 159, 251), font=font_style)
