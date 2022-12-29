@@ -939,7 +939,10 @@ def getqqbind(qqnum, server):
     mycursor.close()
     mydb.close()
     data = mycursor.fetchone()
-    return data[1:]
+    try:
+        return data[1:]
+    except:
+        return None
 
 
 def bindid(qqnum, userid, server):
