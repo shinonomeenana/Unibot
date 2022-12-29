@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import sys
 import time
 import traceback
 
@@ -18,7 +19,7 @@ note_sizes = {
 }
 
 
-def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None, artist=None):
+def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None, artist=None, withSkill=False):
     with open(f'data/assets/sekai/assetbundle/resources/startapp/music/music_score/{str(music_id).zfill(4)}_01/{difficulty}', 'r', encoding='utf-8') as f:
         sustext = f.read()
     lines = sustext.splitlines()
@@ -51,18 +52,32 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
         if i['musicId'] == music_id and i['musicDifficulty'] == difficulty:
             playlevel = i["playLevel"]
 
-    sus = chart.SUS(
-        lines,
-        note_size=note_sizes[difficulty],
-        note_host='../../notes',
-        **({
-            'title': music['title'],
-            'artist': artist,
-            'difficulty': difficulty,
-            'playlevel': playlevel,
-            'jacket': jacketdir % (music['assetbundleName'], music['assetbundleName'])
-        }),
-    )
+    if not withSkill:
+        sus = chart.SUS(
+            lines,
+            note_size=note_sizes[difficulty],
+            note_host='../../notes',
+            **({
+                'title': music['title'],
+                'artist': artist,
+                'difficulty': difficulty,
+                'playlevel': playlevel,
+                'jacket': jacketdir % (music['assetbundleName'], music['assetbundleName'])
+            }),
+        )
+    else:
+        sus = chart.SUSwithskill(
+            lines,
+            note_size=note_sizes[difficulty],
+            note_host='../../notes',
+            **({
+                'title': music['title'],
+                'artist': artist,
+                'difficulty': difficulty,
+                'playlevel': playlevel,
+                'jacket': jacketdir % (music['assetbundleName'], music['assetbundleName'])
+            }),
+        )
 
     try:
         with open('moesus/rebases/%s.json' % music_id, encoding='utf-8') as f:
@@ -108,8 +123,13 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
             style_sheet = f.read()
         with open(f'moesus/chart/{theme}/css/master.css') as f:
             style_sheet += '\n' + f.read()
+        if theme == 'skill':
+            themehint = False
 
-    sus.export(file_name + '.svg', style_sheet=style_sheet, themehint=themehint)
+    if theme == 'skill':
+        sus.export(file_name + '.svg', style_sheet=style_sheet, display_skill_extra=True)
+    else:
+        sus.export(file_name + '.svg', style_sheet=style_sheet, themehint=themehint)
     if savepng:
         cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '.png', scale=1.3)
 
@@ -243,11 +263,12 @@ def genGuessChart(music_id):
 
 
 if __name__ == '__main__':
-    start = time.time()
-    musicid = 131
-    parse(musicid, 'master', 'white')
-    # parse(musicid, 'expert')
-    # parse(musicid, 'hard')
-    # parse(musicid, 'normal')
-    # parse(musicid, 'easy')
-    print(time.time() - start)
+    parse(sys.argv[1], sys.argv[2], 'skill', withSkill=True)
+    # start = time.time()
+    # musicid = 131
+    # parse(musicid, 'master', 'white')
+    # # parse(musicid, 'expert')
+    # # parse(musicid, 'hard')
+    # # parse(musicid, 'normal')
+    # # parse(musicid, 'easy')
+    # print(time.time() - start)

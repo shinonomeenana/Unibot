@@ -259,7 +259,8 @@ def getchart(musicid, difficulty, theme='white'):
         return path
     else:  # 本地无缓存
         if not os.path.exists(path[:-3] + 'png'):
-            parse(musicid, difficulty, theme)  # 生成moe
+            withSkill = False if theme != 'skill' else True
+            parse(musicid, difficulty, theme, withSkill=withSkill)  # 生成moe
         im = Image.open(path[:-3] + 'png')
         # im = im.convert('RGB')
         im.save(path, quality=60)

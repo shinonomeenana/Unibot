@@ -839,6 +839,22 @@ def sync_handle_msg(event):
             else:  # 匹配不到歌曲
                 sendmsg(event, "没有找到你说的歌曲哦")
             return
+        if event.message[:4] == "技能预览" or event.message[-4:] == "技能预览" :
+            qun = True
+            if event.self_id == guildbot:
+                qun = False
+            picdir = aliastochart(event.message.replace("技能预览", ''), False, qun, 'skill')
+            if picdir is not None:  # 匹配到歌曲
+                if len(picdir) == 2:  # 有图片
+                    sendmsg(event, picdir[0] + fr"[CQ:image,file=file:///{botdir}\{picdir[1]},cache=0]")
+                elif picdir == '':
+                    sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
+                    return
+                else:
+                    sendmsg(event, picdir + "\n暂无谱面图片 请等待更新")
+            else:  # 匹配不到歌曲
+                sendmsg(event, "没有找到你说的歌曲哦")
+            return
         if event.message[:5] == "theme":
             theme = event.message[event.message.find("theme") + len("theme"):].strip()
             sendmsg(event, setcharttheme(event.user_id, theme))
