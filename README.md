@@ -42,9 +42,3 @@ masterDB（项目内放在`masterdata`文件夹下） 可使用 [Sekai-World/sek
 - [fuqiuai/wordCloud](https://github.com/fuqiuai/wordCloud): 用python进行文本分词并生成词云
 - [pcrbot/5000choyen](https://github.com/pcrbot/5000choyen): 适用hoshino的5000兆円欲しい! style图片生成器插件
 - [nonebot/aiocqhttp](https://github.com/nonebot/aiocqhttp): A Python SDK with async I/O for CQHTTP (OneBot).
-
-## 许可 License
-
-AGPL-3.0 license
-
-成分查询器、emoji2pic 等不是我自己做的功能使用源协议开源，不受AGPL协议限制。
