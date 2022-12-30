@@ -13,7 +13,18 @@ from modules.config import vitsapiurl, proxy, vitsvoiceurl
 from modules.gacha import getcharaname
 from modules.otherpics import cardthumnail
 from modules.pjskinfo import isSingleEmoji, writelog
+from modules.cardinfo import CardInfo
 from modules.texttoimg import texttoimg
+
+
+def getcardinfo(cardid):
+    savepath = f'piccache/cardinfo_{cardid}.png'
+    if not os.path.exists(savepath):
+        cardinfo = CardInfo()
+        cardinfo.getinfo(cardid)
+        pic = cardinfo.toimg()
+        pic.save(savepath)
+    return f'cardinfo_{cardid}.png'
 
 
 def cardidtopic(cardid):

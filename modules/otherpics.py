@@ -145,6 +145,68 @@ def cardthumnail(cardid, istrained=False, cards=None, limitedbadge=False):
             return pic
 
 
+def cardlarge(cardid, istrained=False, cards=None):
+    if cards is None:
+        masterdatadir = path.join(botpath, 'masterdata/')
+        with open(masterdatadir + 'cards.json', 'r', encoding='utf-8') as f:
+            cards = json.load(f)
+    if istrained:
+        suffix = 'after_training'
+    else:
+        suffix = 'normal'
+    for card in cards:
+        if card['id'] == cardid:
+            if card['cardRarityType'] != 'rarity_3' and card['cardRarityType'] != 'rarity_4':
+                suffix = 'normal'
+            pic = Image.open(f'{assetpath}/startapp/character/member/{card["assetbundleName"]}/card_{suffix}.png')
+            pic = pic.resize((1024, 576))
+            cardFrame = Image.open(f'{botpath}/chara/cardFrame_L_{card["cardRarityType"]}.png')
+            r, g, b, mask = cardFrame.split()
+            pic.paste(cardFrame, (0, 0), mask)
+            if card['cardRarityType'] == 'rarity_1':
+                star = Image.open(f'{botpath}/chara/rarity_star_normal.png')
+                star = star.resize((72, 70))
+                r, g, b, mask = star.split()
+                pic.paste(star, (16, 490), mask)
+            if card['cardRarityType'] == 'rarity_2':
+                star = Image.open(f'{botpath}/chara/rarity_star_normal.png')
+                star = star.resize((72, 70))
+                r, g, b, mask = star.split()
+                pic.paste(star, (16, 428), mask)
+                pic.paste(star, (16, 490), mask)
+            if card['cardRarityType'] == 'rarity_3':
+                if istrained:
+                    star = Image.open(f'{botpath}/chara/rarity_star_afterTraining.png')
+                else:
+                    star = Image.open(f'{botpath}/chara/rarity_star_normal.png')
+                star = star.resize((72, 70))
+                r, g, b, mask = star.split()
+                pic.paste(star, (16, 366), mask)
+                pic.paste(star, (16, 428), mask)
+                pic.paste(star, (16, 490), mask)
+            if card['cardRarityType'] == 'rarity_4':
+                if istrained:
+                    star = Image.open(f'{botpath}/chara/rarity_star_afterTraining.png')
+                else:
+                    star = Image.open(f'{botpath}/chara/rarity_star_normal.png')
+                star = star.resize((72, 70))
+                r, g, b, mask = star.split()
+                pic.paste(star, (16, 304), mask)
+                pic.paste(star, (16, 366), mask)
+                pic.paste(star, (16, 428), mask)
+                pic.paste(star, (16, 490), mask)
+            if card['cardRarityType'] == 'rarity_birthday':
+                star = Image.open(f'{botpath}/chara/rarity_birthday.png')
+                star = star.resize((72, 70))
+                r, g, b, mask = star.split()
+                pic.paste(star, (16, 490), mask)
+            attr = Image.open(f'{botpath}/chara/icon_attribute_{card["attr"]}.png')
+            attr = attr.resize((88, 88))
+            r, g, b, mask = attr.split()
+            pic.paste(attr, (924, 12), mask)
+            return pic
+
+
 def gachacardthumnail(cardid, istrained=False, cards=None):
     if cards is None:
         masterdatadir = path.join(botpath, 'masterdata/')

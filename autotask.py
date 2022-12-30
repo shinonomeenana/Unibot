@@ -96,6 +96,10 @@ def updatealltrans():
     updatetranslate('event_name', 'events')
     updatetranslate('card_prefix', 'card_prefix')
     updatetranslate('cheerful_carnival_teams', 'cheerfulCarnivalTeams')
+    updatetranslate('card_gacha_phrase', 'card_phrase')
+    updatetranslate('card_skill_name', 'skill_name')
+    updatetranslate('skill_desc', 'skill_desc')
+
 
 if __name__ == '__main__':
     cleancache()

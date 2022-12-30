@@ -6,6 +6,17 @@ from modules.config import piccacheurl
 from modules.otherpics import gachapic
 
 
+class gachainfo(object):
+    def __init__(self):
+        self.id: int = 0
+        self.gachaType: str = ''
+        self.gachaCardRarityRateGroupId: int = 0
+        self.name: str = ''
+        self.assetbundleName: str = ''
+        self.startAt: str = ''
+        self.endAt: str = ''
+
+
 def getcard(data, cardid, para):
     for i in data:
         if i['id'] == cardid:
