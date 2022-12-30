@@ -18,10 +18,12 @@ from modules.texttoimg import texttoimg
 
 
 def getcardinfo(cardid):
-    cardinfo = CardInfo()
-    cardinfo.getinfo(cardid)
-    pic = cardinfo.toimg()
-    pic.save(f'piccache/cardinfo_{cardid}.png')
+    savepath = f'piccache/cardinfo_{cardid}.png'
+    if not os.path.exists(savepath):
+        cardinfo = CardInfo()
+        cardinfo.getinfo(cardid)
+        pic = cardinfo.toimg()
+        pic.save(savepath)
     return f'cardinfo_{cardid}.png'
 
 
