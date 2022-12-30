@@ -16,7 +16,7 @@ from aiocqhttp import CQHttp, Event
 from chachengfen import dd_query
 from modules.api import gacha
 from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel, aliastocharaid, get_card, cardidtopic, \
-    findcard, getvits
+    findcard, getvits, getcardinfo
 from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
 from modules.blacklist import *
 from modules.cyo5000 import cyo5000
@@ -815,6 +815,10 @@ def sync_handle_msg(event):
                                             "\n（温馨提示：谱面预览2只能看master与expert）")
             else:  # 匹配不到歌曲
                 sendmsg(event, "没有找到你说的歌曲哦")
+            return
+        if event.message[:8] == 'cardinfo':
+            cardid = event.message[event.message.find("cardinfo") + len("cardinfo"):].strip()
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{getcardinfo(int(cardid))},cache=0]")
             return
         if event.message[:4] == 'card':
             cardid = event.message[event.message.find("card") + len("card"):].strip()
