@@ -818,7 +818,7 @@ def sync_handle_msg(event):
             return
         if event.message[:8] == 'cardinfo':
             cardid = event.message[event.message.find("cardinfo") + len("cardinfo"):].strip()
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{getcardinfo(int(cardid))},cache=0]")
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}/piccache/cardinfo/{getcardinfo(int(cardid))},cache=0]")
             return
         if event.message[:4] == 'card':
             cardid = event.message[event.message.find("card") + len("card"):].strip()

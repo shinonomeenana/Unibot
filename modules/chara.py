@@ -18,13 +18,14 @@ from modules.texttoimg import texttoimg
 
 
 def getcardinfo(cardid):
-    savepath = f'piccache/cardinfo_{cardid}.png'
+    savepath = f'piccache/cardinfo/cardinfo_{cardid}.jpg'
     if not os.path.exists(savepath):
         cardinfo = CardInfo()
         cardinfo.getinfo(cardid)
         pic = cardinfo.toimg()
-        pic.save(savepath)
-    return f'cardinfo_{cardid}.png'
+        pic = pic.convert("RGB")
+        pic.save(savepath, quality=85)
+    return f'cardinfo_{cardid}.jpg'
 
 
 def cardidtopic(cardid):
