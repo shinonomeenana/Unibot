@@ -163,9 +163,19 @@ class CardInfo(object):
         for cardid in self.event.cards:
             for card in cards:
                 if cardid == card['id']:
-                    self.event.bonuseattr = card["attr"]
+
                     self.event.bonusechara.append(card["characterId"])
                     break
+
+        with open(masterdatadir + 'eventDeckBonuses.json', 'r', encoding='utf-8') as f:
+            eventDeckBonuses = json.load(f)
+        for bonuse in eventDeckBonuses:
+            if bonuse['eventId'] == self.event.id:
+                try:
+                    self.event.bonuseattr = bonuse['cardAttr']
+                except:
+                    pass
+
         with open(masterdatadir + 'gameCharacterUnits.json', 'r', encoding='utf-8') as f:
             game_character_units = json.load(f)
         tmp_bonuse_charas = []
@@ -173,6 +183,7 @@ class CardInfo(object):
             charaid, unit, charapicname = analysisunitid(unitid, game_character_units)
             tmp_bonuse_charas.append(charapicname)
         self.event.bonusechara = tmp_bonuse_charas
+        pass
 
     def _get_gacha_info(self):
         with open(masterdatadir + 'gachas.json', 'r', encoding='utf-8') as f:
