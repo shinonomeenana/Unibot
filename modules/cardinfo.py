@@ -25,6 +25,31 @@ assetpath = botpath + '/data/assets/sekai/assetbundle/resources'
 masterdatadir = path.join(botpath, 'masterdata/')
 
 
+def cardskill(skillid, skills, description=None):
+    for skill in skills:
+        if skill['id'] == skillid:
+            if description is None:
+                description = skill['description']
+            count = description.count('{{')
+            for i in range(0, count):
+                para = description[description.find('{{')+2:description.find('}}')].split(';')
+                for effect in skill['skillEffects']:
+                    if effect['id'] == int(para[0]):
+                        replace = ''
+                        if para[1] == 'd':
+                            for detail in effect['skillEffectDetails']:
+                                replace += f'/{detail["activateEffectDuration"]}'
+                        else:
+                            for detail in effect['skillEffectDetails']:
+                                replace += f'/{detail["activateEffectValue"]}'
+                        if replace == '/5.0/5.0/5.0/5.0':
+                            replace = '/5.0'
+                        description = description.replace('{{' + para[0] + ';' + para[1] + '}}', replace[1:], 1)
+            if 15 <= skillid <= 19:
+                description = description.replace(f'毎にスコアが80/85/90/100%UPし、全員一致で更に80/85/90/100%UPする（最大80/85/90/100%)', '毎にスコアが10%UPし、全員一致で更に10%UPする（最大130/135/140/150%)')
+            return description
+    return ''
+
 class CardInfo(object):
     def __init__(self, config: Optional[Dict] = None):
         self.config: Dict[str, bool] = (  # 基础配置
@@ -259,16 +284,9 @@ class CardInfo(object):
             self.cardSkillDes['CN'] = trans['skill_desc'][self.skillId]
         except:
             pass
-        # 最后解析技能效果中的数值(很笨，还没找到合适的json，使用到自己搓的skillTrans.json，有新技能类型时不能更新)
-        with open(masterdatadir + 'skillTrans.json') as f:
-            skills = json.load(f)
-        for each_skill in skills:
-            if each_skill["id"] == self.skillId:
-                params = each_skill["params"]
-                for key in self.cardSkillDes.keys():
-                    for k in params.keys():
-                        self.cardSkillDes[key] = self.cardSkillDes[key].replace('{{'+k+'}}', params[k])
-                break
+
+        for key in self.cardSkillDes.keys():
+            self.cardSkillDes[key] = cardskill(self.skillId, skills, self.cardSkillDes[key])
 
         # 获取活动信息
         if self.config.get('event', True):
