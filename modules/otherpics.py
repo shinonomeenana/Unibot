@@ -64,18 +64,24 @@ class event(object):
                     pass
         return True
 
-def analysisunitid(unitid, gameCharacterUnits):
-    if unitid <= 20:
-        return unitid, "none", f'chr_ts_90_{unitid}.png'
+
+def analysisunitid(unitid, gameCharacterUnits=None):
+    if gameCharacterUnits is None:
+        masterdatadir = path.join(botpath, 'masterdata/')
+        with open(masterdatadir + 'gameCharacterUnits.json', 'r', encoding='utf-8') as f:
+            gameCharacterUnits = json.load(f)
     for units in gameCharacterUnits:
         if units['id'] == unitid:
-            if units['gameCharacterId'] == 21:
+            if unitid <= 20:
+                return unitid, units['unit'], f'chr_ts_90_{unitid}.png'
+            elif units['gameCharacterId'] == 21:
                 if unitid != 21:
                     return 21, units['unit'], f'chr_ts_90_21_{unitid - 25}.png'
                 else:
-                    return 21, 'none', f'chr_ts_90_21.png'
+                    return 21, 'piapro', f'chr_ts_90_21.png'
             else:
                 return units['gameCharacterId'], units['unit'], f'chr_ts_90_{units["gameCharacterId"]}_2.png'
+
 
 def cardthumnail(cardid, istrained=False, cards=None, limitedbadge=False):
     if cards is None:
