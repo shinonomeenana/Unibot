@@ -6,6 +6,8 @@ import time
 import traceback
 from urllib.parse import quote
 import pymysql
+
+from modules.musics import idtoname
 from modules.mysql_config import *
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import matplotlib
@@ -231,23 +233,32 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
             if data is None:
                 sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
                 mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+FC/AP'))
-
+        alltext = ''
         # 判断是否有33+初见FC/AP
         for result in userMusicResults:
             if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
                 if result["fullComboFlg"] or result["fullPerfectFlg"]:
                     if result["updatedAt"] == result["createdAt"]:
-                        print(result["musicId"],result["updatedAt"], result["createdAt"], result['playType'] )
+                        reason = idtoname(result["musicId"]) + ' ' + result['playType'] + ' 初见' \
+                                 + ('AP' if result["fullPerfectFlg"] else 'FC')
+                        alltext += reason + '，'
                         mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
-                                         (str(qqnum), str(userid), '33+初见FC/AP'))
+                                         (str(qqnum), str(userid), reason))
                         data = mycursor.fetchone()
                         if data is None:
                             sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
-                            mycursor.execute(sql_add, (str(userid), name, str(qqnum), '33+初见FC/AP'))
-                        # mydb.commit()
-                        # mycursor.close()
-                        # mydb.close()
-                        # raise cheaterFound
+                            mycursor.execute(sql_add, (str(userid), name, str(qqnum), reason))
+                        if data is not None:
+                            if data[6] == 'whitelist':
+                                mydb.commit()
+                                mycursor.close()
+                                mydb.close()
+                                return result
+        if alltext != '':
+            mydb.commit()
+            mycursor.close()
+            mydb.close()
+            raise cheaterFound(alltext)
     mydb.commit()
     mycursor.close()
     mydb.close()
