@@ -9,6 +9,10 @@
 [使用文档](https://docs.unipjsk.com/) · [交流群](https://qm.qq.com/cgi-bin/qm/qr?k=Osy7KwWvvLWYTjBFJH3MQwkAqgAIV7rT&jump_from=webapi) · [交流频道](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)
 </div>
 
+## 提示
+
+本人并非计算机相关专业，代码能力不强，很多地方写得很烂，还请见谅。
+
 ## 已实现功能
 
 具体可参考[使用文档](https://docs.unipjsk.com/)
