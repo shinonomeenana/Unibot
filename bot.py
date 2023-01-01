@@ -713,12 +713,12 @@ def sync_handle_msg(event):
                 return
             except ValueError:
                 return
+        if event.message == '5v5人数':
+            sendmsg(event, teamcount(server))
         # ----------------------- 恢复原命令 ---------------------------
         if server != 'jp':
             event.message = server + event.message
         # -------------------- 结束多服共用功能区 -----------------------
-        if event.message == '5v5人数':
-            sendmsg(event, teamcount())
         if event.message[:5] == 'event':
             eventid = event.message[event.message.find("event") + len("event"):].strip()
             try:
