@@ -7,7 +7,7 @@ import requests
 
 from modules.config import apiurl, enapiurl, twapiurl, krapiurl, proxies
 from modules.musics import idtoname
-from modules.sk import verifyid, recordname, currentevent
+from modules.sk import verifyid, recordname, currentevent, maintenanceIn
 from modules.texttoimg import texttoimg
 
 assetpath = 'data/assets/sekai/assetbundle/resources'
@@ -48,7 +48,7 @@ class userprofile(object):
         for i in range(21, 32):
             self.expertscore[i] = [0, 0, 0, 0]
 
-    def getprofile(self, userid, server, qqnum='未知'):
+    def getprofile(self, userid, server, qqnum='未知', data=None):
         if server == 'jp':
             url = apiurl
             masterdatadir = 'masterdata'
@@ -61,9 +61,12 @@ class userprofile(object):
         elif server == 'kr':
             url = krapiurl
             masterdatadir = '../krapi/masterdata'
-        
-        resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
-        data = json.loads(resp.content)
+
+        if data is None:
+            resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
+            data = json.loads(resp.content)
+        if data == {'status': 'maintenance_in'}:
+            raise maintenanceIn
         self.name = data['user']['userGamedata']['name']
         try:
             self.twitterId = data['userProfile']['twitterId']
@@ -290,6 +293,8 @@ def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未�
                             f'ranking?targetRank={targetrank}', timeout=10)
     try:
         data = json.loads(resp.content)
+        if data == {'status': 'maintenance_in'}:
+            raise maintenanceIn
         ranking = data['rankings'][0]['userRankMatchSeason']
         grade = int((ranking['rankMatchTierId'] - 1) / 4) + 1
         if not recordname(qqnum, data['rankings'][0]['userId'], data['rankings'][0]['name']):
@@ -967,20 +972,13 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
 
     resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
     data = json.loads(resp.content)
-    name = data['user']['userGamedata']['name']
-    if not recordname(qqnum, userid, name):
-        name = ''
-    userProfileHonors = data['userProfileHonors']
-    rank = data['user']['userGamedata']['rank']
-    userDecks = [0, 0, 0, 0, 0]
-    special_training = [False, False, False, False, False]
-    for i in range(0, 5):
-        userDecks[i] = data['userDecks'][0][f'member{i + 1}']
-        for userCards in data['userCards']:
-            if userCards['cardId'] != userDecks[i]:
-                continue
-            if userCards['defaultImage'] == "special_training":
-                special_training[i] = True
+
+    profile = userprofile()
+    profile.getprofile(userid, server, qqnum, data)
+
+    if data == {'status': 'maintenance_in'}:
+        raise maintenanceIn
+
     pic = Image.open('pics/b30.png')
     if private:
         id = '保密'
@@ -991,9 +989,9 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     try:
         assetbundleName = ''
         for i in cards:
-            if i['id'] == userDecks[0]:
+            if i['id'] == profile.userDecks[0]:
                 assetbundleName = i['assetbundleName']
-        if special_training[0]:
+        if profile.special_training[0]:
             cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_after_training.png')
             cutoutimg = Image.open(f'{assetpath}/startapp/character/member_cutout_trm/{assetbundleName}/after_training.png')
         else:
@@ -1013,14 +1011,14 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         font_style = ImageFont.truetype("fonts/SourceHanSansKR-Bold.otf", 35)
     else:
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
-    draw.text((215, 65), name, fill=(0, 0, 0), font=font_style)
+    draw.text((215, 65), profile.name, fill=(0, 0, 0), font=font_style)
     font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
     draw.text((218, 118), 'id:' + id, fill=(0, 0, 0), font=font_style)
     font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
-    draw.text((314, 150), str(rank), fill=(255, 255, 255), font=font_style)
+    draw.text((314, 150), str(profile.rank), fill=(255, 255, 255), font=font_style)
 
 
-    for i in userProfileHonors:
+    for i in profile.userProfileHonors:
         if i['seq'] == 1:
             try:
                 honorpic = generatehonor(i, True, server)
@@ -1030,7 +1028,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
             except:
                 pass
 
-    for i in userProfileHonors:
+    for i in profile.userProfileHonors:
         if i['seq'] == 2:
             try:
                 honorpic = generatehonor(i, False, server)
@@ -1040,7 +1038,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
             except:
                 pass
 
-    for i in userProfileHonors:
+    for i in profile.userProfileHonors:
         if i['seq'] == 3:
             try:
                 honorpic = generatehonor(i, False, server)

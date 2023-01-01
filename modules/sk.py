@@ -181,6 +181,9 @@ class Error(Exception):
 class cheaterFound(Error):
    pass
 
+class maintenanceIn(Error):
+   pass
+
 
 def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, server='jp'):
     try:
@@ -807,7 +810,7 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
     ranking = json.loads(resp.content)
     if ranking == {'status': 'maintenance_in'}:
-        return '维护中'
+        raise maintenanceIn
     try:
         name = ranking['rankings'][0]['name']
         rank = ranking['rankings'][0]['rank']
