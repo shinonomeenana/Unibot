@@ -21,6 +21,9 @@ rankline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 100, 200, 300, 400, 5
             10000, 20000, 30000, 40000, 50000, 100000, 100000000]
 predictline = [100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000, 100000, 100000000]
 
+
+
+
 def timeremain(time, second=True):
     if time < 60:
         return f'{int(time)}秒' if second else '0分'
@@ -172,7 +175,14 @@ def eventtrack():
         time_printer('台服无正在进行的活动')
 
 
-def recordname(qqnum, userid, name):
+class Error(Exception):
+   pass
+
+class cheaterFound(Error):
+   pass
+
+
+def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, server='jp'):
     try:
         mydb = pymysql.connect(host=host, port=port, user='username', password=password,
                             database='username', charset='utf8mb4')
@@ -209,6 +219,31 @@ def recordname(qqnum, userid, name):
         text = '合规' if result else '不合规'
         mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
 
+    qqnum = getIdOwner(userid, server)
+    if userMusicResults is not None:
+        # 判断是否有36+FC/AP
+        if masterscore[36][0] + masterscore[36][1] + masterscore[37][0] + masterscore[37][1] != 0:
+            mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s', (str(qqnum), str(userid)))
+            data = mycursor.fetchone()
+            if data is None:
+                sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
+                mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+AP'))
+
+        # 判断是否有33+初见FC/AP
+        for result in userMusicResults:
+            if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
+                if result["fullComboFlg"] or result["fullPerfectFlg"]:
+                    if result["updatedAt"] == result["createdAt"]:
+                        mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
+                                         (str(qqnum), str(userid), '33+初见AP'))
+                        data = mycursor.fetchone()
+                        if data is None:
+                            sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
+                            mycursor.execute(sql_add, (str(userid), name, str(qqnum), '33+初见AP'))
+                        mydb.commit()
+                        mycursor.close()
+                        mydb.close()
+                        raise cheaterFound
     mydb.commit()
     mycursor.close()
     mydb.close()
@@ -943,6 +978,26 @@ def getqqbind(qqnum, server):
         return data[1:]
     except:
         return None
+
+def getIdOwner(userid, server):
+    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+                           database='pjsk', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    if server == 'jp':
+        mycursor.execute('SELECT * from bind where userid=%s', (userid,))
+    elif server == 'tw':
+        mycursor.execute('SELECT * from twbind where userid=%s', (userid,))
+    elif server == 'en':
+        mycursor.execute('SELECT * from enbind where userid=%s', (userid,))
+    elif server == 'kr':
+        mycursor.execute('SELECT * from krbind where userid=%s', (userid,))
+    mycursor.close()
+    mydb.close()
+    data = mycursor.fetchone()
+    try:
+        return data[1]
+    except:
+        return ''
 
 
 def bindid(qqnum, userid, server):

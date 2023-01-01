@@ -35,7 +35,7 @@ from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskin
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
 from modules.sendmail import sendemail
 from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, currentevent, chafang, \
-    getstoptime, ss, drawscoreline
+    getstoptime, ss, drawscoreline, cheaterFound
 from modules.texttoimg import texttoimg, ycmimg
 from modules.twitter import newesttwi
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -1526,6 +1526,8 @@ def sync_handle_msg(event):
         sendmsg(event, '查不到数据捏，好像是bot网不好')
     except aiocqhttp.exceptions.NetworkError:
         pass
+    except cheaterFound:
+        sendmsg(event, '由于监测到打歌数据有高度开挂嫌疑，该账号id已被bot记录。如果确认该账号开挂，该账号与qq将会被bot封禁')
     except Exception as a:
         traceback.print_exc()
         if repr(a) == "KeyError('status')":

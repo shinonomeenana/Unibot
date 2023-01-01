@@ -65,8 +65,6 @@ class userprofile(object):
         resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
         data = json.loads(resp.content)
         self.name = data['user']['userGamedata']['name']
-        if not recordname(qqnum, userid, self.name):
-            self.name = ''
         try:
             self.twitterId = data['userProfile']['twitterId']
         except:
@@ -88,13 +86,14 @@ class userprofile(object):
         self.characterRank = data['userCharacters']
 
         self.userProfileHonors = data['userProfileHonors']
-        # print(self.userProfileHonors)
+
         with open(f'{masterdatadir}/musics.json', 'r', encoding='utf-8') as f:
             allmusic = json.load(f)
         with open(f'{masterdatadir}/musicDifficulties.json', 'r', encoding='utf-8') as f:
             musicDifficulties = json.load(f)
         result = {}
         now = int(time.time() * 1000)
+        self.masterscore['33+musicId'] = []
         for music in allmusic:
             result[music['id']] = [0, 0, 0, 0, 0]
             if music['publishedAt'] < now:
@@ -106,6 +105,8 @@ class userprofile(object):
                         found[0] = 1
                     elif music['id'] == diff['musicId'] and diff['musicDifficulty'] == 'master':
                         playLevel = diff['playLevel']
+                        if playLevel >= 33:
+                            self.masterscore['33+musicId'].append(music['id'])
                         self.masterscore[playLevel][3] = self.masterscore[playLevel][3] + 1
                         found[1] = 1
                     if found == [1, 1]:
@@ -185,6 +186,8 @@ class userprofile(object):
                     continue
                 if userCards['defaultImage'] == "special_training":
                     self.special_training[i] = True
+        if not recordname(qqnum, userid, self.name, data['userMusicResults'], self.masterscore, server):
+            self.name = ''
 
 
 def currentrankmatch():
