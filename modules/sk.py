@@ -993,11 +993,10 @@ def getIdOwner(userid, server):
         mycursor.execute('SELECT * from krbind where userid=%s', (userid,))
     mycursor.close()
     mydb.close()
-    data = mycursor.fetchone()
-    try:
-        return data[1]
-    except:
-        return ''
+    data = mycursor.fetchall()
+    if data is not None:
+        return ','.join([raw[1] for raw in data])
+    return ''
 
 
 def bindid(qqnum, userid, server):
