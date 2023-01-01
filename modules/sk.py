@@ -230,23 +230,24 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
             data = mycursor.fetchone()
             if data is None:
                 sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
-                mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+AP'))
+                mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+FC/AP'))
 
         # 判断是否有33+初见FC/AP
         for result in userMusicResults:
             if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
                 if result["fullComboFlg"] or result["fullPerfectFlg"]:
                     if result["updatedAt"] == result["createdAt"]:
+                        print(result["musicId"],result["updatedAt"], result["createdAt"], result['playType'] )
                         mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
-                                         (str(qqnum), str(userid), '33+初见AP'))
+                                         (str(qqnum), str(userid), '33+初见FC/AP'))
                         data = mycursor.fetchone()
                         if data is None:
                             sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
-                            mycursor.execute(sql_add, (str(userid), name, str(qqnum), '33+初见AP'))
-                        mydb.commit()
-                        mycursor.close()
-                        mydb.close()
-                        raise cheaterFound
+                            mycursor.execute(sql_add, (str(userid), name, str(qqnum), '33+初见FC/AP'))
+                        # mydb.commit()
+                        # mycursor.close()
+                        # mydb.close()
+                        # raise cheaterFound
     mydb.commit()
     mycursor.close()
     mydb.close()
@@ -938,13 +939,25 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
     else:
         return f"[CQ:image,file={piccacheurl}{targetid}sk.png,cache=0]"
 
-def teamcount():
-    event = currentevent('jp')
+def teamcount(server='jp'):
+    if server == 'jp':
+        url = apiurl
+        masterdatadir = 'masterdata'
+    elif server == 'en':
+        url = enapiurl
+        masterdatadir = '../enapi/masterdata'
+    elif server == 'tw':
+        url = twapiurl
+        masterdatadir = '../twapi/masterdata'
+    elif server == 'kr':
+        url = krapiurl
+        masterdatadir = '../krapi/masterdata'
+    event = currentevent(server)
     eventid = event['id']
-    resp = requests.get(f'{apiurl}/api/cheerful-carnival-team-count/{eventid}', timeout=10)
+    resp = requests.get(f'{url}/cheerful-carnival-team-count/{eventid}', timeout=10)
     data = json.loads(resp.content)
 
-    with open('masterdata/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
+    with open(f'{masterdatadir}/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
         Teams = json.load(f)
     with open('yamls/translate.yaml', encoding='utf-8') as f:
         trans = yaml.load(f, Loader=yaml.FullLoader)
