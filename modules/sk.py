@@ -225,7 +225,7 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
         mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
 
     qqnum = getIdOwner(userid, server)
-    if userMusicResults is not None:
+    if userMusicResults is not None and server == 'jp':
         # 判断是否有36+FC/AP
         if masterscore[36][0] + masterscore[36][1] + masterscore[37][0] + masterscore[37][1] != 0:
             mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s', (str(qqnum), str(userid)))
