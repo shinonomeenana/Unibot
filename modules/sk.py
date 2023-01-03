@@ -7,6 +7,7 @@ import traceback
 from urllib.parse import quote
 import pymysql
 
+from modules.config import env
 from modules.musics import idtoname
 from modules.mysql_config import *
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
@@ -188,6 +189,8 @@ class maintenanceIn(Error):
 
 
 def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, server='jp'):
+    if env != 'prod':
+        return True
     try:
         mydb = pymysql.connect(host=host, port=port, user='username', password=password,
                             database='username', charset='utf8mb4')
@@ -258,7 +261,7 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
             mydb.commit()
             mycursor.close()
             mydb.close()
-            raise cheaterFound(alltext)
+            raise cheaterFound(alltext + '由于监测到打歌数据有高度开挂嫌疑，该账号id已被bot记录。如果确认该账号开挂，该账号与绑定qq将会被bot封禁')
     mydb.commit()
     mycursor.close()
     mydb.close()

@@ -1,7 +1,18 @@
-apiurl = 'https://sekai.jzlsx.cn/api'
+env = 'dev'
+
 # 游戏api请求地址
+apiurl = 'https://api.unipjsk.com/api'
+enapiurl = 'https://xxxxx/api'
+twapiurl = 'https://xxxxx/api'
+krapiurl = 'https://xxxxx/api'
+
 predicturl = 'https://xxxxxxxx/predict.json'
 # 预测线地址，有需要可找33申请：https://3-3.dev/pjsk-predict
+
+vitsapiurl = 'http://xxxxxxx/'  # vits语音合成api
+vitsvoiceurl = 'http://xxxxxx/'  # vits语音合成文件下载url
+cyo5000url = 'http://xxxxx/'  # 5000兆api
+
 proxy = '127.0.0.1:7890'
 proxies = {
     'http': 'http://' + proxy,
@@ -24,5 +35,6 @@ googleapiskey = ''  # 谷歌开发者key（推特推送用 详见https://github.
 appID = ''  # 机翻推特命令用
 # 百度翻译密钥
 secretKey = ''  # 机翻推特命令用
-block = []  # bot拉黑
 msggroup = 123  # 发送bot管理消息的群
+verifyurl = 'http://xxxxx/'  # 验证token用
+distributedurl = 'https://xxxxx/'  # 分布式apiurl
