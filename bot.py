@@ -8,6 +8,7 @@ import aiocqhttp
 import aiofiles
 import aiohttp
 import requests
+from requests import ReadTimeout
 import re
 import time
 import traceback
@@ -35,7 +36,7 @@ from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskin
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
 from modules.sendmail import sendemail
 from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, currentevent, chafang, \
-    getstoptime, ss, drawscoreline, maintenanceIn
+    getstoptime, ss, drawscoreline, maintenanceIn, cheaterFound
 from modules.texttoimg import texttoimg, ycmimg
 from modules.twitter import newesttwi
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -385,11 +386,8 @@ def sync_handle_msg(event):
             resp = pjskalias(event.message)
             sendmsg(event, resp)
             return
-        if event.message == '词云' and event.self_id in mainbot:
-            sendmsg(event, '发送 /今日词云、/昨日词云、/本周词云、/本月词云、/年度词云 或 /历史词云 即可获取词云。\n'
-                           '如果想获取自己的词云，可在上述指令前添加 我的，如 /我的今日词云')
-            return
         if event.message[:8] == "sekai真抽卡":
+            return
             if event.self_id not in mainbot:
                 return
             if event.group_id in blacklist['ettm']:
@@ -1522,12 +1520,23 @@ def sync_handle_msg(event):
         if event.message == f'[CQ:at,qq={event.self_id}] ':
             sendmsg(event, 'bot帮助文档：https://docs.unipjsk.com/')
             return
-    except (requests.exceptions.ConnectionError, JSONDecodeError):
+    except (requests.exceptions.ConnectionError, JSONDecodeError, ReadTimeout):
         sendmsg(event, '查不到数据捏，好像是bot网不好')
     except aiocqhttp.exceptions.NetworkError:
         pass
     except maintenanceIn:
         sendmsg(event, '查不到捏，可能啤酒烧烤在维护')
+    except cheaterFound as a:
+        sendmsg(event, repr(a))
+        if event.self_id == guildbot:
+            resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
+            qun = resp.json()
+            sendemail(botname.get(event.self_id, "测试bot") + '检测到挂哥',
+                      f"{qun['name']}({event.guild_id}) {event.user_id} 发送{event.message}\n" + repr(a))
+        else:
+            qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
+            sendemail(botname.get(event.self_id, "测试bot") + '检测到挂哥',
+                      f"{qun['group_name']}({event.group_id}) {event.user_id} 发送{event.message}\n" + repr(a))
     except Exception as a:
         traceback.print_exc()
         if repr(a) == "KeyError('status')":
