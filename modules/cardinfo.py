@@ -434,7 +434,7 @@ class CardInfo(object):
                 [t2i('招募语'), gachahrase_img], type='col', length=right_width
             ))
         # 发布时间
-        tmp_union = union([t2i('发布时间'), t2i(f'{self.releaseAt}(JP)')], type='col', length=right_width)
+        tmp_union = union([t2i('发布时间'), t2i(f'{self.releaseAt}(UTC+8)')], type='col', length=right_width)
         tmp_imgs.append(tmp_union)
         # 卡面缩略图
         if self.cardRarityType in ['rarity_3', 'rarity_4']:
