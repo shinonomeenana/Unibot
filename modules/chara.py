@@ -75,6 +75,9 @@ def findcard(charaid, cardRarityType=None):
         cardCostume3ds = json.load(f)
     with open(f'masterdata/costume3ds.json', 'r', encoding='utf-8') as f:
         costume3ds = json.load(f)
+    with open(f'masterdata/skills.json', 'r', encoding='utf-8') as f:
+        skills = json.load(f)
+
     allcards.sort(key=lambda x: x["releaseAt"], reverse=True)
     pic = Image.new('RGB', (1500, 5000), (235, 235, 235))
     count = 0
@@ -85,7 +88,7 @@ def findcard(charaid, cardRarityType=None):
                     continue
             pos = (int(70 + count % 3 * 470), int(count / 3) * 310 + 60)
             count += 1
-            single = findcardsingle(card, allcards, cardCostume3ds, costume3ds)
+            single = findcardsingle(card, allcards, cardCostume3ds, costume3ds, skills)
             pic.paste(single, pos)
     pic = pic.crop((0, 0, 1500, (int((count - 1) / 3) + 1) * 310 + 60))
 
@@ -93,7 +96,7 @@ def findcard(charaid, cardRarityType=None):
     return f'{charaid}{cardRarityType}.jpg'
 
 
-def findcardsingle(card, allcards, cardCostume3ds, costume3ds):
+def findcardsingle(card, allcards, cardCostume3ds, costume3ds, skills):
     pic = Image.new("RGB", (420, 260), (255, 255, 255))
     badge = False
     cardtypenum = cardtype(card['id'], cardCostume3ds, costume3ds)
@@ -114,15 +117,29 @@ def findcardsingle(card, allcards, cardCostume3ds, costume3ds):
 
     draw = ImageDraw.Draw(pic)
     font = ImageFont.truetype(r'fonts\SourceHanSansCN-Medium.otf', 28)
-    text_width = font.getsize(f'{card["id"]}. {card["prefix"]}')
+    text_width = font.getsize(card["prefix"])
+
+    if text_width[0] > 420:
+        font = ImageFont.truetype(r'fonts\SourceHanSansCN-Medium.otf', int(28 / (text_width[0] / 420)))
+        text_width = font.getsize(card["prefix"])
+
     text_coordinate = ((210 - text_width[0] / 2), int(195 - text_width[1] / 2))
-    draw.text(text_coordinate, f'{card["id"]}. {card["prefix"]}', '#000000', font)
+    draw.text(text_coordinate, card["prefix"], '#000000', font)
 
     name = getcharaname(card['characterId'])
     font = ImageFont.truetype(r'fonts\SourceHanSansCN-Medium.otf', 18)
-    text_width = font.getsize(name)
+    text_width = font.getsize(f'id:{card["id"]}  {name}')
     text_coordinate = ((210 - text_width[0] / 2), int(230 - text_width[1] / 2))
-    draw.text(text_coordinate, name, '#505050', font)
+    draw.text(text_coordinate, f'id:{card["id"]}  {name}', '#505050', font)
+
+    for skill in skills:
+        if skill['id'] == card['skillId']:
+            descriptionSpriteName = skill['descriptionSpriteName']
+
+    skillTypePic = Image.open(f'chara/skill_{descriptionSpriteName}.png')
+    skillTypePic = skillTypePic.resize((40, 40))
+    r, g, b, mask = skillTypePic.split()
+    pic.paste(skillTypePic, (370, 210), mask)
 
     return pic
 
