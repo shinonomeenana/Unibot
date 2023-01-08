@@ -108,7 +108,7 @@ class userprofile(object):
                         found[0] = 1
                     elif music['id'] == diff['musicId'] and diff['musicDifficulty'] == 'master':
                         playLevel = diff['playLevel']
-                        if playLevel >= 33:
+                        if playLevel >= 34:
                             self.masterscore['33+musicId'].append(music['id'])
                         self.masterscore[playLevel][3] = self.masterscore[playLevel][3] + 1
                         found[1] = 1

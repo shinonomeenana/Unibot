@@ -237,7 +237,7 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
                 sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
                 mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+FC/AP'))
         alltext = ''
-        # 判断是否有33+初见FC/AP
+        # 判断是否有34+初见FC/AP
         for result in userMusicResults:
             if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
                 if result["fullComboFlg"] or result["fullPerfectFlg"]:
