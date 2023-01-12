@@ -24,6 +24,8 @@ from modules.cyo5000 import cyo5000
 from modules.kk import kkwhitelist, kankan, uploadkk
 from modules.lighthouse import add_RDP_port, delete_RDP_port
 from modules.novelai import novelAI_img2img, tencent_novelAI, AIcutcard
+
+from modules.findevent import findevent
 from modules.opencv import matchjacket
 from modules.otherpics import geteventpic
 from modules.gacha import getcharaname, getallcurrentgacha, getcurrentgacha, fakegacha
@@ -716,8 +718,32 @@ def sync_handle_msg(event):
         if server != 'jp':
             event.message = server + event.message
         # -------------------- 结束多服共用功能区 -----------------------
-        if msg := re.match('^(?:event|查询?活动)(.*)', event.message):
-            eventid = msg.group(1).strip()
+        if re.match('^活动(?:图鉴|列表|总览)|^findevent *all', event.message):
+            sendmsg(event, fr"[CQ:image,file=file:///{findevent()},cache=0]")
+            return
+        if msg := re.match('^(?:findevent|查询?活动)(.*)', event.message):
+            arg = msg.group(1).strip()
+            if not arg:
+                tipdir = r'pics/findevent_tips.jpg'
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{tipdir},cache=0]")
+            elif arg.isdigit():
+                try:
+                    picdir = geteventpic(int(arg))
+                    sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{picdir},cache=0]")
+                    return
+                except ValueError:
+                    traceback.print_exc()
+                    sendmsg(event, f"未找到活动或生成失败")
+                    return
+                except FileNotFoundError:
+                    traceback.print_exc()
+                    sendmsg(event, f"未找到活动资源图片，请等待更新")
+                    return
+            else:
+                sendmsg(event, fr"[CQ:image,file=file:///{findevent(arg)},cache=0]")
+            return
+        if event.message[:5] == 'event':
+            eventid = event.message[event.message.find("event") + len("event"):].strip()
             try:
                 if eventid == '':
                     picdir = geteventpic(None)
