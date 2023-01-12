@@ -7,6 +7,67 @@ sidebar: false
 该页面可能更新比较缓慢，最新更新信息可查看[Github Commit记录](https://github.com/watagashi-uni/Unibot/commits/main)
 :::
 
+### 2023-01-12
+增加 [Yozora](https://github.com/cYanosora) 写的查活动、获取活动图鉴功能：
+[一些改动和一个新功能](https://github.com/watagashi-uni/Unibot/pull/3)
+
+适配 [xfl03/SekaiMusicChart](https://github.com/xfl03/SekaiMusicChart) 技能预览的更新
+
+### 2023-01-08
+优化`findcard`命令内容
+
+### 2022-12-30
+增加 [Yozora](https://github.com/cYanosora) 写的查卡功能：
+[新增cardinfo指令，显示卡面详情信息](https://github.com/watagashi-uni/Unibot/pull/1)
+
+增加来自 [xfl03/SekaiMusicChart](https://github.com/xfl03/SekaiMusicChart) 的技能预览
+
+### 2022-12-23
+适配37难度
+
+### 2022-12-10
+适配韩服
+
+### 2022-12-09
+适配 2.4.0 将`noteCount`改为`totalNoteCount`
+
+### 2022-12-04
+ai猜曲
+
+### 2022-11-29
+解决masterdata更新solo后 pjskinfo未更新的bug
+
+### 2022-10-15
+猜谱面使用新谱面预览
+
+### 2022-10-01
+适配排位牌子
+
+### 2022-09-29
+谱面预览 profile转jpg降低发送失败概率
+适配国际服新牌子数据结构 适配皆传真皆10-20
+
+### 2022-09-28
+谱面预览匹配率低戳一戳提醒
+
+### 2022-09-19
+难度排行降低误触率
+
+### 2022-09-12
+更新b30 fc权重 修复牌子bug
+
+### 2022-09-11
+新增`findcard`查卡指令
+
+### 2022-09-06
+谱面预览支持自定义配色
+
+### 2022-09-05
+谱面预览使用 https://gitlab.com/pjsekai/musics 的代码本地生成
+
+### 2022-09-04
+`sk`改为图片输出
+
 ### 2022-09-01
 完善`查房`，`查水表`功能
 
