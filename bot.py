@@ -727,7 +727,7 @@ def sync_handle_msg(event):
             if not arg:
                 tipdir = r'pics/findevent_tips.jpg'
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{tipdir},cache=0]")
-            elif arg.isdigit():
+            elif arg.isdigit() and arg != '25':
                 try:
                     picdir = geteventpic(int(arg))
                     sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{picdir},cache=0]")
