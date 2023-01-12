@@ -296,7 +296,7 @@ def charabonuspic(unitid, attr, cards, gameCharacterUnits, endtime):
     count = 0
     pos = 172
     for card in cards:
-        if card['characterId'] == charaid and card['attr'] == attr and card['supportUnit'] == unit and card['releaseAt'] < endtime:
+        if card['characterId'] == charaid and card['attr'] == attr and ((card['supportUnit'] == unit) if card['supportUnit'] != 'none' else True) and card['releaseAt'] < endtime:
             count += 1
             cardpic = cardthumnail(card['id'], True, cards)
             cardpic = cardpic.resize((125, 125))
