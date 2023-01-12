@@ -318,11 +318,8 @@ def sync_handle_msg(event):
             else:
                 sendmsg(event, 'bot帮助文档：https://docs.unipjsk.com/')
             return
-        if event.message[:8] == 'pjskinfo' or event.message[:4] == 'song':
-            if event.message[:8] == 'pjskinfo':
-                resp = aliastomusicid(event.message[event.message.find("pjskinfo") + len("pjskinfo"):].strip())
-            else:
-                resp = aliastomusicid(event.message[event.message.find("song") + len("song"):].strip())
+        if msg := re.match('(?:pjskinfo|song|查歌曲?)(.*)', event.message):
+            resp = aliastomusicid(msg.group(1).strip())
             if resp['musicid'] == 0:
                 sendmsg(event, '没有找到你要的歌曲哦')
                 return
@@ -429,9 +426,12 @@ def sync_handle_msg(event):
             texttoimg(skyc(), 500, 'skyc')
             sendmsg(event, 'sk预测' + fr"[CQ:image,file=file:///{botdir}\piccache\skyc.png,cache=0]")
             return
-        elif event.message[:8] == 'findcard':
-            event.message = event.message[event.message.find("findcard") + len("findcard"):].strip()
-            para = event.message.split(' ')
+        elif msg := re.match('^(?:查询?卡面?|findcard)(.*)', event.message):
+            msg = msg.group(1).strip()
+            if msg.isdigit():
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/piccache/cardinfo/{getcardinfo(int(msg))},cache=0]")
+                return
+            para = msg.split(' ')
             resp = aliastocharaid(para[0], event.group_id)
             if resp[0] != 0:
                 if len(para) == 1:
@@ -588,7 +588,7 @@ def sync_handle_msg(event):
             pjskjindu(bind[1], bind[2], 'expert', server, event.user_id)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind[1]}jindu.png,cache=0]")
             return
-        if event.message == "pjsk b30":
+        if re.match('^pjsk *b30$', event.message):
             bind = getqqbind(event.user_id, server)
             if bind is None:
                 sendmsg(event, '查不到捏，可能是没绑定')
@@ -596,19 +596,18 @@ def sync_handle_msg(event):
             pjskb30(bind[1], bind[2], False, server, event.user_id)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind[1]}b30.png,cache=0]")
             return
-        if event.message.startswith("pjsk r30"):
+        if msg := re.match('^pjsk *r30(.*)', event.message):
             if event.user_id not in whitelist and event.group_id not in whitelist:
                 return
-            if event.message == "pjsk r30":
+            userid = msg.group(1).strip()
+            if not userid:
                 bind = getqqbind(event.user_id, server)
                 if bind is None:
                     sendmsg(event, '查不到捏，可能是没绑定')
                     return
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{r30(bind[1], bind[2], server, event.user_id)}.png,cache=0]")
             else:
-                userid = event.message[event.message.find("pjsk r30") + len("pjsk r30"):].strip()
-                sendmsg(event,
-                        fr"[CQ:image,file=file:///{botdir}\piccache\{r30(userid, False, server, event.user_id)}.png,cache=0]")
+                bind = (userid, False)
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{r30(bind[1], bind[2], server, event.user_id)}.png,cache=0]")
             return
         if event.message == "pjskprofile" or event.message == "个人信息":
             bind = getqqbind(event.user_id, server)
@@ -717,8 +716,8 @@ def sync_handle_msg(event):
         if server != 'jp':
             event.message = server + event.message
         # -------------------- 结束多服共用功能区 -----------------------
-        if event.message[:5] == 'event':
-            eventid = event.message[event.message.find("event") + len("event"):].strip()
+        if msg := re.match('^(?:event|查询?活动)(.*)', event.message):
+            eventid = msg.group(1).strip()
             try:
                 if eventid == '':
                     picdir = geteventpic(None)
