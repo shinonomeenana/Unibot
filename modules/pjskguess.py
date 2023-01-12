@@ -66,7 +66,7 @@ def guessRank(guessType, typeText):
 
 
 def recordGuessRank(qqnum, name, guessType):
-    if int(guessType) not in [1, 2, 3, 4, 5, 6, 7]:
+    if int(guessType) not in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
         return
     mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
                            database='pjskguess', charset='utf8mb4')

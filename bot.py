@@ -385,41 +385,40 @@ def sync_handle_msg(event):
             resp = pjskalias(event.message)
             sendmsg(event, resp)
             return
-        if event.message[:8] == "sekai真抽卡":
-            return
-            if event.self_id not in mainbot:
-                return
-            if event.group_id in blacklist['ettm']:
-                return
-            if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
-                nowtime = f"{str(datetime.now().hour).zfill(2)}{str(datetime.now().minute).zfill(2)}"
-                lasttime = gachalimit['lasttime']
-                count = gachalimit['count']
-                if nowtime == lasttime and count >= 2:
-                    sendmsg(event, f'技能冷却中，剩余cd:{60 - datetime.now().second}秒（一分钟内所有群只能抽两次）')
-                    return
-                if nowtime != lasttime:
-                    count = 0
-                gachalimit['lasttime'] = nowtime
-                gachalimit['count'] = count + 1
-            sendmsg(event, '了解')
-            gachaid = event.message[event.message.find("sekai真抽卡") + len("sekai真抽卡"):].strip()
-            if gachaid == '':
-                result = gacha()
-            else:
-                currentgacha = getallcurrentgacha()
-                targetgacha = None
-                for gachas in currentgacha:
-                    if int(gachas['id']) == int(gachaid):
-                        targetgacha = gachas
-                        break
-                if targetgacha is None:
-                    sendmsg(event, '你指定的id现在无法完成无偿十连')
-                    return
-                else:
-                    result = gacha(targetgacha)
-            sendmsg(event, result)
-            return
+        # if event.message[:8] == "sekai真抽卡":
+        #     if event.self_id not in mainbot:
+        #         return
+        #     if event.group_id in blacklist['ettm']:
+        #         return
+        #     if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
+        #         nowtime = f"{str(datetime.now().hour).zfill(2)}{str(datetime.now().minute).zfill(2)}"
+        #         lasttime = gachalimit['lasttime']
+        #         count = gachalimit['count']
+        #         if nowtime == lasttime and count >= 2:
+        #             sendmsg(event, f'技能冷却中，剩余cd:{60 - datetime.now().second}秒（一分钟内所有群只能抽两次）')
+        #             return
+        #         if nowtime != lasttime:
+        #             count = 0
+        #         gachalimit['lasttime'] = nowtime
+        #         gachalimit['count'] = count + 1
+        #     sendmsg(event, '了解')
+        #     gachaid = event.message[event.message.find("sekai真抽卡") + len("sekai真抽卡"):].strip()
+        #     if gachaid == '':
+        #         result = gacha()
+        #     else:
+        #         currentgacha = getallcurrentgacha()
+        #         targetgacha = None
+        #         for gachas in currentgacha:
+        #             if int(gachas['id']) == int(gachaid):
+        #                 targetgacha = gachas
+        #                 break
+        #         if targetgacha is None:
+        #             sendmsg(event, '你指定的id现在无法完成无偿十连')
+        #             return
+        #         else:
+        #             result = gacha(targetgacha)
+        #     sendmsg(event, result)
+        #     return
         if event.message == "时速":
             texttoimg(ss(), 300, 'ss')
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\ss.png,cache=0]")
@@ -429,6 +428,9 @@ def sync_handle_msg(event):
             sendmsg(event, 'sk预测' + fr"[CQ:image,file=file:///{botdir}\piccache\skyc.png,cache=0]")
             return
         elif msg := re.match('^(?:查询?卡面?|findcard)(.*)', event.message):
+            if event.message.startswith('查卡') and event.group_id in [583819619, 809799430]:
+                return  # 在这两个群与其他bot命令冲突
+
             msg = msg.group(1).strip()
             if msg.isdigit():
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/piccache/cardinfo/{getcardinfo(int(msg))},cache=0]")
@@ -477,7 +479,7 @@ def sync_handle_msg(event):
                 if bind is None:
                     sendmsg(event, '你没有绑定id！')
                     return
-                result = sk(bind[1], None, bind[2], server, False, event.user_id, True)
+                result = sk(targetid=bind[1], secret=bind[2], server=server, qqnum=event.user_id)
                 if 'piccache' in result:
                     sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{result},cache=0]")
                 else:
@@ -494,9 +496,9 @@ def sync_handle_msg(event):
                         userid = re.sub(r'\D', "", userid)
                     try:
                         if int(userid) > 10000000:
-                            result = sk(userid, None, False, server, False, event.user_id, True)
+                            result = sk(targetid=userid, secret=False, server=server, qqnum=event.user_id)
                         else:
-                            result = sk(None, userid, True, server, False, event.user_id, True)
+                            result = sk(targetrank=userid, secret=True, server=server, qqnum=event.user_id)
                         if 'piccache' in result:
                             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{result},cache=0]")
                         else:
@@ -512,9 +514,9 @@ def sync_handle_msg(event):
                             sendmsg(event, '你这id有问题啊')
                             return
                         if int(userid) > 10000000:
-                            result += sk(userid, None, False, server, True, event.user_id)
+                            result += sk(targetid=userid, secret=False, server=server, simple=True, qqnum=event.user_id)
                         else:
-                            result += sk(None, userid, True, server, True, event.user_id)
+                            result += sk(targetrank=userid, secret=True, server=server, simple=True, qqnum=event.user_id)
                         result += '\n\n'
                     sendmsg(event, result[:-2])
                     return
@@ -546,7 +548,7 @@ def sync_handle_msg(event):
                 if bind is None:
                     sendmsg(event, '查不到捏，可能是没绑定')
                     return
-                result = daibu(bind[1], bind[2], server, event.user_id)
+                result = daibu(targetid=bind[1], secret=bind[2], server=server, qqnum=event.user_id)
                 sendmsg(event, result)
             else:
                 userid = event.message.replace("逮捕", "").strip()
@@ -562,14 +564,15 @@ def sync_handle_msg(event):
                         sendmsg(event, '查不到捏，可能是不给看')
                         return
                     else:
-                        result = daibu(bind[1], bind[2], server, event.user_id)
+                        result = daibu(targetid=bind[1], secret=bind[2], server=server, qqnum=event.user_id)
                         sendmsg(event, result)
                         return
                 try:
                     if int(userid) > 10000000:
-                        result = daibu(userid, False, server, event.user_id)
+                        result = daibu(targetid=userid, secret=False, server=server, qqnum=event.user_id)
                     else:
-                        result = daibu(userid, False, server, event.user_id)
+                        # 本来想写逮捕排位排名的 后来忘了 之后有时间看看
+                        result = daibu(targetid=userid, secret=False, server=server, qqnum=event.user_id)
                     sendmsg(event, result)
                 except ValueError:
                     return
@@ -595,12 +598,10 @@ def sync_handle_msg(event):
             if bind is None:
                 sendmsg(event, '查不到捏，可能是没绑定')
                 return
-            pjskb30(bind[1], bind[2], False, server, event.user_id)
+            pjskb30(userid=bind[1], private=bind[2], server=server, qqnum=event.user_id)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind[1]}b30.png,cache=0]")
             return
         if msg := re.match('^pjsk *r30(.*)', event.message):
-            if event.user_id not in whitelist and event.group_id not in whitelist:
-                return
             userid = msg.group(1).strip()
             if not userid:
                 bind = getqqbind(event.user_id, server)
@@ -637,9 +638,9 @@ def sync_handle_msg(event):
                 userid = event.message.replace("查房", "").strip()
             try:
                 if int(userid) > 10000000:
-                    result = chafang(userid, None, private, server=server)
+                    result = chafang(targetid=userid, private=private, server=server)
                 else:
-                    result = chafang(None, userid, server=server)
+                    result = chafang(targetrank=userid, server=server)
                 sendmsg(event, result)
                 return
             except ValueError:
@@ -1229,7 +1230,7 @@ def sync_handle_msg(event):
             return
 
         if event.message == 'ai猜曲' or event.message == 'AI猜曲':
-            if event.user_id not in whitelist and event.group_id not in whitelist:
+            if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
                 return
             try:
                 isgoing = charaguess[event.group_id]['isgoing']
@@ -1259,7 +1260,7 @@ def sync_handle_msg(event):
             return
 
         if event.message == 'ai阴间猜曲' or event.message == 'AI阴间猜曲':
-            if event.user_id not in whitelist and event.group_id not in whitelist:
+            if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
                 return
             try:
                 isgoing = charaguess[event.group_id]['isgoing']
@@ -1276,11 +1277,11 @@ def sync_handle_msg(event):
                     return
                 else:
                     musicid = getrandomjacket()
-                    pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 7,
+                    pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 9,
                                                  'starttime': int(time.time()), 'selfid': event.self_id}
             except KeyError:
                 musicid = getrandomjacket()
-                pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 7,
+                pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 9,
                                              'starttime': int(time.time()), 'selfid': event.self_id}
             sendmsg(event, '生成中请稍后')
             tencent_novelAI(r'data\assets\sekai\assetbundle\resources\startapp\thumbnail\music_jacket\jacket_s_%03d.png' % musicid, f'piccache/{event.group_id}.png', isbw=True)
@@ -1308,12 +1309,13 @@ def sync_handle_msg(event):
                     cardinfo = getrandomcard()
                     charaguess[event.group_id] = {'isgoing': True, 'charaid': cardinfo[0],
                                                   'assetbundleName': cardinfo[1], 'prefix': cardinfo[2],
-                                                  'starttime': int(time.time()), 'selfid': event.self_id}
+                                                  'starttime': int(time.time()), 'selfid': event.self_id, 'type': 1}
             except KeyError:
                 cardinfo = getrandomcard()
                 charaguess[event.group_id] = {'isgoing': True, 'charaid': cardinfo[0],
                                               'assetbundleName': cardinfo[1],
-                                              'prefix': cardinfo[2], 'starttime': int(time.time()), 'selfid': event.self_id}
+                                              'prefix': cardinfo[2], 'starttime': int(time.time()),
+                                               'selfid': event.self_id, 'type': 1}
 
             charaguess[event.group_id]['istrained'] = cutcard(cardinfo[1], cardinfo[3], event.group_id)
             sendmsg(event, 'PJSK猜卡面\n你有30秒的时间回答\n艾特我+你的答案（只猜角色）以参加猜曲（不要使用回复）\n发送「结束猜卡面」可退出猜卡面模式'
@@ -1340,12 +1342,13 @@ def sync_handle_msg(event):
                     cardinfo = getrandomcard()
                     charaguess[event.group_id] = {'isgoing': True, 'charaid': cardinfo[0],
                                                   'assetbundleName': cardinfo[1], 'prefix': cardinfo[2],
-                                                  'starttime': int(time.time()), 'selfid': event.self_id}
+                                                  'starttime': int(time.time()), 'selfid': event.self_id, 'type': 2}
             except KeyError:
                 cardinfo = getrandomcard()
                 charaguess[event.group_id] = {'isgoing': True, 'charaid': cardinfo[0],
                                               'assetbundleName': cardinfo[1],
-                                              'prefix': cardinfo[2], 'starttime': int(time.time()), 'selfid': event.self_id}
+                                              'prefix': cardinfo[2], 'starttime': int(time.time()),
+                                               'selfid': event.self_id, 'type': 2}
             sendmsg(event, '生成中请稍后')
             charaguess[event.group_id]['istrained'] = AIcutcard(cardinfo[1], cardinfo[3], event.group_id)
             charaguess[event.group_id]['starttime'] = int(time.time())
@@ -1516,7 +1519,10 @@ def sync_handle_msg(event):
                                     username = event.sender['nickname']
                                 else:
                                     username = event.sender['card']
-                                recordGuessRank(event.user_id, username, 4)
+                                if charaguess[event.group_id]['type'] == 1:
+                                    recordGuessRank(event.user_id, username, 4)
+                                else:
+                                    recordGuessRank(event.user_id, username, 8)
                             if charaguess[event.group_id]['istrained']:
                                 picdir = 'data/assets/sekai/assetbundle/resources/startapp/' \
                                          f"character/member/{charaguess[event.group_id]['assetbundleName']}/card_after_training.jpg"
