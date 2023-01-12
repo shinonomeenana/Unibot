@@ -242,7 +242,7 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
             if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
                 if result["fullComboFlg"] or result["fullPerfectFlg"]:
                     if result["updatedAt"] == result["createdAt"]:
-                        reason = idtoname(result["musicId"]) + ' ' + result['playType'] + ' 初见' \
+                        reason = idtoname(result["musicId"]) + ' MASTER ' + result['playType'] + ' 初见' \
                                  + ('AP' if result["fullPerfectFlg"] else 'FC')
                         alltext += reason + '，'
                         mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
@@ -794,7 +794,8 @@ def oldsk(targetid=None, targetrank=None, secret=False, server='jp', simple=Fals
         msg = msg + '\n活动还剩' + event['remain']
     return msg
 
-def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, qqnum='未知', ismain=False):
+def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, qqnum='未知', ismain=True):
+    # ismain是用来适配旧版分布式的 现在已停用没必要了 但很多代码懒得改就留着了
     event = currentevent(server)
     eventid = event['id']
     if event['status'] == 'counting':
@@ -948,10 +949,8 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         pos += 38
     img = img.crop((0, 0, 600, pos + 20))
     img.save(f"piccache/{targetid}sk.png")
-    if ismain:
-        return f"piccache/{targetid}sk.png"
-    else:
-        return f"[CQ:image,file={piccacheurl}{targetid}sk.png,cache=0]"
+    return f"piccache/{targetid}sk.png"
+
 
 def teamcount(server='jp'):
     if server == 'jp':

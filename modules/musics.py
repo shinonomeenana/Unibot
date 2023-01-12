@@ -191,67 +191,6 @@ def getPlayLevel(musicid, difficulty):
         if musicid == diff['musicId'] and diff['musicDifficulty'] == difficulty:
             return diff['playLevel']
 
-def getchartold(musicid, difficulty):
-    try:
-        if difficulty == 'master' or difficulty == 'expert':
-            if os.path.exists(f'charts/SekaiViewer/{musicid}/{difficulty}.png'):  # 本地有缓存
-                return f'charts/SekaiViewer/{musicid}/{difficulty}.png'
-            else:  # 本地无缓存
-                if downloadviewerchart(musicid, difficulty):  # sekai viewer下载成功
-                    return f'charts/SekaiViewer/{musicid}/{difficulty}.png'
-                else:  # sekai viewer下载失败 尝试sdvx.in
-                    if os.path.exists(f'charts/sdvxInCharts/{musicid}/{difficulty}.png'):  # sdvx.in本地有缓存
-                        return f'charts/sdvxInCharts/{musicid}/{difficulty}.png'
-                    else:  # 无缓存，尝试下载
-                        timeid = idtotime(musicid)
-                        if difficulty == 'master':
-                            data = requests.get(f'https://sdvx.in/prsk/obj/data{str(timeid).zfill(3)}mst.png',
-                                                proxies=proxies)
-                        else:
-                            data = requests.get(f'https://sdvx.in/prsk/obj/data{str(timeid).zfill(3)}exp.png',
-                                                proxies=proxies)
-                        if data.status_code == 200:  # 下载到了
-                            bg = requests.get(f"https://sdvx.in/prsk/bg/{str(timeid).zfill(3)}bg.png",
-                                              proxies=proxies)
-                            bar = requests.get(f"https://sdvx.in/prsk/bg/{str(timeid).zfill(3)}bar.png",
-                                               proxies=proxies)
-                            bgpic = Image.open(io.BytesIO(bg.content))
-                            datapic = Image.open(io.BytesIO(data.content))
-                            barpic = Image.open(io.BytesIO(bar.content))
-                            r, g, b, mask = datapic.split()
-                            bgpic.paste(datapic, (0, 0), mask)
-                            r, g, b, mask = barpic.split()
-                            bgpic.paste(barpic, (0, 0), mask)
-                            dirs = f'charts/sdvxInCharts/{musicid}'
-                            if not os.path.exists(dirs):
-                                os.makedirs(dirs)
-
-                            r, g, b, mask = bgpic.split()
-                            final = Image.new('RGB', bgpic.size, (0, 0, 0))
-                            final.paste(bgpic, (0, 0), mask)
-                            final.save(f'charts/sdvxInCharts/{musicid}/{difficulty}.png')
-                            return f'charts/sdvxInCharts/{musicid}/{difficulty}.png'
-                        else:  # 没下载到
-                            if os.path.exists(f'charts/sus/{musicid}/{difficulty}.png'):
-                                return f'charts/sus/{musicid}/{difficulty}.png'
-                            else:
-                                sus2img(musicid, difficulty)
-                                return f'charts/sus/{musicid}/{difficulty}.png'
-
-        else:  # 其他难度
-            if os.path.exists(f'charts/SekaiViewer/{musicid}/{difficulty}.png'):  # 本地有缓存
-                return f'charts/SekaiViewer/{musicid}/{difficulty}.png'
-            else:  # 本地无缓存
-                if downloadviewerchart(musicid, difficulty):  # sekai viewer下载成功
-                    return f'charts/SekaiViewer/{musicid}/{difficulty}.png'
-                else:  # sekai viewer下载失败
-                    if os.path.exists(f'charts/sus/{musicid}/{difficulty}.png'):
-                        return f'charts/sus/{musicid}/{difficulty}.png'
-                    else:
-                        sus2img(musicid, difficulty)
-                        return f'charts/sus/{musicid}/{difficulty}.png'
-    except:
-        return None
 
 def getchart(musicid, difficulty, theme='white'):
     path = f'charts/moe/{theme}/{musicid}/{difficulty}.jpg'
@@ -450,22 +389,17 @@ def aliastochart(full, sdvx=False, qun=False, theme='white'):
             dir = getsdvxchart(resp['musicid'], diff)
         else:
             dir = getchart(resp['musicid'], diff, theme)
-        if dir is not None:
-            bpm = parse_bpm(resp['musicid'])
-            bpmtext = ''
-            for bpms in bpm[1]:
-                bpmtext = bpmtext + ' - ' + str(bpms['bpm']).replace('.0', '')
-            if 'SekaiViewer' in dir:
-                text = text + '\nBPM: ' + bpmtext[3:] + '\n谱面图片来自Sekai Viewer'
-            elif 'sdvxInCharts' in dir:
-                text = text + '\nBPM: ' + bpmtext[3:] + '\n谱面图片来自プロセカ譜面保管所'
-            elif 'moe' in dir:
-                text = text + '\nBPM: ' + bpmtext[3:] + '\n谱面图片来自ぷろせかもえ！ (开发中)'
-            else:
-                text = text + '\nBPM: ' + bpmtext[3:] + '\n该自动生成的谱面预览没有长条斜率，部分中继点位置显示不正确，仅供参考。其他谱面预览源暂未更新'
-            return text, dir  # 有图 return俩
-        else:
-            return text  # 无图 return歌曲信息
+
+        bpm = parse_bpm(resp['musicid'])
+        bpmtext = ''
+        for bpms in bpm[1]:
+            bpmtext = bpmtext + ' - ' + str(bpms['bpm']).replace('.0', '')
+        if 'sdvxInCharts' in dir:
+            text = text + '\nBPM: ' + bpmtext[3:] + '\n谱面图片来自プロセカ譜面保管所'
+        elif 'moe' in dir:
+            text = text + '\nBPM: ' + bpmtext[3:] + '\n'
+        return text, dir
+
 
 
 def notecount(count):
