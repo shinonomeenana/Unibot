@@ -66,6 +66,14 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
             }),
         )
     else:
+        music_meta = None
+        with open('masterdata/realtime/music_metas.json', 'r', encoding='utf-8') as f:
+            music_metas = json.load(f)
+        for mm in music_metas:
+            if mm['music_id'] == music_id and mm['difficulty'] == difficulty:
+                music_meta = mm
+                break
+
         sus = chart.SUSwithskill(
             lines,
             note_size=note_sizes[difficulty],
@@ -75,7 +83,8 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
                 'artist': artist,
                 'difficulty': difficulty,
                 'playlevel': playlevel,
-                'jacket': jacketdir % (music['assetbundleName'], music['assetbundleName'])
+                'jacket': jacketdir % (music['assetbundleName'], music['assetbundleName']),
+                'meta': music_meta,
             }),
         )
 
@@ -132,6 +141,7 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
         sus.export(file_name + '.svg', style_sheet=style_sheet, themehint=themehint)
     if savepng:
         cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '.png', scale=1.3)
+
 
 # from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
 def parse_bpm(music_id):

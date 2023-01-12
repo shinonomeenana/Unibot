@@ -13,6 +13,9 @@ vitsapiurl = 'http://xxxxxxx/'  # vits语音合成api
 vitsvoiceurl = 'http://xxxxxx/'  # vits语音合成文件下载url
 cyo5000url = 'http://xxxxx/'  # 5000兆api
 
+music_meta_url = 'https://storage.sekai.best/sekai-best-assets/music_metas.json'
+# Sekai Viewer的这个地址看上去有缓存 有需要可找33申请无缓存的地址
+
 proxy = '127.0.0.1:7890'
 proxies = {
     'http': 'http://' + proxy,

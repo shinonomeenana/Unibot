@@ -8,7 +8,7 @@ import yaml
 import requests
 from apscheduler.schedulers.blocking import BlockingScheduler
 from zhconv import convert
-from modules.config import proxies
+from modules.config import proxies, music_meta_url
 
 
 def time_printer(str):
@@ -69,7 +69,10 @@ def cleancache(path='piccache/'):
 def updatetranslate(raw, value):
     with open('yamls/translate.yaml', encoding='utf-8') as f:
         translation = yaml.load(f, Loader=yaml.FullLoader)
-    if translation[value] is None:
+    try:
+        if translation[value] is None:
+            translation[value] = {}
+    except KeyError:
         translation[value] = {}
     try:
         request = requests.get(f'https://raw.githubusercontent.com/Sekai-World/sekai-i18n/main/zh-TW/{raw}.json',
@@ -101,12 +104,32 @@ def updatealltrans():
     updatetranslate('skill_desc', 'skill_desc')
 
 
+def update_music_meta():
+    time_printer('尝试更新music_metas.json')
+    try:
+        jsondata = requests.get(music_meta_url, proxies=proxies)
+        jsondata.json()
+    except:
+        print('\n' + 'music_meta下载失败')
+        return
+    try:
+        with open('masterdata/realtime/music_metas.json', 'rb') as f:
+            data = f.read()
+    except FileNotFoundError:
+        data = b''
+    if hashlib.md5(data).hexdigest() != hashlib.md5(jsondata.content).hexdigest():
+        print('\n' + '更新music_metas.json')
+        with open("masterdata/realtime/music_metas.json", "wb") as f:
+            f.write(jsondata.content)
+
 if __name__ == '__main__':
     cleancache()
     detectplaydata()
     updatealltrans()
+    update_music_meta()
     scheduler = BlockingScheduler()
     scheduler.add_job(detectplaydata, 'interval', seconds=300, id='playinfocheck')
     scheduler.add_job(cleancache, 'interval', seconds=300, id='cleancache')
     scheduler.add_job(updatealltrans, 'interval', hours=2, id='updatealltrans')
+    scheduler.add_job(update_music_meta, 'cron', hour=13, id='update_music_meta')
     scheduler.start()
