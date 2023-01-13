@@ -6,7 +6,6 @@ from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import requests
 
 from modules.config import apiurl, enapiurl, twapiurl, krapiurl, proxies
-from modules.musics import idtoname
 from modules.sk import verifyid, recordname, currentevent, maintenanceIn
 from modules.texttoimg import texttoimg
 
@@ -20,6 +19,15 @@ rankmatchgrades = {
     6: 'ダイヤモンド(钻石)',
     7: 'マスター(大师)'
 }
+
+def idtoname(musicid):
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+    for i in musics:
+        if i['id'] == musicid:
+            return i['title']
+    return ''
+
 
 
 class userprofile(object):
@@ -43,6 +51,7 @@ class userprofile(object):
         self.highScore = 0
         self.masterscore = {}
         self.expertscore = {}
+        self.musicResult = {}
         for i in range(26, 38):
             self.masterscore[i] = [0, 0, 0, 0]
         for i in range(21, 32):
@@ -182,6 +191,7 @@ class userprofile(object):
                         self.expertscore[playLevel][2] += 1
                     elif result[music][i] == 1:
                         self.expertscore[playLevel][2] += 1
+        self.musicResult = result
         for i in range(0, 5):
             self.userDecks[i] = data['userDecks'][0][f'member{i + 1}']
             for userCards in data['userCards']:

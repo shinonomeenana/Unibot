@@ -15,7 +15,11 @@ from dateutil.tz import tzlocal
 
 from modules.config import proxies
 from modules.pjskinfo import aliastomusicid
+from modules.profileanalysis import userprofile
 from moesus.music_score import parse, genGuessChart
+
+
+assetpath = 'data/assets/sekai/assetbundle/resources'
 
 
 def hotrank():
@@ -116,6 +120,118 @@ def levelrank(level, difficulty, fcap=0):
               + time.strftime("%Y-%m-%d %H:%M:%S", updatetime), '#000000', font)
     img.save(f'piccache/{level}{difficulty}{fcap}.png')
     return True
+
+
+def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server='jp', qqnum='未知'):
+    target = []
+    with open('masterdata/realtime/musicDifficulties.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+    for i in data:
+        if i['playLevel'] == level and i['musicDifficulty'] == difficulty:
+            try:
+                i['playLevelAdjust']
+                target.append(i)
+            except KeyError:
+                pass
+    if fcap == 0:
+        playLevelKey = "playLevelAdjust"
+    elif fcap == 1:
+        playLevelKey = "fullComboAdjust"
+    else:
+        playLevelKey = "fullPerfectAdjust"
+
+    target.sort(key=lambda x: x[playLevelKey], reverse=True)
+    musicData = {}
+    for music in target:
+        levelRound = str(round(music['playLevel'] + music[playLevelKey], 1))
+        try:
+            musicData[levelRound].append(music['musicId'])
+        except KeyError:
+            musicData[levelRound] = [music['musicId']]
+    if userid is not None:
+        profile = userprofile()
+        profile.getprofile(userid=userid, server=server, qqnum=qqnum)
+        singleLevelRankPic(musicData, difficulty, profile.musicResult)
+    else:
+        singleLevelRankPic(musicData, difficulty)
+
+
+def singleLevelRankPic(musicData, difficulty, musicResult=None):
+    diff = {
+        'easy': 0,
+        'normal': 1,
+        'hard': 2,
+        'expert': 3,
+        'master': 4
+    }
+    color = {
+        'master': (187, 51, 238),
+        'expert': (238, 67, 102),
+        'hard': (254, 170, 0),
+        'normal': (51, 187, 238),
+        'easy': (102, 221, 17),
+    }
+    iconName = {
+        0: 'icon_notClear.png',
+        1: 'icon_clear.png',
+        2: 'icon_fullCombo.png',
+        3: 'icon_allPerfect.png',
+    }
+    pics = []
+
+    # 每行显示的歌曲数
+    oneRowCount = 0
+    for rank in musicData:
+        if len(musicData[rank]) > oneRowCount:
+            oneRowCount = len(musicData[rank])
+
+    for rank in musicData:
+        rows = int((len(musicData[rank]) - 1) / oneRowCount) + 1
+        singleRank = Image.new("RGBA", (oneRowCount * 130 + 100, rows * 130 + 85), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(singleRank)
+        font = ImageFont.truetype('fonts/SourceHanSansCN-Bold.otf', 45)
+
+        draw.rectangle((45, 28, oneRowCount * 130 + 80, rows * 130 + 85), fill=(255, 255, 255))
+
+        draw.ellipse((22, 0, 80, 58), fill=color[difficulty])
+        draw.rectangle((51, 0, 134, 58), fill=color[difficulty])
+        draw.ellipse((105, 0, 163, 58), fill=color[difficulty])
+        draw.text((45, -7), rank, (255, 255, 255), font)
+        row = 0
+        i = 0
+        for musicId in musicData[rank]:
+            jacket = Image.open(
+                f'{assetpath}/startapp/thumbnail/music_jacket/jacket_s_{str(musicId).zfill(3)}.png')
+            jacket = jacket.resize((120, 120))
+            singleRank.paste(jacket, (70 + 130 * i, 72 + 130 * row))
+            if musicResult is not None:
+                icon = Image.open(f'pics/{iconName[musicResult[musicId][diff[difficulty]]]}')
+                r, g, b, mask = icon.split()
+                singleRank.paste(icon, (162 + 130 * i, 164 + 130 * row), mask)
+            i += 1
+            if i == oneRowCount:
+                i = 0
+                row += 1
+        pics.append(singleRank)
+    height = 0
+    for singlePic in pics:
+        height += singlePic.size[1]
+    colunm = int(height / 1800) + 1
+    pic = Image.new("RGBA", ((oneRowCount * 130 + 100) * colunm, height if colunm == 1 else 1800), (205, 255, 255, 255))
+    pos = [0, 0]
+    for singlePic in pics:
+        if pos[1] + singlePic.size[1] > 1800:
+            pos[0] += oneRowCount * 130 + 100
+            pos[1] = 0
+        r, g, b, mask = singlePic.split()
+        pic.paste(singlePic, (pos[0], pos[1]), mask)
+        pos[1] += singlePic.size[1]
+
+    pic.show()
+
+
 
 
 # from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
@@ -533,22 +649,7 @@ def updatecharts(deletelist):
 
 
 if __name__ == '__main__':
-    path = '../charts/sdvxInCharts'
-    target = []
-    files = os.listdir(path)
-    files_dir = [f for f in files if os.path.isdir(os.path.join(path, f))]
-    count = 0
-    for i in files_dir:
-        count += 1
-        chartfiles = os.listdir(path + "/" + i)
-        files_file = [f for f in chartfiles if os.path.isfile(os.path.join(path + "/" + i, f))]
-        print(f'{count}/{len(files_dir)}', i, files_file)
-        for j in files_file:
-            pic = Image.open(f'{path}/{i}/{j}')
-            r, g, b, mask = pic.split()
-            final = Image.new('RGB', pic.size, (0, 0, 0))
-            final.paste(pic, (0, 0), mask)
-            final.save(f'{path}/{i}/{j}')
+    print(os.path.exists('kk.py'))
 
 
 

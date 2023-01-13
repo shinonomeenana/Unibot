@@ -8,7 +8,6 @@ from urllib.parse import quote
 import pymysql
 
 from modules.config import env
-from modules.musics import idtoname
 from modules.mysql_config import *
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import matplotlib
@@ -25,6 +24,13 @@ rankline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 100, 200, 300, 400, 5
 predictline = [100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000, 100000, 100000000]
 
 
+def idtoname(musicid):
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+    for i in musics:
+        if i['id'] == musicid:
+            return i['title']
+    return ''
 
 
 def timeremain(time, second=True):
