@@ -157,7 +157,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
             musicData[levelRound] = [music['musicId']]
     profile = None
     error = False
-    if userid is not None:
+    if userid is not None and not isprivate:
         profile = userprofile()
         try:
             profile.getprofile(userid=userid, server=server, qqnum=qqnum)
@@ -188,10 +188,6 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
         draw.text((218, 114), '可能由于bot网不好或者游戏正在维护', fill=(0, 0, 0), font=font_style)
     elif profile is not None:
-        if isprivate:
-            id = '保密'
-        else:
-            id = userid
         with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
             cards = json.load(f)
         try:
@@ -211,8 +207,8 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
             pass
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
         draw.text((215, 65), profile.name, fill=(0, 0, 0), font=font_style)
-        font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
-        draw.text((218, 118), 'id:' + id, fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
+        draw.text((218, 114), '发送"不给看"可隐藏打歌数据', fill=(0, 0, 0), font=font_style)
         font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
         draw.text((314, 150), str(profile.rank), fill=(255, 255, 255), font=font_style)
 
@@ -245,6 +241,11 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
                     pic.paste(honorpic, (403, 206), mask)
                 except:
                     pass
+    elif isprivate:
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+        draw.text((215, 65), '成绩已隐藏', fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
+        draw.text((218, 114), '发送"给看"可查看歌曲成绩', fill=(0, 0, 0), font=font_style)
     else:
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
         draw.text((215, 65), '未绑定日服账号', fill=(0, 0, 0), font=font_style)
