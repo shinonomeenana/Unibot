@@ -15,7 +15,7 @@ from dateutil.tz import tzlocal
 
 from modules.config import proxies
 from modules.pjskinfo import aliastomusicid
-from modules.profileanalysis import userprofile
+from modules.profileanalysis import userprofile, generatehonor
 from moesus.music_score import parse, genGuessChart
 
 
@@ -129,7 +129,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
     with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
         musics = json.load(f)
     for i in data:
-        if i['playLevel'] == level and i['musicDifficulty'] == difficulty:
+        if (i['playLevel'] == level if level != 0 else True) and i['musicDifficulty'] == difficulty:
             try:
                 i['playLevelAdjust']
                 target.append(i)
@@ -142,7 +142,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
     else:
         playLevelKey = "fullPerfectAdjust"
 
-    target.sort(key=lambda x: x[playLevelKey], reverse=True)
+    target.sort(key=lambda x: x['playLevel'] + x[playLevelKey], reverse=True)
     musicData = {}
     for music in target:
         levelRound = str(round(music['playLevel'] + music[playLevelKey], 1))
@@ -150,15 +150,87 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
             musicData[levelRound].append(music['musicId'])
         except KeyError:
             musicData[levelRound] = [music['musicId']]
+    profile = None
     if userid is not None:
         profile = userprofile()
-        profile.getprofile(userid=userid, server=server, qqnum=qqnum)
-        singleLevelRankPic(musicData, difficulty, profile.musicResult)
+        try:
+            profile.getprofile(userid=userid, server=server, qqnum=qqnum)
+            rankPic = singleLevelRankPic(musicData, difficulty, profile.musicResult, oneRowCount=None if level != 0 else 5)
+        except:
+            rankPic = singleLevelRankPic(musicData, difficulty, oneRowCount=None if level != 0 else 5)
     else:
-        singleLevelRankPic(musicData, difficulty)
+        rankPic = singleLevelRankPic(musicData, difficulty, oneRowCount=None if level != 0 else 5)
+    rankPic = rankPic.resize((int(rankPic.size[0] / 1.8), int(rankPic.size[1] / 1.8)))
+    pic = Image.new("RGBA", (rankPic.size[0] + 80 if rankPic.size[0] > 520 else 600, rankPic.size[1] + 430), (205, 255, 255, 255))
+    userdataimg = Image.open('pics/userdata.png')
+    r,g,b,mask = userdataimg.split()
+    pic.paste(userdataimg, (0, 0), mask)
+    if profile is not None:
+        if isprivate:
+            id = '保密'
+        else:
+            id = userid
+        with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
+            cards = json.load(f)
+        try:
+            assetbundleName = ''
+            for i in cards:
+                if i['id'] == profile.userDecks[0]:
+                    assetbundleName = i['assetbundleName']
+            if profile.special_training[0]:
+                cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_after_training.png')
+            else:
+                cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_normal.png')
+
+            cardimg = cardimg.resize((116, 116))
+            r, g, b, mask = cardimg.split()
+            pic.paste(cardimg, (68, 70), mask)
+        except FileNotFoundError:
+            pass
+        draw = ImageDraw.Draw(pic)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+        draw.text((215, 65), profile.name, fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
+        draw.text((218, 118), 'id:' + id, fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
+        draw.text((314, 150), str(profile.rank), fill=(255, 255, 255), font=font_style)
+
+        for i in profile.userProfileHonors:
+            if i['seq'] == 1:
+                try:
+                    honorpic = generatehonor(i, True, server)
+                    honorpic = honorpic.resize((226, 48))
+                    r, g, b, mask = honorpic.split()
+                    pic.paste(honorpic, (59, 226), mask)
+                except:
+                    pass
+
+        for i in profile.userProfileHonors:
+            if i['seq'] == 2:
+                try:
+                    honorpic = generatehonor(i, False, server)
+                    honorpic = honorpic.resize((107, 48))
+                    r, g, b, mask = honorpic.split()
+                    pic.paste(honorpic, (290, 226), mask)
+                except:
+                    pass
+
+        for i in profile.userProfileHonors:
+            if i['seq'] == 3:
+                try:
+                    honorpic = generatehonor(i, False, server)
+                    honorpic = honorpic.resize((107, 48))
+                    r, g, b, mask = honorpic.split()
+                    pic.paste(honorpic, (403, 226), mask)
+                except:
+                    pass
+
+    r, g, b, mask = rankPic.split()
+    pic.paste(rankPic, (40, 320), mask)
+    pic.show()
 
 
-def singleLevelRankPic(musicData, difficulty, musicResult=None):
+def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None):
     diff = {
         'easy': 0,
         'normal': 1,
@@ -182,10 +254,11 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None):
     pics = []
 
     # 每行显示的歌曲数
-    oneRowCount = 0
-    for rank in musicData:
-        if len(musicData[rank]) > oneRowCount:
-            oneRowCount = len(musicData[rank])
+    if oneRowCount is None:
+        oneRowCount = 0
+        for rank in musicData:
+            if len(musicData[rank]) > oneRowCount:
+                oneRowCount = len(musicData[rank])
 
     for rank in musicData:
         rows = int((len(musicData[rank]) - 1) / oneRowCount) + 1
@@ -215,22 +288,26 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None):
                 i = 0
                 row += 1
         pics.append(singleRank)
+
+    # 总高度
+    finalHeight = 1900 if oneRowCount is None else 2800
+
     height = 0
     for singlePic in pics:
         height += singlePic.size[1]
-    colunm = int(height / 1800) + 1
-    pic = Image.new("RGBA", ((oneRowCount * 130 + 100) * colunm, height if colunm == 1 else 1800), (205, 255, 255, 255))
+    colunm = int(height / finalHeight) + 1
+    pic = Image.new("RGBA", ((oneRowCount * 130 + 100) * colunm, height if colunm == 1 else finalHeight), (0, 0, 0, 0))
     pos = [0, 0]
     for singlePic in pics:
-        if pos[1] + singlePic.size[1] > 1800:
+        if pos[1] + singlePic.size[1] > finalHeight:
             pos[0] += oneRowCount * 130 + 100
             pos[1] = 0
         r, g, b, mask = singlePic.split()
         pic.paste(singlePic, (pos[0], pos[1]), mask)
         pos[1] += singlePic.size[1]
 
-    pic.show()
-
+    #pic.show()
+    return pic
 
 
 
