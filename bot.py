@@ -31,7 +31,7 @@ from modules.otherpics import geteventpic
 from modules.gacha import getcharaname, getallcurrentgacha, getcurrentgacha, fakegacha
 from modules.homo import generate_homo
 from modules.musics import hotrank, levelrank, parse_bpm, aliastochart, idtoname, notecount, tasseiritsu, findbpm, \
-    getcharttheme, setcharttheme, getPlayLevel
+    getcharttheme, setcharttheme, getPlayLevel, levelRankPic
 from modules.pjskguess import getrandomjacket, cutjacket, getrandomchart, cutchartimg, getrandomcard, cutcard, \
     getrandommusic, cutmusic, getrandomchartold, cutchartimgold, recordGuessRank, guessRank
 from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskinfo, writelog
@@ -793,7 +793,13 @@ def sync_handle_msg(event):
                     fcap = 2
                 else:
                     fcap = 0
-                level = int(re.sub(r'\D', "", event.message))
+                try:
+                    level = int(re.sub(r'\D', "", event.message))
+                except:
+                    if event.message == '难度排行' or fcap in [1, 2]:
+                        level = 0
+                    else:
+                        return
                 diff = 'master'
                 if 'expert' in event.message or 'ex' in event.message:
                     diff = 'expert'
@@ -803,12 +809,14 @@ def sync_handle_msg(event):
                     diff = 'normal'
                 elif 'easy' in event.message or 'ez' in event.message:
                     diff = 'easy'
-                success = levelrank(level, diff, fcap)
-                if success:
-                    sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/{level}{diff}{fcap}.png,cache=0]")
+                bind = getqqbind(event.user_id, server)
+
+                if bind is not None:
+                    picdir = levelRankPic(level, diff, fcap, userid=bind[1], isprivate=bind[2], qqnum=event.user_id)
                 else:
-                    sendmsg(event, '参数错误，指令：/难度排行 定数 难度，'
-                                   '难度支持的输入: easy, normal, hard, expert, master，如/难度排行 28 expert /ap难度排行 28 expert')
+                    picdir = levelRankPic(level, diff, fcap,)
+                sendmsg(event, f"[CQ:image,file=file:///{botdir}/{picdir},cache=0]")
+
                 return
         except:
             traceback.print_exc()

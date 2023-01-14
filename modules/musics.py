@@ -10,7 +10,7 @@ import pymysql
 from modules.mysql_config import *
 import aiofiles
 import requests
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from dateutil.tz import tzlocal
 
 from modules.config import proxies
@@ -118,7 +118,8 @@ def levelrank(level, difficulty, fcap=0):
     updatetime = time.localtime(os.path.getmtime(r"masterdata/realtime/musicDifficulties.json"))
     draw.text((20, int(45 + text.count('\n') * 31.5)), '数据来源：https://profile.pjsekai.moe/\nUpdated in '
               + time.strftime("%Y-%m-%d %H:%M:%S", updatetime), '#000000', font)
-    img.save(f'piccache/{level}{difficulty}{fcap}.png')
+    img = img.convert("RGB")
+    img.save(f'piccache/{level}{difficulty}{fcap}.jpg', quality=80)
     return True
 
 
@@ -135,11 +136,15 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
                 target.append(i)
             except KeyError:
                 pass
+
     if fcap == 0:
+        title = f'{difficulty.upper()} {level if level != 0 else ""} 难度表（仅供参考）'
         playLevelKey = "playLevelAdjust"
     elif fcap == 1:
+        title = f'{difficulty.upper()} {level if level != 0 else ""} FC难度表（仅供参考）'
         playLevelKey = "fullComboAdjust"
     else:
+        title = f'{difficulty.upper()} {level if level != 0 else ""} AP难度表（仅供参考）'
         playLevelKey = "fullPerfectAdjust"
 
     target.sort(key=lambda x: x['playLevel'] + x[playLevelKey], reverse=True)
@@ -151,6 +156,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
         except KeyError:
             musicData[levelRound] = [music['musicId']]
     profile = None
+    error = False
     if userid is not None:
         profile = userprofile()
         try:
@@ -158,14 +164,30 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
             rankPic = singleLevelRankPic(musicData, difficulty, profile.musicResult, oneRowCount=None if level != 0 else 5)
         except:
             rankPic = singleLevelRankPic(musicData, difficulty, oneRowCount=None if level != 0 else 5)
+            error = True
     else:
         rankPic = singleLevelRankPic(musicData, difficulty, oneRowCount=None if level != 0 else 5)
     rankPic = rankPic.resize((int(rankPic.size[0] / 1.8), int(rankPic.size[1] / 1.8)))
-    pic = Image.new("RGBA", (rankPic.size[0] + 80 if rankPic.size[0] > 520 else 600, rankPic.size[1] + 430), (205, 255, 255, 255))
+    pic = Image.new("RGBA", (rankPic.size[0] + 20 if rankPic.size[0] > 520 else 600, rankPic.size[1] + 430), (205, 255, 255, 255))
+    bg = Image.open('pics/findevent.png')
+    picRatio = pic.size[0] / pic.size[1]
+    bgRatio = bg.size[0] / bg.size[1]
+    if picRatio > bgRatio:
+        bg = bg.resize((pic.size[0], int(pic.size[0] / bgRatio)))
+    else:
+        bg = bg.resize((int(pic.size[1] * bgRatio), pic.size[1]))
+
+    pic.paste(bg, (0, 0))
     userdataimg = Image.open('pics/userdata.png')
     r,g,b,mask = userdataimg.split()
     pic.paste(userdataimg, (0, 0), mask)
-    if profile is not None:
+    draw = ImageDraw.Draw(pic)
+    if error:
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+        draw.text((215, 65), '获取个人数据发生错误', fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
+        draw.text((218, 114), '可能由于bot网不好或者游戏正在维护', fill=(0, 0, 0), font=font_style)
+    elif profile is not None:
         if isprivate:
             id = '保密'
         else:
@@ -187,7 +209,6 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
             pic.paste(cardimg, (68, 70), mask)
         except FileNotFoundError:
             pass
-        draw = ImageDraw.Draw(pic)
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
         draw.text((215, 65), profile.name, fill=(0, 0, 0), font=font_style)
         font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
@@ -201,7 +222,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
                     honorpic = generatehonor(i, True, server)
                     honorpic = honorpic.resize((226, 48))
                     r, g, b, mask = honorpic.split()
-                    pic.paste(honorpic, (59, 226), mask)
+                    pic.paste(honorpic, (59, 206), mask)
                 except:
                     pass
 
@@ -211,7 +232,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
                     honorpic = generatehonor(i, False, server)
                     honorpic = honorpic.resize((107, 48))
                     r, g, b, mask = honorpic.split()
-                    pic.paste(honorpic, (290, 226), mask)
+                    pic.paste(honorpic, (290, 206), mask)
                 except:
                     pass
 
@@ -221,13 +242,32 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
                     honorpic = generatehonor(i, False, server)
                     honorpic = honorpic.resize((107, 48))
                     r, g, b, mask = honorpic.split()
-                    pic.paste(honorpic, (403, 226), mask)
+                    pic.paste(honorpic, (403, 206), mask)
                 except:
                     pass
+    else:
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+        draw.text((215, 65), '未绑定日服账号', fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
+        draw.text((218, 114), '绑定后可查看歌曲成绩', fill=(0, 0, 0), font=font_style)
+
+    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 30)
+    draw.text((65, 264), title, fill=(0, 0, 0), font=font_style)
 
     r, g, b, mask = rankPic.split()
     pic.paste(rankPic, (40, 320), mask)
-    pic.show()
+
+    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 23)
+    updatetime = time.localtime(os.path.getmtime(r"masterdata/realtime/musicDifficulties.json"))
+    draw.text((50, pic.size[1] - 110), 'Generated by Unibot', fill='#00CCBB', font=font_style)
+    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 16)
+    draw.text((50, pic.size[1] - 70), '定数来源：https://profile.pjsekai.moe/   ※定数非官方\n', fill='#00CCBB',
+              font=font_style)
+    draw.text((50, pic.size[1] - 40), f'Updated in {time.strftime("%Y-%m-%d %H:%M:%S", updatetime)}        '
+                                      '※定数每次统计时可能会改变', fill='#00CCBB', font=font_style)
+    pic = pic.convert("RGB")
+    pic.save(f'piccache/{userid}{level}{difficulty}{fcap}.jpg', quality=80)
+    return f'piccache/{userid}{level}{difficulty}{fcap}.jpg'
 
 
 def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None):
@@ -253,6 +293,9 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
     }
     pics = []
 
+    # 总高度 查看所有歌曲时高度适当增加
+    finalHeight = 1750 if oneRowCount is None else 2800
+
     # 每行显示的歌曲数
     if oneRowCount is None:
         oneRowCount = 0
@@ -260,13 +303,20 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
             if len(musicData[rank]) > oneRowCount:
                 oneRowCount = len(musicData[rank])
 
+    # 每一个难度分开画
     for rank in musicData:
         rows = int((len(musicData[rank]) - 1) / oneRowCount) + 1
-        singleRank = Image.new("RGBA", (oneRowCount * 130 + 100, rows * 130 + 85), (0, 0, 0, 0))
+        singleRank = Image.new("RGBA", (oneRowCount * 130 + 100, rows * 130 + 105), (0, 0, 0, 0))
         draw = ImageDraw.Draw(singleRank)
         font = ImageFont.truetype('fonts/SourceHanSansCN-Bold.otf', 45)
 
-        draw.rectangle((45, 28, oneRowCount * 130 + 80, rows * 130 + 85), fill=(255, 255, 255))
+        shadow = Image.new("RGBA", (oneRowCount * 130 + 45, rows * 130 + 77), (0, 0, 0, 0))
+        shadow.paste(Image.new("RGBA", (oneRowCount * 130 + 35, rows * 130 + 67), (0, 0, 0, 170)), (5, 5))
+        shadow = shadow.filter(ImageFilter.GaussianBlur(4))
+        r, g, b, mask = shadow.split()
+        singleRank.paste(shadow, (45, 30), mask)
+
+        draw.rectangle((45, 28, oneRowCount * 130 + 75, rows * 130 + 90), fill=(255, 255, 255))
 
         draw.ellipse((22, 0, 80, 58), fill=color[difficulty])
         draw.rectangle((51, 0, 134, 58), fill=color[difficulty])
@@ -289,9 +339,7 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
                 row += 1
         pics.append(singleRank)
 
-    # 总高度
-    finalHeight = 1900 if oneRowCount is None else 2800
-
+    # 将所有难度合并
     height = 0
     for singlePic in pics:
         height += singlePic.size[1]
@@ -304,9 +352,10 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
             pos[1] = 0
         r, g, b, mask = singlePic.split()
         pic.paste(singlePic, (pos[0], pos[1]), mask)
-        pos[1] += singlePic.size[1]
+        pos[1] += singlePic.size[1] - 20
 
-    #pic.show()
+    # 由于末尾空出的空间相加可能会导致行数+1 这里裁剪一下
+    pic = pic.crop((0, 0, pos[0] + oneRowCount * 130 + 160, pic.size[1]))
     return pic
 
 
