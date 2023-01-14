@@ -793,13 +793,6 @@ def sync_handle_msg(event):
                     fcap = 2
                 else:
                     fcap = 0
-                try:
-                    level = int(re.sub(r'\D', "", event.message))
-                except:
-                    if event.message == '难度排行' or fcap in [1, 2]:
-                        level = 0
-                    else:
-                        return
                 diff = 'master'
                 if 'expert' in event.message or 'ex' in event.message:
                     diff = 'expert'
@@ -809,6 +802,13 @@ def sync_handle_msg(event):
                     diff = 'normal'
                 elif 'easy' in event.message or 'ez' in event.message:
                     diff = 'easy'
+                try:
+                    level = int(re.sub(r'\D', "", event.message))
+                except:
+                    if event.message == '难度排行' or fcap in [1, 2] or diff in ['expert', 'hard', 'normal', 'easy']:
+                        level = 0
+                    else:
+                        return
                 bind = getqqbind(event.user_id, server)
 
                 if bind is not None:
@@ -820,7 +820,7 @@ def sync_handle_msg(event):
                 return
         except:
             traceback.print_exc()
-            sendmsg(event, '参数错误，指令：/难度排行 定数 难度，'
+            sendmsg(event, '参数错误或无此难度（默认master），指令：/难度排行 定数 难度，'
                            '难度支持的输入: easy, normal, hard, expert, master，如/难度排行 28 expert /ap难度排行 28 expert')
 
         if event.message[:7] == 'pjskbpm' or (event.message[:3] == 'bpm' and event.self_id == guildbot):
