@@ -609,7 +609,7 @@ def sync_handle_msg(event):
                     sendmsg(event, '查不到捏，可能是没绑定')
                     return
             else:
-                bind = (userid, False)
+                bind = (1, userid, False)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{r30(bind[1], bind[2], server, event.user_id)}.png,cache=0]")
             return
         if event.message == "pjskprofile" or event.message == "个人信息":
