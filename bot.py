@@ -602,6 +602,9 @@ def sync_handle_msg(event):
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind[1]}b30.png,cache=0]")
             return
         if msg := re.match('^pjsk *r30(.*)', event.message):
+            # 给冲色段的朋友打5v5看对手情况用的 不冲5v5色段看这个没用
+            if event.user_id not in whitelist and event.group_id not in whitelist:
+                return
             userid = msg.group(1).strip()
             if not userid:
                 bind = getqqbind(event.user_id, server)
