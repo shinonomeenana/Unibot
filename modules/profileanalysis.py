@@ -347,12 +347,21 @@ def jinduChart(score):
         del score['33+musicId']
     except KeyError:
         pass
-    print(score)
+
+    delLevel = []
+    for level in score:
+        if score[level][3] == 0:
+            delLevel.append(level)
+
+    for level in delLevel:
+        del score[level]
+
     pic = Image.new("RGBA", (50 + 40 * len(score), 220), (0, 0, 0, 0))
     i = 0
+
+    font = ImageFont.truetype('fonts/SourceHanSansCN-Bold.otf', 18)
+    draw = ImageDraw.Draw(pic)
     for level in score:
-        font = ImageFont.truetype('fonts/SourceHanSansCN-Bold.otf', 18)
-        draw = ImageDraw.Draw(pic)
         draw.text((34 + 40 * i, 185), str(level), (0, 0, 0), font)
 
         # 画总曲数
@@ -475,7 +484,7 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
         draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][3]), fill=(108, 237, 226), font=font_style)
     chart = jinduChart(profile.masterscore)
     r,g,b,mask = chart.split()
-    img.paste(chart, (15, 732), mask)
+    img.paste(chart, (280 - int(chart.size[0] / 2), 732), mask)
     img.save(f'piccache/{userid}jindu.png')
 
 
