@@ -342,6 +342,53 @@ def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未�
     return text
 
 
+def jinduChart(score):
+    try:
+        del score['33+musicId']
+    except KeyError:
+        pass
+    print(score)
+    pic = Image.new("RGBA", (50 + 40 * len(score), 220), (0, 0, 0, 0))
+    i = 0
+    for level in score:
+        font = ImageFont.truetype('fonts/SourceHanSansCN-Bold.otf', 18)
+        draw = ImageDraw.Draw(pic)
+        draw.text((34 + 40 * i, 185), str(level), (0, 0, 0), font)
+
+        # 画总曲数
+        draw.rectangle((28 + 40 * i, 40, 60 + 40 * i, 180), fill=(68, 68, 102))
+        w = int(font.getsize(str(score[level][3]))[0] / 2)
+        draw.text((43 + 40 * i - w, 12), str(score[level][3]), (68, 68, 102), font, stroke_width=2,
+                  stroke_fill=(255, 255, 255))
+
+        # Clear
+        ratio = score[level][2] / score[level][3]
+        draw.rectangle((28 + 40 * i, 180 - int(140 * ratio), 60 + 40 * i, 180), fill=(255, 183, 77))
+        if score[level][2] != 0:
+            w = int(font.getsize(str(score[level][2]))[0] / 2)
+            draw.text((43 + 40 * i - w, 152 - int(140 * ratio)), str(score[level][2]), (255, 183, 77), font,
+                      stroke_width=2, stroke_fill=(255, 255, 255))
+
+        # FC
+        ratio = score[level][1] / score[level][3]
+        draw.rectangle((28 + 40 * i, 180 - int(140 * ratio), 60 + 40 * i, 180), fill=(240, 98, 146))
+        if score[level][1] != 0:
+            w = int(font.getsize(str(score[level][1]))[0] / 2)
+            draw.text((43 + 40 * i - w, 152 - int(140 * ratio)), str(score[level][1]), (240, 98, 146), font,
+                      stroke_width=2, stroke_fill=(255, 255, 255))
+
+        # AP
+        ratio = score[level][0] / score[level][3]
+        draw.rectangle((28 + 40 * i, 180 - int(140 * ratio), 60 + 40 * i, 180), fill=(251, 217, 221))
+        if score[level][0] != 0:
+            w = int(font.getsize(str(score[level][0]))[0] / 2)
+            draw.text((43 + 40 * i - w, 152 - int(140 * ratio)), str(score[level][0]), (100, 181, 246), font,
+                      stroke_width=2, stroke_fill=(255, 255, 255))
+
+        i += 1
+    return pic
+
+
 def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知'):
     profile = userprofile()
     profile.getprofile(userid, server, qqnum)
@@ -388,7 +435,7 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
     else:
         levelmin = 21
         profile.masterscore = profile.expertscore
-    for i in range(0, 6):
+    for i in range(0, 5):
         text_width = font_style.getsize(str(profile.masterscore[i + levelmin][0]))
         text_coordinate = (int(183 - text_width[0] / 2), int(295 + 97 * i - text_width[1] / 2))
         draw.text(text_coordinate, str(profile.masterscore[i + levelmin][0]), fill=(228, 159, 251), font=font_style)
@@ -407,25 +454,28 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
 
 
     if diff == 'master':
-        secondRawCount = 6
+        secondRawCount = 7
     else:
-        secondRawCount = 5
+        secondRawCount = 6
     for i in range(0, secondRawCount):
-        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 6][0]))
+        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 5][0]))
         text_coordinate = (int(683 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 6][0]), fill=(228, 159, 251), font=font_style)
+        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][0]), fill=(228, 159, 251), font=font_style)
 
-        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 6][1]))
+        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 5][1]))
         text_coordinate = (int(683 + 78 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 6][1]), fill=(254, 143, 249), font=font_style)
+        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][1]), fill=(254, 143, 249), font=font_style)
 
-        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 6][2]))
+        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 5][2]))
         text_coordinate = (int(683 + 2 * 78 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 6][2]), fill=(255, 227, 113), font=font_style)
+        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][2]), fill=(255, 227, 113), font=font_style)
 
-        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 6][3]))
+        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 5][3]))
         text_coordinate = (int(683 + 3 * 78 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 6][3]), fill=(108, 237, 226), font=font_style)
+        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][3]), fill=(108, 237, 226), font=font_style)
+    chart = jinduChart(profile.masterscore)
+    r,g,b,mask = chart.split()
+    img.paste(chart, (15, 732), mask)
     img.save(f'piccache/{userid}jindu.png')
 
 
@@ -852,65 +902,6 @@ def generatehonor(honor, ismain=True, server='jp'):
                     lv = Image.open('pics/icon_degreeLv6.png')
                     r, g, b, mask = lv.split()
                     pic.paste(lv, (54 + 16 * i, 63), mask)
-    # else:
-    #     # 排位牌子
-    #     with open(f'{masterdatadir}/honors.json', 'r', encoding='utf-8') as f:
-    #         honors = json.load(f)
-    #     with open(f'{masterdatadir}/honorGroups.json', 'r', encoding='utf-8') as f:
-    #         honorGroups = json.load(f)
-    #     for i in honors:
-    #         if i['id'] == honor['honorId']:
-    #             assetbundleName = i['assetbundleName']
-    #             honorRarity = i['honorRarity']
-    #             for j in honorGroups:
-    #                 if j['id'] == i['groupId']:
-    #                     backgroundAssetbundleName = j['backgroundAssetbundleName']
-    #                     break
-    #     # 数据读取完成
-    #     if ismain:
-    #         # 大图
-    #         if honorRarity == 'low':
-    #             frame = Image.open('pics/frame_degree_m_1.png')
-    #         elif honorRarity == 'middle':
-    #             frame = Image.open('pics/frame_degree_m_2.png')
-    #         elif honorRarity == 'high':
-    #             frame = Image.open('pics/frame_degree_m_3.png')
-    #         else:
-    #             frame = Image.open('pics/frame_degree_m_4.png')
-
-    #         pic = gethonorasset(server, 'data/assets/sekai/assetbundle/resources'
-    #                          f'/startapp/rank_live/honor/{backgroundAssetbundleName}/degree_main.png')
-    #         rankpic = gethonorasset(server, 'data/assets/sekai/assetbundle/resources'
-    #                              f'/startapp/rank_live/honor/{assetbundleName}/rank_main.png')
-    #         r, g, b, mask = frame.split()
-    #         if honorRarity == 'low':
-    #             pic.paste(frame, (8, 0), mask)
-    #         else:
-    #             pic.paste(frame, (0, 0), mask)
-    #         r, g, b, mask = rankpic.split()
-    #         pic.paste(rankpic, (190, 0), mask)
-    #     else:
-    #         # 小图
-    #         if honorRarity == 'low':
-    #             frame = Image.open('pics/frame_degree_s_1.png')
-    #         elif honorRarity == 'middle':
-    #             frame = Image.open('pics/frame_degree_s_2.png')
-    #         elif honorRarity == 'high':
-    #             frame = Image.open('pics/frame_degree_s_3.png')
-    #         else:
-    #             frame = Image.open('pics/frame_degree_s_4.png')
-
-    #         pic = gethonorasset(server, 'data/assets/sekai/assetbundle/resources'
-    #                          f'/startapp/rank_live/honor/{backgroundAssetbundleName}/degree_sub.png')
-    #         rankpic = gethonorasset(server, 'data/assets/sekai/assetbundle/resources'
-    #                              f'/startapp/rank_live/honor/{assetbundleName}/rank_sub.png')
-    #         r, g, b, mask = frame.split()
-    #         if honorRarity == 'low':
-    #             pic.paste(frame, (8, 0), mask)
-    #         else:
-    #             pic.paste(frame, (0, 0), mask)
-    #         r, g, b, mask = rankpic.split()
-    #         pic.paste(rankpic, (34, 42), mask)
     return pic
 
 def gethonorasset(server, path):
