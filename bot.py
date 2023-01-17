@@ -1430,7 +1430,10 @@ def sync_handle_msg(event):
                 return
             elif event.message == 'pjsk音效猜曲':
                 cutSE(musicid, event.group_id)
-                sendmsg(event, 'PJSK纯音效识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲')
+                playLevel = getPlayLevel(musicid, 'master')
+                if playLevel >= 33:
+                    playLevel = '33+'
+                sendmsg(event, f'PJSK纯音效识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲\n难度是{playLevel}哦')
                 sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
                 guessType = 10
                 pjskguess[event.group_id]['type'] = guessType

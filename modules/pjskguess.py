@@ -11,7 +11,7 @@ from pydub import AudioSegment
 from modules.config import SEdir
 from modules.mysql_config import *
 from emoji2pic import Emoji2Pic
-from modules.musics import isleak
+from modules.musics import isleak, getPlayLevel
 from modules.texttoimg import texttoimg
 
 
@@ -235,7 +235,7 @@ def getRandomSE():
             target.append(music['id'])
     while True:
         musicid = target[random.randint(0, len(target) - 1)]
-        if os.path.exists(f'{SEdir}{musicid}.mp3'):
+        if os.path.exists(f'{SEdir}{musicid}.mp3') and getPlayLevel(musicid, 'master') >= 29:
             break
     return musicid
 
@@ -258,7 +258,7 @@ def cutSE(musicid, qunnum):
     musicpath = f'{SEdir}{musicid}.mp3'
     length = MP3(musicpath).info.length
     music = AudioSegment.from_mp3(musicpath)
-    starttime = random.randint(2, int(length) - 20)
-    cut = music[starttime * 1000: starttime * 1000 + 15000]
+    starttime = random.randint(2, int(length) - 30)
+    cut = music[starttime * 1000: starttime * 1000 + 20000]
     cut.export(f"piccache/{qunnum}.mp3",format="mp3")
 
