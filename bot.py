@@ -33,7 +33,7 @@ from modules.homo import generate_homo
 from modules.musics import hotrank, levelrank, parse_bpm, aliastochart, idtoname, notecount, tasseiritsu, findbpm, \
     getcharttheme, setcharttheme, getPlayLevel, levelRankPic
 from modules.pjskguess import getrandomjacket, cutjacket, getrandomchart, cutchartimg, getrandomcard, cutcard, \
-    getrandommusic, cutmusic, getrandomchartold, cutchartimgold, recordGuessRank, guessRank
+    getrandommusic, cutmusic, getrandomchartold, cutchartimgold, recordGuessRank, guessRank, getRandomSE, cutSE
 from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskinfo, writelog
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
 from modules.sendmail import sendemail
@@ -1371,7 +1371,7 @@ def sync_handle_msg(event):
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
                 return
             if event.self_id == guildbot:
-                if '听歌猜曲' in event.message or '倒放猜曲' in event.message:
+                if '听歌猜曲' in event.message or '倒放猜曲' in event.message or '音效猜曲' in event.message:
                     sendmsg(event, "由于暂无好的频道bot发送语音的办法，请在群聊中使用该功能")
                     return
             try:
@@ -1390,6 +1390,8 @@ def sync_handle_msg(event):
                 else:
                     if event.message == 'pjsk听歌猜曲' or event.message == 'pjsk倒放猜曲':
                         musicid, assetbundleName = getrandommusic()
+                    elif event.message == 'pjsk音效猜曲':
+                        musicid = getRandomSE()
                     else:
                         musicid = getrandomjacket()
                     pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid,
@@ -1397,6 +1399,8 @@ def sync_handle_msg(event):
             except KeyError:
                 if event.message == 'pjsk听歌猜曲' or event.message == 'pjsk倒放猜曲':
                     musicid, assetbundleName = getrandommusic()
+                elif event.message == 'pjsk音效猜曲':
+                    musicid = getRandomSE()
                 else:
                     musicid = getrandomjacket()
                 pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'starttime': int(time.time()), 'selfid': event.self_id}
@@ -1422,6 +1426,13 @@ def sync_handle_msg(event):
                 sendmsg(event, 'PJSK倒放识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲')
                 sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
                 guessType = 6
+                pjskguess[event.group_id]['type'] = guessType
+                return
+            elif event.message == 'pjsk音效猜曲':
+                cutSE(musicid, event.group_id)
+                sendmsg(event, 'PJSK纯音效识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲')
+                sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
+                guessType = 10
                 pjskguess[event.group_id]['type'] = guessType
                 return
             else:

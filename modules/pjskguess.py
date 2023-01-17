@@ -7,6 +7,8 @@ import pymysql
 from PIL import Image
 from mutagen.mp3 import MP3
 from pydub import AudioSegment
+
+from modules.config import SEdir
 from modules.mysql_config import *
 from emoji2pic import Emoji2Pic
 from modules.musics import isleak
@@ -66,21 +68,19 @@ def guessRank(guessType, typeText):
 
 
 def recordGuessRank(qqnum, name, guessType):
-    if int(guessType) not in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
-        return
     mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
                            database='pjskguess', charset='utf8mb4')
     mycursor = mydb.cursor()
 
-    mycursor.execute(f'SELECT * from `{guessType}` where qqnum=%s', (qqnum,))
+    mycursor.execute(f'SELECT * from `%s` where qqnum=%s', (guessType, qqnum))
     data = mycursor.fetchone()
     count = 0
     if data is not None:
         count = data[3]
-        mycursor.execute(f'UPDATE `{guessType}` SET name=%s, count=%s WHERE qqnum=%s', (name, count + 1, str(qqnum)))
+        mycursor.execute(f'UPDATE `%s` SET name=%s, count=%s WHERE qqnum=%s', (guessType, name, count + 1, str(qqnum)))
     else:
-        sql_add = f'insert into `{guessType}` (qqnum, name, count) values(%s, %s, %s)'
-        mycursor.execute(sql_add, (str(qqnum), name, count + 1))
+        sql_add = f'insert into `%s` (qqnum, name, count) values(%s, %s, %s)'
+        mycursor.execute(sql_add, (guessType, str(qqnum), name, count + 1))
 
     mydb.commit()
     mycursor.close()
@@ -209,6 +209,7 @@ def defaultvocal(musicid):
                 assetbundleName = vocal['assetbundleName']
     return assetbundleName
 
+
 def getrandommusic():
     path = 'data/assets/sekai/assetbundle/resources/ondemand/music/long'
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
@@ -224,6 +225,21 @@ def getrandommusic():
             break
     return musicid, assetbundleName
 
+
+def getRandomSE():
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+    target = []
+    for music in musics:
+        if music['publishedAt'] < time.time() * 1000:
+            target.append(music['id'])
+    while True:
+        musicid = target[random.randint(0, len(target) - 1)]
+        if os.path.exists(f'{SEdir}{musicid}.mp3'):
+            break
+    return musicid
+
+
 def cutmusic(assetbundleName, qunnum, reverse=False):
     path = 'data/assets/sekai/assetbundle/resources/ondemand/music/long'
     musicpath = f'{path}/{assetbundleName}/{assetbundleName}.mp3'
@@ -236,6 +252,13 @@ def cutmusic(assetbundleName, qunnum, reverse=False):
     else:
         cut = music[starttime * 1000: starttime * 1000 + 1700]
     cut.export(f"piccache/{qunnum}.mp3",format="mp3")
-# print(getrandomjacket())
-# cutjacket(getrandomjacket(), 1232232, 140, True)
+
+
+def cutSE(musicid, qunnum):
+    musicpath = f'{SEdir}{musicid}.mp3'
+    length = MP3(musicpath).info.length
+    music = AudioSegment.from_mp3(musicpath)
+    starttime = random.randint(2, int(length) - 20)
+    cut = music[starttime * 1000: starttime * 1000 + 15000]
+    cut.export(f"piccache/{qunnum}.mp3",format="mp3")
 
