@@ -1531,14 +1531,25 @@ def sync_handle_msg(event):
                                     sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}mix.mp3,cache=0]")
                         else:
                             text = f"[CQ:at,qq={event.user_id}] 您猜错了，答案不是{idtoname(resp['musicid'])}哦"
-                            if int(time.time()) > pjskguess[event.group_id]['starttime'] + 45:
+                            if int(time.time()) > pjskguess[event.group_id]['starttime'] + 55:
                                 text = text + '，回答已超时'
                                 picdir = f"data/assets/sekai/assetbundle/resources/startapp/music/jacket/" \
                                          f"jacket_s_{str(pjskguess[event.group_id]['musicid']).zfill(3)}/" \
                                          f"jacket_s_{str(pjskguess[event.group_id]['musicid']).zfill(3)}.png"
                                 text = text + '\n正确答案：' + idtoname(pjskguess[event.group_id]['musicid']) + fr"[CQ:image,file=file:///{botdir}\{picdir},cache=0]"
                                 pjskguess[event.group_id]['isgoing'] = False
-                            sendmsg(event, text)
+                                sendmsg(event, text)
+                                if pjskguess[event.group_id]['type'] == 10:
+                                    if event.self_id == guildbot:
+                                        from modules.ossupload import aliyunOSSUpload
+                                        sendmsg(event,
+                                                '混合版(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
+                                                                                   f'voice/{event.group_id}mix.mp3'))
+                                    else:
+                                        sendmsg(event,
+                                                fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}mix.mp3,cache=0]")
+                            else:
+                                sendmsg(event, text)
                     return
             except KeyError:
                 pass
