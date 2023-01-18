@@ -14,8 +14,6 @@ import time
 import traceback
 import yaml
 from aiocqhttp import CQHttp, Event
-from chachengfen import dd_query
-from modules.api import gacha
 from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel, aliastocharaid, get_card, cardidtopic, \
     findcard, getvits, getcardinfo
 from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
@@ -23,21 +21,21 @@ from modules.blacklist import *
 from modules.cyo5000 import cyo5000
 from modules.kk import kkwhitelist, kankan, uploadkk
 from modules.lighthouse import add_RDP_port, delete_RDP_port
-from modules.novelai import novelAI_img2img, tencent_novelAI, AIcutcard
+from modules.novelai import tencent_novelAI, AIcutcard
 
 from modules.findevent import findevent
 from modules.opencv import matchjacket
 from modules.otherpics import geteventpic
-from modules.gacha import getcharaname, getallcurrentgacha, getcurrentgacha, fakegacha
+from modules.gacha import getcharaname, getcurrentgacha, fakegacha
 from modules.homo import generate_homo
-from modules.musics import hotrank, levelrank, parse_bpm, aliastochart, idtoname, notecount, tasseiritsu, findbpm, \
+from modules.musics import hotrank, parse_bpm, aliastochart, idtoname, notecount, tasseiritsu, findbpm, \
     getcharttheme, setcharttheme, getPlayLevel, levelRankPic
 from modules.pjskguess import getrandomjacket, cutjacket, getrandomchart, cutchartimg, getrandomcard, cutcard, \
     getrandommusic, cutmusic, getrandomchartold, cutchartimgold, recordGuessRank, guessRank, getRandomSE, cutSE
 from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskinfo, writelog
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
 from modules.sendmail import sendemail
-from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, currentevent, chafang, \
+from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, chafang, \
     getstoptime, ss, drawscoreline, maintenanceIn, cheaterFound
 from modules.texttoimg import texttoimg, ycmimg
 from modules.twitter import newesttwi
@@ -1370,10 +1368,6 @@ def sync_handle_msg(event):
         if (event.message[-2:] == '猜曲' or event.message[-4:-2] == '猜曲') and event.message[:4] == 'pjsk':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
                 return
-            if event.self_id == guildbot:
-                if '听歌猜曲' in event.message or '倒放猜曲' in event.message or '音效猜曲' in event.message:
-                    sendmsg(event, "由于暂无好的频道bot发送语音的办法，请在群聊中使用该功能")
-                    return
             try:
                 isgoing = charaguess[event.group_id]['isgoing']
                 if isgoing:
@@ -1417,14 +1411,22 @@ def sync_handle_msg(event):
             elif event.message == 'pjsk听歌猜曲':
                 cutmusic(assetbundleName, event.group_id)
                 sendmsg(event, 'PJSK听歌识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲')
-                sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
+                if event.self_id == guildbot:
+                    from modules.ossupload import aliyunOSSUpload
+                    sendmsg(event, '听语音(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
+                else:
+                    sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
                 guessType = 5
                 pjskguess[event.group_id]['type'] = guessType
                 return
             elif event.message == 'pjsk倒放猜曲':
                 cutmusic(assetbundleName, event.group_id, True)
                 sendmsg(event, 'PJSK倒放识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲')
-                sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
+                if event.self_id == guildbot:
+                    from modules.ossupload import aliyunOSSUpload
+                    sendmsg(event, '听语音(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
+                else:
+                    sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
                 guessType = 6
                 pjskguess[event.group_id]['type'] = guessType
                 return
@@ -1434,7 +1436,11 @@ def sync_handle_msg(event):
                 if playLevel >= 33:
                     playLevel = '33+'
                 sendmsg(event, f'PJSK纯音效识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲\n难度是{playLevel}哦')
-                sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
+                if event.self_id == guildbot:
+                    from modules.ossupload import aliyunOSSUpload
+                    sendmsg(event, '听语音(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
+                else:
+                    sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
                 guessType = 10
                 pjskguess[event.group_id]['type'] = guessType
                 return
@@ -1456,6 +1462,13 @@ def sync_handle_msg(event):
                     text = '正确答案：' + idtoname(pjskguess[event.group_id]['musicid'])
                     pjskguess[event.group_id]['isgoing'] = False
                     sendmsg(event, text + fr"[CQ:image,file=file:///{botdir}\{picdir},cache=0]")
+                    if pjskguess[event.group_id]['type'] == 10:
+                        if event.self_id == guildbot:
+                            from modules.ossupload import aliyunOSSUpload
+                            sendmsg(event, '混合版(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
+                                                                              f'voice/{event.group_id}mix.mp3'))
+                        else:
+                            sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}mix.mp3,cache=0]")
             except KeyError:
                 pass
             return
@@ -1508,6 +1521,14 @@ def sync_handle_msg(event):
                             text = text + '\n正确答案：' + idtoname(pjskguess[event.group_id]['musicid'])
                             pjskguess[event.group_id]['isgoing'] = False
                             sendmsg(event, text + fr"[CQ:image,file=file:///{botdir}\{picdir},cache=0]")
+                            if pjskguess[event.group_id]['type'] == 10:
+                                if event.self_id == guildbot:
+                                    from modules.ossupload import aliyunOSSUpload
+                                    sendmsg(event,
+                                            '混合版(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
+                                                                               f'voice/{event.group_id}mix.mp3'))
+                                else:
+                                    sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}mix.mp3,cache=0]")
                         else:
                             text = f"[CQ:at,qq={event.user_id}] 您猜错了，答案不是{idtoname(resp['musicid'])}哦"
                             if int(time.time()) > pjskguess[event.group_id]['starttime'] + 45:
@@ -1775,6 +1796,8 @@ async def autopjskguess():
             pjskguess[group]['isgoing'] = False
             try:
                 await bot.send_group_msg(self_id=pjskguess[group]['selfid'], group_id=group, message=text + fr"[CQ:image,file={picdir},cache=0]")
+                if pjskguess[group]['type'] == 10:
+                    await bot.send_group_msg(self_id=pjskguess[group]['selfid'], group_id=group, message=fr"[CQ:record,file=file:///{botdir}/piccache/{group}mix.mp3,cache=0]")
             except:
                 pass
 

@@ -257,8 +257,21 @@ def cutmusic(assetbundleName, qunnum, reverse=False):
 def cutSE(musicid, qunnum):
     musicpath = f'{SEdir}{musicid}.mp3'
     length = MP3(musicpath).info.length
-    music = AudioSegment.from_mp3(musicpath)
+    se = AudioSegment.from_mp3(musicpath)
     starttime = random.randint(2, int(length) - 30)
-    cut = music[starttime * 1000: starttime * 1000 + 20000]
-    cut.export(f"piccache/{qunnum}.mp3",format="mp3")
+    cut = se[starttime * 1000: starttime * 1000 + 20000]
+    cut.export(f"piccache/{qunnum}.mp3", format="mp3", bitrate="96k")
+
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+    for musicdata in musics:
+        if musicdata['id'] == musicid:
+            break
+    path = 'data/assets/sekai/assetbundle/resources/ondemand/music/long'
+    vocal = defaultvocal(musicid)
+    musicpath = f'{path}/{vocal}/{vocal}.mp3'
+    music = AudioSegment.from_mp3(musicpath).apply_gain(-3)
+    cut2 = music[starttime * 1000 + musicdata['fillerSec'] * 1000: starttime * 1000 + 20000 + musicdata['fillerSec'] * 1000]
+    mix = cut.overlay(cut2)
+    mix.export(f"piccache/{qunnum}mix.mp3", format="mp3", bitrate="96k")
 

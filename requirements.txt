@@ -35,3 +35,4 @@ esprima~=4.0.1
 beautifulsoup4~=4.11.1
 oss2~=2.16.0
 PyMySQL~=1.0.2
+ujson~=5.4.0
