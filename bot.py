@@ -1647,7 +1647,15 @@ def sendmsg(event, msg):
 
     try:
         if event.self_id == guildbot:
-            bot.sync.send_group_msg(self_id=event.self_id, group_id=event.group_id, message=f'[CQ:reply,id={event.message_id}]' + msg)
+            for i in range(0, 3):
+                try:
+                    bot.sync.send_group_msg(self_id=event.self_id, group_id=event.group_id, message=f'[CQ:reply,id={event.message_id}]' + msg)
+                    break
+                except KeyError as a:
+                    if repr(a) == "KeyError('status')":
+                        print(f'图片发送失败，重试{i + 1}/3')
+                    else:
+                        break
         else:
             bot.sync.send_group_msg(self_id=event.self_id, group_id=event.group_id, message=msg)
         if event.self_id == 1513705608:
