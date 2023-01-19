@@ -1413,7 +1413,7 @@ def sync_handle_msg(event):
                 sendmsg(event, 'PJSK听歌识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲')
                 if event.self_id == guildbot:
                     from modules.ossupload import aliyunOSSUpload
-                    sendmsg(event, '听语音(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
+                    sendmsg(event, '听语音(两分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
                 else:
                     sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
                 guessType = 5
@@ -1424,7 +1424,7 @@ def sync_handle_msg(event):
                 sendmsg(event, 'PJSK倒放识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲')
                 if event.self_id == guildbot:
                     from modules.ossupload import aliyunOSSUpload
-                    sendmsg(event, '听语音(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
+                    sendmsg(event, '听语音(两分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
                 else:
                     sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
                 guessType = 6
@@ -1435,14 +1435,15 @@ def sync_handle_msg(event):
                 playLevel = getPlayLevel(musicid, 'master')
                 if playLevel >= 33:
                     playLevel = '33+'
-                sendmsg(event, f'PJSK纯音效识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲\n难度是{playLevel}哦')
+                sendmsg(event, f'PJSK纯音效识曲竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有90秒的时间回答\n可手动发送“结束猜曲”来结束猜曲\n难度是{playLevel}哦')
                 if event.self_id == guildbot:
                     from modules.ossupload import aliyunOSSUpload
-                    sendmsg(event, '听语音(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
+                    sendmsg(event, '听语音(两分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}.mp3', f'voice/{event.group_id}.mp3'))
                 else:
                     sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}.mp3,cache=0]")
                 guessType = 10
                 pjskguess[event.group_id]['type'] = guessType
+                pjskguess[event.group_id]['starttime'] = int(time.time()) + 40
                 return
             else:
                 cutjacket(musicid, event.group_id, size=140, isbw=False)
@@ -1465,7 +1466,7 @@ def sync_handle_msg(event):
                     if pjskguess[event.group_id]['type'] == 10:
                         if event.self_id == guildbot:
                             from modules.ossupload import aliyunOSSUpload
-                            sendmsg(event, '混合版(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
+                            sendmsg(event, '混合版(两分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
                                                                               f'voice/{event.group_id}mix.mp3'))
                         else:
                             sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}mix.mp3,cache=0]")
@@ -1525,7 +1526,7 @@ def sync_handle_msg(event):
                                 if event.self_id == guildbot:
                                     from modules.ossupload import aliyunOSSUpload
                                     sendmsg(event,
-                                            '混合版(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
+                                            '混合版(两分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
                                                                                f'voice/{event.group_id}mix.mp3'))
                                 else:
                                     sendmsg(event, fr"[CQ:record,file=file:///{botdir}/piccache/{event.group_id}mix.mp3,cache=0]")
@@ -1543,7 +1544,7 @@ def sync_handle_msg(event):
                                     if event.self_id == guildbot:
                                         from modules.ossupload import aliyunOSSUpload
                                         sendmsg(event,
-                                                '混合版(一分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
+                                                '混合版(两分钟内有效):\n' + aliyunOSSUpload(f'piccache/{event.group_id}mix.mp3',
                                                                                    f'voice/{event.group_id}mix.mp3'))
                                     else:
                                         sendmsg(event,
