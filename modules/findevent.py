@@ -23,6 +23,7 @@ def findevent(msg: str = '') -> str:
     args = msg.strip().split()
     event_type = 'all'
     event_attr = 'all'
+    event_unit = 'all'
     event_charas_id = []
     # 解析[关键字]参数
     for i in args:
@@ -42,9 +43,9 @@ def findevent(msg: str = '') -> str:
             event_attr = _
         # 是否为组合（并不包含vs角色）
         elif _ := {
-            'ln': [1,2,3,4], 'mmj': [5,6,7,8],'vbs': [9,10,11,12],'ws': [13,14,15,16],'25': [17,18,19,20],
+            'ln': 'light_sound', 'mmj': 'idol', 'vbs': 'street', 'ws': 'theme_park', '25': 'school_refusal'
         }.get(i):
-            event_charas_id.extend(_)
+            event_unit = _
         # 是否为角色
         else:
             # 是否是带附属组合的vs角色
@@ -76,7 +77,7 @@ def findevent(msg: str = '') -> str:
                 if charaid != 0:
                     event_charas_id.append(charaid)
     # 当用户发送文本带有[关键字]但关键字不合规范时，返回提示图
-    if args and event_type == 'all' and event_attr == 'all' and not event_charas_id:
+    if args and event_type == 'all' and event_attr == 'all' and event_unit == 'all' and not event_charas_id:
         tip_path = f"{botpath}/pics/findevent_tips.jpg"
         return tip_path
     # 检查本地活动图鉴是否需要更新
@@ -107,7 +108,7 @@ def findevent(msg: str = '') -> str:
         # 活动出卡是否需要包含所有角色id
         isContainAllCharasId = True
         # 生成图片
-        pic = drawEventHandbook(event_type, event_attr, event_charas_id, isContainAllCharasId, events)
+        pic = drawEventHandbook(event_type, event_attr, event_unit, event_charas_id, isContainAllCharasId, events)
         if pic:
             pic = pic.convert('RGB')
             pic.save(save_path, quality=70)
@@ -120,6 +121,7 @@ def findevent(msg: str = '') -> str:
 def drawEventHandbook(
     event_type: str = 'all',
     event_attr: str = 'all',
+    event_unit: str = 'all',
     event_charas_id: Optional[List[Union[int, Tuple[int, str]]]] = None,
     isContainAllCharasId: bool = False,
     events: Optional[Dict] = None
@@ -128,6 +130,7 @@ def drawEventHandbook(
     生成活动图鉴
     :param event_type: 筛选的活动类型
     :param event_attr: 筛选的活动属性
+    :param event_unit: 筛选的活动组合
     :param event_charas_id: 筛选的活动出卡角色
     :param isContainAllCharasId: 筛选的活动出卡是否需要包含所有角色id，针对event_charas_id参数
     :param events: events.json
@@ -214,6 +217,9 @@ def drawEventHandbook(
                 'asset': 'vs_90.png'
             })
         event_bonusecharas = tmp_bonuse_charas
+        # 若加成角色不全部属于筛选团体，则活动非筛选团体的箱活
+        if event_unit != 'all' and any(map(lambda x: x['unit'] != event_unit, event_bonusecharas)):
+            continue
         # ********************************生成活动图片******************************** #
         event_img = Image.new('RGB', event_size, 'white')
         draw = ImageDraw.Draw(event_img)
