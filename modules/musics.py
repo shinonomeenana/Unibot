@@ -775,6 +775,37 @@ def updatecharts(deletelist):
     gensvg()
 
 
+def gen_bpm_svg():
+    import pandas as pd
+
+    ids = []
+    diffs = []    
+    names = []
+    bpms = []
+
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+
+    with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
+        musicDifficulties = json.load(f)
+
+    for music in musics:
+        ids.append(str(music['id']))
+
+        for diff in musicDifficulties:
+            if diff['musicId'] == music['id'] and diff['musicDifficulty'] == 'master':
+                diffs.append(str(diff['playLevel']))
+                break
+
+        names.append(str(music['title']))
+        bpm = parse_bpm(music['id'])
+        bpms.append(' - '.join([str(i['bpm']).replace('.0', '') for i in bpm[1]]))
+
+    dataframe = pd.DataFrame({'id': ids, '难度': diffs, '曲名': names, 'bpm': bpms})
+
+    dataframe.to_csv("test/test.csv", index=False, sep=',', encoding='utf_8_sig')
+
+
 if __name__ == '__main__':
     print(os.path.exists('kk.py'))
 
