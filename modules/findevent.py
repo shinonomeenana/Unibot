@@ -1,8 +1,12 @@
 import os
+import re
+
 import pytz
 import json
 import datetime
 from hashlib import md5
+
+import yaml
 from PIL import ImageFont, Image, ImageDraw
 from typing import Optional, Dict, List, Tuple, Union
 from modules.chara import aliastocharaid
@@ -15,69 +19,149 @@ assetpath = botpath + '/data/assets/sekai/assetbundle/resources'
 masterdatadir = os.path.join(botpath, 'masterdata/')
 
 
+def event_argparse(args: List = None):
+    if not args:
+        args = []
+    event_type = None            # 活动类型
+    event_attr = None            # 活动属性
+    event_units_name = []        # 活动组合名称，单数时匹配箱活，多数时匹配混活
+    event_charas_id = []         # 活动出卡角色id
+    isEqualAllUnits = True       # True代表活动加成与筛选组合必须一致，False代表加成包含所有筛选组合即可，且不匹配箱活
+    isContainAllCharasId = True  # True代表活动出卡必须包含所有筛选角色，False代表出卡包含任意筛选角色即可
+    islegal = True               # 参数是否合法
+    isTeamEvent = None           # 是否指定箱活
+    unit_dict = {
+        'ln': 'light_sound', 'mmj': 'idol', 'vbs': 'street', 'ws': 'theme_park', '25h': 'school_refusal',
+    }
+    team_dict = {
+        '箱活': True, '团队活': True, '团内活': True, '混活': False, '团外活': False
+    }
+    event_type_dict = {
+        '普活': 'marathon', '马拉松': 'marathon', 'marathon': 'marathon',
+        '5v5': 'cheerful_carnival', '嘉年华': 'cheerful_carnival', 'cheerful_carnival': 'cheerful_carnival'
+    }
+    event_attr_dict = {
+        '蓝星': 'cool', '紫月': 'mysterious', '橙心': 'happy', '黄心': 'happy', '粉花': 'cute', '绿草': 'pure',
+        '蓝': 'cool', '紫': 'mysterious', '橙': 'happy', '黄': 'happy', '粉': 'cute', '绿': 'pure',
+        '星': 'cool', '月': 'mysterious', '心': 'happy', '花': 'cute', '草': 'pure',
+        'cool': 'cool', 'mysterious': 'mysterious', 'happy': 'happy', 'cute': 'cute', 'pure': 'pure',
+    }
+    chara_dict = {
+        'ick': 1, 'saki': 2, 'hnm': 3, 'shiho': 4,
+        'mnr': 5, 'hrk': 6, 'airi': 7, 'szk': 8,
+        'khn': 9, 'an': 10, 'akt': 11, 'toya': 12,
+        'tks': 13, 'emu': 14, 'nene': 15, 'rui': 16,
+        'knd': 17, 'mfy': 18, 'ena': 19, 'mzk': 20,
+        'miku': 21, 'rin': 22, 'len': 23, 'luka': 24, 'meiko': 25, 'kaito': 26
+    }
+    chara2unit_dict = {
+        'light_sound': [1,2,3,4],
+        'idol': [5,6,7,8],
+        'street': [9,10,11,12],
+        'theme_park': [13,14,15,16],
+        'school_refusal': [17,18,19,20]
+    }
+    for arg in args:
+        # 参数是否指定了箱活或混活
+        if arg in team_dict.keys():
+            isTeamEvent = team_dict[arg]
+            continue
+        # 参数是否为活动类型，只能指定一种
+        if _ := event_type_dict.get(arg):
+            if event_type:
+                islegal = False
+                break
+            else:
+                event_type = _
+                continue
+        # 参数是否为活动属性，只能指定一种
+        if _ := event_attr_dict.get(arg):
+            if event_attr:
+                islegal = False
+                break
+            else:
+                event_attr = _
+                continue
+        # 参数是否为组合缩写(指定一个时为箱活，指定多个时为混活)
+        if _ := unit_dict.get(arg):
+            event_units_name.append(_)
+            continue
+        # 参数是否为组合缩写(对参数中含"混"、"加成"的额外再判定一次)
+        # 末尾为"混"、"加成"，说明需要筛选加成包含此组合的活动
+        unit_rule = "|".join(unit_dict.keys())
+        if match := re.match(rf'^({unit_rule})(?:混|加成)$', arg):
+            try:
+                event_units_name.append(unit_dict[match.group(1)])
+            except KeyError:
+                islegal = False
+                break
+            else:
+                isEqualAllUnits = False
+                continue
+        # 中间为"混"
+        if match := re.match(rf'^({unit_rule})混({unit_rule}).*$', arg):
+            try:
+                event_units_name.extend(unit_dict[j] for j in match.group().split('混'))
+                continue
+            except KeyError:
+                islegal = False
+                break
+        # 参数是否是带附属组合的vs角色
+        if match := re.match(rf"^({unit_rule})(.+)", arg):
+            unit = match.group(1)
+            alias = match.group(2)
+            charaid = chara_dict.get(alias)
+            if not charaid:
+                charaid = aliastocharaid(alias)[0]
+            if charaid > 20:
+                event_charas_id.append((charaid, unit_dict[unit]))
+                continue
+            else:
+                islegal = False
+                break
+        # 以上判定均无果，则认定为sekai角色或无附属组合的vs角色
+        charaid = chara_dict.get(arg)
+        if not charaid:
+            charaid = aliastocharaid(arg)[0]
+        if charaid:
+            event_charas_id.append(charaid)
+        # 参数仍无法识别
+        else:
+            islegal = False
+            break
+    for i in event_charas_id:
+        if len(event_units_name) == 0:
+            break
+        if isinstance(i, tuple):
+            unit = i[1]
+        elif i <= 20:
+            unit = [x for x in chara2unit_dict.keys() if i in chara2unit_dict[x]][0]
+        else:
+            continue
+        if unit not in event_units_name:
+            event_units_name.append(unit)
+            isEqualAllUnits = False
+    # 箱活标志只能与活动类型、活动属性搭配
+    if isTeamEvent is not None and (len(event_units_name) > 0 or len(event_charas_id) > 0):
+        islegal = False
+    return {
+        'event_type': event_type, 'event_attr': event_attr,
+        'event_units_name': list(set(event_units_name)), 'event_charas_id': list(set(event_charas_id)),
+        'isEqualAllUnits': isEqualAllUnits, 'isContainAllCharasId': isContainAllCharasId,
+        'isTeamEvent': isTeamEvent, 'islegal': islegal
+    }
+
+
 def findevent(msg: str = '') -> str:
     """
     查询活动，返回图片路径
     :param msg: 用户所发送的消息
     """
     args = msg.strip().split()
-    event_type = 'all'
-    event_attr = 'all'
-    event_unit = 'all'
-    event_charas_id = []
     # 解析[关键字]参数
-    for i in args:
-        # 是否为活动类型
-        if _ := {
-            '普活': 'marathon', '马拉松': 'marathon', 'marathon': 'marathon',
-            '5v5': 'cheerful_carnival', 'cheerful_carnival': 'cheerful_carnival'
-        }.get(i):
-            event_type = _
-        # 是否为活动属性
-        elif _ := {
-            '蓝星':'cool', '紫月':'mysterious', '橙心':'happy', '粉花':'cute', '绿草':'pure',
-            '蓝': 'cool', '紫': 'mysterious', '橙': 'happy', '粉': 'cute', '绿': 'pure',
-            '星': 'cool', '月': 'mysterious', '心': 'happy', '花': 'cute', '草': 'pure',
-            'cool': 'cool', 'mysterious': 'mysterious', 'happy': 'happy', 'cute': 'cute', 'pure': 'pure',
-        }.get(i):
-            event_attr = _
-        # 是否为组合（并不包含vs角色）
-        elif _ := {
-            'ln': 'light_sound', 'mmj': 'idol', 'vbs': 'street', 'ws': 'theme_park', '25': 'school_refusal'
-        }.get(i):
-            event_unit = _
-        # 是否为角色
-        else:
-            # 是否是带附属组合的vs角色
-            for unit in ['ln','mmj','vbs','ws','25']:
-                if i.startswith(unit):
-                    unit_dict = {
-                        'ln': 'light_sound', 'mmj': 'idol', 'vbs': 'street', 'ws': 'theme_park', '25': 'school_refusal'
-                    }
-                    chara_dict = {'miku':21,'rin':22,'len':23,'luka':24,'meiko':25,'kaito':26}
-                    charaid = chara_dict.get(i[len(unit):])
-                    if not charaid:
-                        charaid = aliastocharaid(i[len(unit):])[0]
-                    if charaid != 0:
-                        event_charas_id.append((charaid,unit_dict[unit]))
-                        break
-            # sekai角色、无附属组合的vs角色
-            else:
-                chara_dict = {
-                    'ick': 1, 'saki': 2, 'hnm': 3, 'shiho': 4,
-                    'mnr': 5, 'hrk': 6, 'airi': 7, 'szk': 8,
-                    'khn': 9, 'an': 10, 'akt': 11, 'toya': 12,
-                    'tks': 13, 'emu': 14, 'nene': 15, 'rui': 16,
-                    'knd': 17, 'mfy': 18, 'ena': 19, 'mzk': 20,
-                    'miku': 21, 'rin': 22, 'len': 23, 'luka': 24, 'meiko': 25, 'kaito': 26
-                }
-                charaid = chara_dict.get(i)
-                if not charaid:
-                    charaid = aliastocharaid(i)[0]
-                if charaid != 0:
-                    event_charas_id.append(charaid)
+    params = event_argparse(args)
     # 当用户发送文本带有[关键字]但关键字不合规范时，返回提示图
-    if args and event_type == 'all' and event_attr == 'all' and event_unit == 'all' and not event_charas_id:
+    if not params['islegal']:
         tip_path = f"{botpath}/pics/findevent_tips.jpg"
         return tip_path
     # 检查本地活动图鉴是否需要更新
@@ -85,16 +169,22 @@ def findevent(msg: str = '') -> str:
         events = json.load(f)
     count = len(events)
     # 变化图片路径格式
-    charas_id_name = event_charas_id.copy()
-    for i in range(len(event_charas_id)):
-        if isinstance(event_charas_id[i], tuple):
-            charaid = event_charas_id[i][0] + ([
+    _event_charas_id = params['event_charas_id'].copy()
+    _event_units_name = params['event_units_name'].copy()
+    params['event_units_name'].sort()
+    charas_id_name = params['event_charas_id']
+    for i in range(len(_event_charas_id)):
+        if isinstance(_event_charas_id[i], tuple):
+            charaid = _event_charas_id[i][0] + ([
                  'light_sound','idol','street','theme_park','school_refusal'
-            ].index(event_charas_id[i][1])+1)*6
+            ].index(_event_charas_id[i][1])+1)*6
             charas_id_name[i] = charaid
     charas_id_name.sort()
-    save_file_prefix = md5(f'{event_type}{event_attr}{charas_id_name}{event_unit}'.encode()).hexdigest()
+    save_file_prefix = md5(''.join(str(params.values())).encode()).hexdigest()
     save_path = f'piccache/findevent/{save_file_prefix}-{count}.jpg'
+    # 还原
+    params['event_charas_id'] = _event_charas_id
+    params['event_units_name'] = _event_units_name
     # 图片存在缓存，直接发送
     if os.path.exists(save_path):
         return botpath + '/' + save_path
@@ -105,10 +195,8 @@ def findevent(msg: str = '') -> str:
             if not file.split('.')[0].endswith(str(count)):
                 os.remove(f'piccache/findevent/{file}')
 
-        # 活动出卡是否需要包含所有角色id
-        isContainAllCharasId = True
         # 生成图片
-        pic = drawEventHandbook(event_type, event_attr, event_unit, event_charas_id, isContainAllCharasId, events)
+        pic = drawEventHandbook(events=events, **params)
         if pic:
             pic = pic.convert('RGB')
             pic.save(save_path, quality=70)
@@ -119,20 +207,25 @@ def findevent(msg: str = '') -> str:
 
 
 def drawEventHandbook(
-    event_type: str = 'all',
-    event_attr: str = 'all',
-    event_unit: str = 'all',
+    event_type: Optional[str] = None,
+    event_attr: Optional[str] = None,
+    event_units_name: Optional[List] = None,
     event_charas_id: Optional[List[Union[int, Tuple[int, str]]]] = None,
-    isContainAllCharasId: bool = False,
-    events: Optional[Dict] = None
+    isEqualAllUnits: bool = True,
+    isContainAllCharasId: bool = True,
+    isTeamEvent: Optional[bool] = None,
+    events: Optional[Dict] = None,
+    *args, **kwargs
 ):
     """
     生成活动图鉴
     :param event_type: 筛选的活动类型
     :param event_attr: 筛选的活动属性
-    :param event_unit: 筛选的活动组合
+    :param event_units_name: 筛选的活动组合
     :param event_charas_id: 筛选的活动出卡角色
+    :param isEqualAllUnits: 筛选的活动组合是否需要完全等同所有组合名称，针对event_units_name参数
     :param isContainAllCharasId: 筛选的活动出卡是否需要包含所有角色id，针对event_charas_id参数
+    :param isTeamEvent: True时只筛选箱活、False时只筛选混活，会无视除event_type、event_attr的筛选条件
     :param events: events.json
     """
     # 先统一载入所有需要的文件数据
@@ -147,11 +240,16 @@ def drawEventHandbook(
         game_character_units = json.load(f)
     with open(masterdatadir + 'cards.json', 'r', encoding='utf-8') as f:
         allcards = json.load(f)
+    if event_type != 'marathon':
+        with open(masterdatadir + 'cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
+            allteams = json.load(f)
+        with open(f'{botpath}/yamls/translate.yaml', encoding='utf-8') as f:
+            trans = yaml.load(f, Loader=yaml.FullLoader)
     font30 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', size=30)
     font20 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', size=20)
     font10 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', size=10)
     # 筛选：指定活动图鉴显示的活动类型
-    if event_type != 'all':
+    if event_type is not None:
         events = filter(lambda x: x['eventType'] == event_type, events)
     limit_count = 10  # 单列活动缩略图的个数
     event_size = (835, 230)  # 每张活动图的尺寸
@@ -197,7 +295,7 @@ def drawEventHandbook(
             if bonuse['bonusRate'] == 50 and bonuse.get('gameCharacterUnitId')
         )
         event_bonuseattr = next(filter(lambda x: x.get('cardAttr'), current_bonuse))['cardAttr']
-        if event_attr != 'all' and event_bonuseattr != event_attr:
+        if event_attr is not None and event_bonuseattr != event_attr:
             continue
         tmp_bonuse_charas = []
         for unitid in event_bonusecharas:
@@ -217,15 +315,32 @@ def drawEventHandbook(
                 'asset': 'vs_90.png'
             })
         event_bonusecharas = tmp_bonuse_charas
-        # 若加成角色不全部属于筛选团体，则活动非筛选团体的箱活
-        if event_unit != 'all' and any(map(lambda x: x['unit'] != event_unit, event_bonusecharas)):
+        # 加成角色的所属团体
+        belong_units = set(map(lambda x: x['unit'], event_bonusecharas))
+        # 限制为查询所有箱活
+        if isTeamEvent is True and len(belong_units) != 1:
             continue
+        # 限制为查询所有混活
+        if isTeamEvent is False and len(belong_units) == 1:
+            continue
+        if isTeamEvent is None and event_units_name:
+            # 当期加成与筛选团体完全吻合（筛选团体单数时即为筛选箱活）
+            if isEqualAllUnits and belong_units != set(event_units_name):
+                continue
+            # 当期加成中存在筛选团体即可（但排除箱活），可以是复数
+            if not isEqualAllUnits and not (
+                len(set(belong_units)) > 1 and
+                set(event_units_name).issubset(belong_units)
+            ):
+                continue
         # ********************************生成活动图片******************************** #
         event_img = Image.new('RGB', event_size, 'white')
         draw = ImageDraw.Draw(event_img)
         _interval = 10
         _banner_width = 265
         _left_offset = 70
+        _team_size = 70
+        _team_pad = 5
 
         # 生成banner图
         bannerpic = Image.open(f'{assetpath}/ondemand/event_story/{each["assetbundleName"]}/screen_image/banner_event_story.png')
@@ -253,6 +368,35 @@ def drawEventHandbook(
         attrpic = Image.open(f'{botpath}/chara/icon_attribute_{event_bonuseattr}.png').resize((30, 30))
         event_img.paste(attrpic, (bannerpic.width + _left_offset + _interval, 80), attrpic)
         event_img.paste(charapic, (bannerpic.width + _left_offset + _interval + 60, 80), charapic)
+
+        # 如果活动类型为5v5，粘贴team图
+        if each['eventType'] == 'cheerful_carnival':
+            teams_info = filter(lambda x: x['eventId'] == each['id'], allteams)
+            for _i, team_info in enumerate(teams_info):
+                team_img = Image.open(f'{assetpath}/ondemand/event/{each["assetbundleName"]}/team_image/{team_info["assetbundleName"]}.png')
+                team_img = team_img.resize((_team_size, _team_size))
+                team_bk_img = Image.new('RGBA', (_team_size + _team_pad * 2, _team_size + _team_pad * 2))
+                _color = "#00bbdd" if _i % 2 else "#ff8833"
+                _draw = ImageDraw.Draw(team_bk_img)
+                _draw.rounded_rectangle((0, 0, _team_size + _team_pad, _team_size + _team_pad), 10, _color, light_grey, 3)
+                team_bk_img.paste(team_img, (_team_pad - 2, _team_pad - 2), team_img)
+                try:
+                    team_name = trans['cheerful_carnival_teams'][team_info['id']]
+                except KeyError:
+                    team_name = team_info['teamName']
+                pos = (_left_offset+_banner_width+_interval*2+256+_i*(_team_size+2*_team_pad+_interval*3), 0)
+                event_img.paste(team_bk_img, (pos[0] + _interval, pos[1]), team_bk_img)
+                if _i != 0:
+                    draw.text((pos[0] - _interval * 2, pos[1] + _team_size // 2 - 15), 'VS', 'black', font20)
+                _name_width = font20.getsize(team_name)[0]
+                if _name_width > _team_size + 2 * _interval:
+                    _name_width = font10.getsize(team_name)[0]
+                    draw.text((pos[0] + (_team_size + 2 * (_interval + _team_pad) - _name_width) // 2,
+                               pos[1] + _team_size + _interval), team_name, 'black', font10)
+                else:
+                    draw.text(
+                        (pos[0] + (_team_size + 2 * (_interval + _team_pad) - _name_width) // 2, pos[1] + _team_size),
+                        team_name, 'black', font20)
 
         # 生成活动出卡图
         for index, cardid in enumerate(event_cards):
@@ -315,7 +459,7 @@ def drawEventHandbook(
         font30
     )
     draw.text(
-        (handbook_pad[3], handbook_img.height - 25 - handbook_pad[1] // 3),
+        (handbook_pad[3], handbook_img.height - 50 - handbook_pad[1] // 3),
         tips,
         '#00CCBB',
         font30
