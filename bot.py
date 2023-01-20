@@ -1111,6 +1111,18 @@ def sync_handle_msg(event):
             if event.message.startswith('pjsk倒放猜曲'):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(6, 'pjsk倒放猜曲')},cache=0]")
                 return
+            if event.message.startswith('ai猜曲'):
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(7, 'ai猜曲')},cache=0]")
+                return
+            if event.message.startswith('ai猜卡面'):
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(8, 'ai猜卡面')},cache=0]")
+                return
+            if event.message.startswith('ai阴间猜曲'):
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(9, 'ai阴间猜曲')},cache=0]")
+                return
+            if event.message.startswith('pjsk音效猜曲'):
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(10, 'pjsk音效猜曲')},cache=0]")
+                return
         if event.message[:1] == '看' or event.message[:2] == '来点':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
                 return

@@ -35,13 +35,11 @@ def getrandomchartold():
 
 
 def guessRank(guessType, typeText):
-    if int(guessType) not in [1, 2, 3, 4, 5, 6, 7]:
-        return
     mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
                            database='pjskguess', charset='utf8mb4')
     mycursor = mydb.cursor()
 
-    mycursor.execute(f'SELECT * from `{guessType}` order by count desc')
+    mycursor.execute(f'SELECT * from `%s` order by count desc', (guessType,))
     data = mycursor.fetchall()
     mycursor.close()
     mydb.close()
