@@ -381,7 +381,7 @@ def drawEventHandbook(
                 _draw.rounded_rectangle((0, 0, _team_size + _team_pad, _team_size + _team_pad), 10, _color, light_grey, 3)
                 team_bk_img.paste(team_img, (_team_pad - 2, _team_pad - 2), team_img)
                 try:
-                    team_name = trans['cheerful_carnival_teams'][team_info['id']]
+                    team_name = trans['cheerfulCarnivalTeams'][team_info['id']]
                 except KeyError:
                     team_name = team_info['teamName']
                 pos = (_left_offset+_banner_width+_interval*2+256+_i*(_team_size+2*_team_pad+_interval*3), 0)
