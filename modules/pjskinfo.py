@@ -5,6 +5,8 @@ import sqlite3
 import difflib
 import time
 import pymysql
+
+from imageutils import text2image
 from modules.mysql_config import *
 import requests
 from mutagen.mp3 import MP3
@@ -633,10 +635,9 @@ def pjskalias(alias, musicid=None):
     for raw in respdata:
         returnstr = returnstr + raw[1] + "，"
     if len(returnstr[:-1]) > 170:
-        instance = Emoji2Pic(text=returnstr[:-1] + '\n昵称均为用户添加，与bot和bot主无关\n\n', font='fonts/SourceHanSansCN-Medium.otf', emoji_folder='AppleEmoji')
-        textimg = instance.make_img()
-        textimg.save(f'piccache/{musicid}alias.jpg')
-        return f"[CQ:image,file=file:///{os.getcwd()}/piccache/{musicid}alias.jpg,cache=0]"
+        infopic = text2image(text=returnstr[:-1] + '\n昵称均为用户添加，与bot和bot主无关\n\n', max_width=800, padding=(30, 30))
+        infopic.save(f'piccache/{musicid}alias.png')
+        return f"[CQ:image,file=file:///{os.getcwd()}/piccache/{musicid}alias.png,cache=0]"
     else:
         return returnstr[:-1] + '\n昵称均为用户添加，与bot和bot主无关'
 

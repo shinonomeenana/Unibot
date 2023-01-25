@@ -8,6 +8,7 @@ from PIL import Image
 from mutagen.mp3 import MP3
 from pydub import AudioSegment
 
+from imageutils import text2image
 from modules.config import SEdir
 from modules.mysql_config import *
 from emoji2pic import Emoji2Pic
@@ -57,11 +58,9 @@ def guessRank(guessType, typeText):
             text += f'{name}({raw[0][:3]}***{raw[0][-3:]}): {raw[2]}次\n'
         if count == 20:
             break
-    print(text)
-    instance = Emoji2Pic(text=text + '\n', font='fonts/SourceHanSansCN-Medium.otf', emoji_folder='AppleEmoji')
-    textimg = instance.make_img()
-    textimg.save(f'piccache/guess{guessType}.jpg')
-    return f'piccache/guess{guessType}.jpg'
+    infopic = text2image(text=text, max_width=1000, padding=(30, 30))
+    infopic.save(f'piccache/guess{guessType}.png')
+    return f'piccache/guess{guessType}.png'
     # texttoimg(text, 550, f'guess{guessType}')
 
 
