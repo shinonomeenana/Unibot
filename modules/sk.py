@@ -248,9 +248,11 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
             if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
                 if result["fullComboFlg"] or result["fullPerfectFlg"]:
                     if result["updatedAt"] == result["createdAt"]:
-                        reason = idtoname(result["musicId"]) + ' MASTER ' + result['playType'] + ' 初见' \
+                        finish_time = datetime.datetime.fromtimestamp(result["updatedAt"] / 1000,
+                                                               pytz.timezone('Asia/Shanghai')).strftime('%Y/%m/%d %H:%M')
+                        reason = finish_time + ' ' + idtoname(result["musicId"]) + ' MASTER ' + result['playType'] + ' 初见' \
                                  + ('AP' if result["fullPerfectFlg"] else 'FC')
-                        alltext += reason + '，'
+                        alltext += reason + '、'
                         mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
                                          (str(qqnum), str(userid), reason))
                         data = mycursor.fetchone()
@@ -267,7 +269,9 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
             mydb.commit()
             mycursor.close()
             mydb.close()
-            raise cheaterFound(alltext + '由于监测到打歌数据有高度开挂嫌疑，该账号id已被bot记录。如果确认该账号开挂，该账号与绑定qq将会被bot封禁')
+            raise cheaterFound(f'{name} - {userid}、' + alltext +
+                               '由于监测到打歌数据有高度开挂嫌疑，该账号id已被bot记录，如确认开挂，24小时内该账号与绑定qq将会被bot永久拉黑、'
+                               '如有异议可在群883721511内用充足的证据（账号交易记录，自证手元等）对上述成绩做出合理的解释')
     mydb.commit()
     mycursor.close()
     mydb.close()

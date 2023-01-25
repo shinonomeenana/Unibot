@@ -37,7 +37,7 @@ from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, 
 from modules.sendmail import sendemail
 from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, chafang, \
     getstoptime, ss, drawscoreline, maintenanceIn, cheaterFound
-from modules.texttoimg import texttoimg, ycmimg
+from modules.texttoimg import texttoimg, ycmimg, t2i, blank
 from modules.twitter import newesttwi
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -1628,7 +1628,13 @@ def sync_handle_msg(event):
     except maintenanceIn:
         sendmsg(event, '查不到捏，可能啤酒烧烤在维护')
     except cheaterFound as a:
-        sendmsg(event, repr(a))
+        text = repr(a)[14:-2].replace('、', '\n')
+        infopic = t2i(text=text, max_width=1000, font_size=30)
+        blankpic = blank((infopic.width + 40, infopic.height + 40))
+        blankpic.paste(infopic, (20, 20), infopic.split()[3])
+        now = time.time()
+        blankpic.save(f'piccache/{now}.png')
+        sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/{now}.png,cache=0]")
         if event.self_id == guildbot:
             resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
             qun = resp.json()

@@ -34,6 +34,9 @@ def texttoimg(text, width, savefilename):
     img_1.save(f'piccache/{savefilename}.png')
 
 
+def blank(size: [Tuple[int, int]] = (0, 0)):
+    return Image.new('RGBA', size, (255, 255, 255, 255))
+
 # 文字生成图片
 def t2i(
     text: str,
