@@ -4,9 +4,11 @@ import os.path
 import sqlite3
 import time
 import traceback
+from os import path
 from urllib.parse import quote
 import pymysql
 
+from imageutils import text2image
 from modules.config import env
 from modules.getdata import callapi
 from modules.mysql_config import *
@@ -24,6 +26,7 @@ rankline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 100, 200, 300, 400, 5
             10000, 20000, 30000, 40000, 50000, 100000, 100000000]
 predictline = [100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000, 100000, 100000000]
 
+botpath = os.path.abspath(os.path.join(path.dirname(__file__), ".."))
 
 def idtoname(musicid):
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
@@ -270,6 +273,32 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
     mycursor.close()
     mydb.close()
     return result
+
+
+def cheater_ban_reason(userid):
+    mydb = pymysql.connect(host=host, port=port, user='username', password=password,
+                        database='username', charset='utf8mb4')
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT * from suspicious where userid=%s', (str(userid), ))
+    data = mycursor.fetchall()
+    if data is None:
+        return '挂哥数据库未找到该账号'
+    try:
+        text = f'{data[0][1]} - {data[0][2]}\n'
+    except IndexError:
+        return '挂哥数据库未找到该账号'
+    found = False
+    for reason in data:
+        if reason[5] != '36+FC/AP':
+            text += reason[5] + '\n'
+            found = True
+    if not found:
+        return '挂哥数据库未找到该账号'
+    text += '由于监测到打歌数据有高度开挂嫌疑，该账号与已被bot拉黑、如有异议可在群883721511内用充足的证据（账号交易记录，自证手元等）对上述成绩做出合理的解释'
+    infopic = text2image(text=text, max_width=1000)
+    now = time.time()
+    infopic.save(f'piccache/{now}.png')
+    return f"[CQ:image,file=file:///{botpath}/piccache/{now}.png,cache=0]"
 
 
 def chafang(targetid=None, targetrank=None, private=False, server='jp'):

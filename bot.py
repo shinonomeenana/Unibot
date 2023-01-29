@@ -37,7 +37,7 @@ from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskin
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
 from modules.sendmail import sendemail
 from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, chafang, \
-    getstoptime, ss, drawscoreline, cheaterFound
+    getstoptime, ss, drawscoreline, cheaterFound, cheater_ban_reason
 from modules.texttoimg import texttoimg, ycmimg, blank
 from modules.twitter import newesttwi
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -935,6 +935,10 @@ def sync_handle_msg(event):
             else:
                 qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
                 sendmsg(event, charaset(para[0], para[1], event.user_id, username, f"{qun['group_name']}({event.group_id})内"))
+            return
+        if event.message.startswith('封禁查询'):
+            userid = event.message[4:]
+            sendmsg(event, cheater_ban_reason(userid))
             return
         if event.message[:10] == 'grcharaset' and 'to' in event.message:
             event.message = event.message[10:]
