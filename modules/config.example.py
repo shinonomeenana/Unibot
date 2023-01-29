@@ -1,10 +1,10 @@
 env = 'dev'
 
 # 游戏api请求地址
-apiurl = 'https://api.unipjsk.com/api'
-enapiurl = 'https://xxxxx/api'
-twapiurl = 'https://xxxxx/api'
-krapiurl = 'https://xxxxx/api'
+apiurls = ['https://api.unipjsk.com/api']
+enapiurls = ['https://xxxxx/api']
+twapiurls = ['https://xxxxx/api']
+krapiurls = ['https://xxxxx/api']
 
 predicturl = 'https://xxxxxxxx/predict.json'
 # 预测线地址，有需要可找33申请：https://3-3.dev/pjsk-predict

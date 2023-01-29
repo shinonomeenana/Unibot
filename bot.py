@@ -19,6 +19,7 @@ from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel,
 from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
 from modules.blacklist import *
 from modules.cyo5000 import cyo5000
+from modules.getdata import apiCallError, maintenanceIn, userIdBan
 from modules.kk import kkwhitelist, kankan, uploadkk
 from modules.lighthouse import add_RDP_port, delete_RDP_port
 from modules.novelai import tencent_novelAI, AIcutcard
@@ -36,7 +37,7 @@ from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskin
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
 from modules.sendmail import sendemail
 from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, chafang, \
-    getstoptime, ss, drawscoreline, maintenanceIn, cheaterFound
+    getstoptime, ss, drawscoreline, cheaterFound
 from modules.texttoimg import texttoimg, ycmimg, blank
 from modules.twitter import newesttwi
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -708,7 +709,8 @@ def sync_handle_msg(event):
                 else:
                     result = getstoptime(targetrank=userid, server=server)
                 if result:
-                    texttoimg(result, 600, f'csb{userid}')
+                    img = text2image(result, max_width=1000, padding=(30, 30))
+                    img.save(f"piccache\csb{userid}.png")
                     sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\csb{userid}.png,cache=0]")
                 else:
                     sendmsg(event, "你要查询的玩家未进入前200，暂无数据")
@@ -1622,12 +1624,14 @@ def sync_handle_msg(event):
         if event.message == f'[CQ:at,qq={event.self_id}] ':
             sendmsg(event, 'bot帮助文档：https://docs.unipjsk.com/')
             return
-    except (requests.exceptions.ConnectionError, JSONDecodeError, ReadTimeout):
+    except apiCallError:
         sendmsg(event, '查不到数据捏，好像是bot网不好')
     except aiocqhttp.exceptions.NetworkError:
         pass
     except maintenanceIn:
         sendmsg(event, '查不到捏，可能啤酒烧烤在维护')
+    except userIdBan:
+        sendmsg(event, '该玩家因违反bot使用条款（包括但不限于开挂）已被bot拉黑')
     except cheaterFound as a:
         text = repr(a)[14:-2].replace('、', '\n')
         infopic = text2image(text=text, max_width=1000)

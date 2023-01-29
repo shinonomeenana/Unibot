@@ -5,8 +5,9 @@ import time
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import requests
 
-from modules.config import apiurl, enapiurl, twapiurl, krapiurl, proxies
-from modules.sk import verifyid, recordname, currentevent, maintenanceIn
+from modules.config import proxies
+from modules.getdata import callapi
+from modules.sk import verifyid, recordname, currentevent
 from modules.texttoimg import texttoimg
 
 assetpath = 'data/assets/sekai/assetbundle/resources'
@@ -59,23 +60,16 @@ class userprofile(object):
 
     def getprofile(self, userid, server, qqnum='未知', data=None):
         if server == 'jp':
-            url = apiurl
             masterdatadir = 'masterdata'
         elif server == 'en':
-            url = enapiurl
             masterdatadir = '../enapi/masterdata'
         elif server == 'tw':
-            url = twapiurl
             masterdatadir = '../twapi/masterdata'
         elif server == 'kr':
-            url = krapiurl
             masterdatadir = '../krapi/masterdata'
 
         if data is None:
-            resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
-            data = json.loads(resp.content)
-        if data == {'status': 'maintenance_in'}:
-            raise maintenanceIn
+            data = callapi(f'/user/{userid}/profile', server=server)
         self.name = data['user']['userGamedata']['name']
         try:
             self.twitterId = data['userProfile']['twitterId']
@@ -216,24 +210,13 @@ def currentrankmatch():
     return data[len(data) - 1]['id']
 
 def r30(userid, private=False, server='jp', qqnum='未知'):
-    if server == 'jp':
-        url = apiurl
-    elif server == 'en':
-        url = enapiurl
-    elif server == 'tw':
-        url = twapiurl
-    elif server == 'kr':
-        url = krapiurl
-    
     if int(userid) < 10000000:
         event = currentevent('jp')
         eventid = event['id']
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={userid}', timeout=10)
-        ranking = json.loads(resp.content)
+        ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={userid}', server=server)
         userid = ranking['rankings'][0]['userId']
         private = True
-    resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
-    data = json.loads(resp.content)
+    data = callapi(f'/user/{userid}/profile', server)
     name = data['user']['userGamedata']['name']
     if not recordname(qqnum, userid, name):
         name = ''
@@ -296,15 +279,12 @@ def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未�
     if targetid is not None:
         if not verifyid(targetid):
             return '你这ID有问题啊'
-        resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
-                            f'ranking?targetUserId={targetid}', timeout=10)
+        data = callapi(f'/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
+                            f'ranking?targetUserId={targetid}', 'jp')
     else:
-        resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
-                            f'ranking?targetRank={targetrank}', timeout=10)
+        data = callapi(f'/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
+                            f'ranking?targetRank={targetrank}', 'jp')
     try:
-        data = json.loads(resp.content)
-        if data == {'status': 'maintenance_in'}:
-            raise maintenanceIn
         ranking = data['rankings'][0]['userRankMatchSeason']
         grade = int((ranking['rankMatchTierId'] - 1) / 4) + 1
         if not recordname(qqnum, data['rankings'][0]['userId'], data['rankings'][0]['name']):
@@ -971,24 +951,10 @@ def fcrank(playlevel, rank):
 
 
 def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知'):
-    if server == 'jp':
-        url = apiurl
-    elif server == 'en':
-        url = enapiurl
-    elif server == 'tw':
-        url = twapiurl
-    elif server == 'kr':
-        url = krapiurl
-
-    resp = requests.get(f'{url}/user/{userid}/profile', timeout=10)
-    data = json.loads(resp.content)
+    data = callapi(f'/user/{userid}/profile', server)
 
     profile = userprofile()
     profile.getprofile(userid, server, qqnum, data)
-
-    if data == {'status': 'maintenance_in'}:
-        raise maintenanceIn
-
     pic = Image.open('pics/b30.png')
     if private:
         id = '保密'

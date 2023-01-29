@@ -8,8 +8,9 @@ from urllib.parse import quote
 import pymysql
 
 from modules.config import env
+from modules.getdata import callapi
 from modules.mysql_config import *
-from PIL import Image, ImageFont, ImageDraw, ImageFilter
+from PIL import Image, ImageFont, ImageDraw
 import matplotlib
 import pytz
 import requests
@@ -17,7 +18,7 @@ import yaml
 from matplotlib import pyplot as plt, ticker
 from matplotlib.font_manager import FontProperties
 
-from modules.config import apiurl, predicturl, proxies, ispredict, enapiurl, twapiurl, krapiurl, piccacheurl
+from modules.config import predicturl, proxies, ispredict
 
 rankline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000,
             10000, 20000, 30000, 40000, 50000, 100000, 100000000]
@@ -91,8 +92,7 @@ def eventtrack():
         try:
             conn = sqlite3.connect('data/events.db')
             c = conn.cursor()
-            resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=1&lowerLimit=99', timeout=10)
-            ranking = json.loads(resp.content)
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=1&lowerLimit=99', 'jp')
             for rank in ranking['rankings']:
                 targetid = rank['userId']
                 score = rank['score']
@@ -112,8 +112,7 @@ def eventtrack():
                 except sqlite3.IntegrityError:
                     c.execute(f'update names set name=? where userid=?', (name, str(targetid)))
 
-            resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=101&lowerLimit=99', timeout=10)
-            ranking = json.loads(resp.content)
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=101&lowerLimit=99', 'jp')
             for rank in ranking['rankings']:
                 targetid = rank['userId']
                 score = rank['score']
@@ -142,8 +141,7 @@ def eventtrack():
         try:
             conn = sqlite3.connect('data/events.db')
             c = conn.cursor()
-            resp = requests.get(f'{twurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=1&lowerLimit=99', timeout=10)
-            ranking = json.loads(resp.content)
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=1&lowerLimit=99', 'tw')
             for rank in ranking['rankings']:
                 targetid = rank['userId']
                 score = rank['score']
@@ -163,8 +161,7 @@ def eventtrack():
                 except sqlite3.IntegrityError:
                     c.execute(f'update names set name=? where userid=?', (name, str(targetid)))
 
-            resp = requests.get(f'{twurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=101&lowerLimit=99', timeout=10)
-            ranking = json.loads(resp.content)
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=101&lowerLimit=99', 'tw')
             for rank in ranking['rankings']:
                 targetid = rank['userId']
                 score = rank['score']
@@ -188,9 +185,6 @@ class Error(Exception):
    pass
 
 class cheaterFound(Error):
-   pass
-
-class maintenanceIn(Error):
    pass
 
 
@@ -280,19 +274,15 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
 
 def chafang(targetid=None, targetrank=None, private=False, server='jp'):
     if server == 'jp':
-        url = apiurl
         prefix = ''
     elif server == 'en':
-        url = enapiurl
         prefix = 'en'
     elif server == 'tw':
-        url = twapiurl
         prefix = 'tw'
     event = currentevent(server)
     eventid = event['id']
     if targetid is None:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
-        ranking = json.loads(resp.content)
+        ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', server)
         targetid = ranking['rankings'][0]['userId']
         private = True
     if event['status'] == 'going':
@@ -380,19 +370,15 @@ def drawscoreline(targetid=None, targetrank=None, targetrank2=None, starttime=0,
     k = []
     k2 = []
     if server == 'jp':
-        url = apiurl
         prefix = ''
     elif server == 'en':
-        url = enapiurl
         prefix = 'en'
     elif server == 'tw':
-        url = twapiurl
         prefix = 'tw'
     event = currentevent(server)
     eventid = event['id']
     if targetid is None:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
-        ranking = json.loads(resp.content)
+        ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', server)
         targetid = ranking['rankings'][0]['userId']
 
     conn = sqlite3.connect('data/events.db')
@@ -408,8 +394,7 @@ def drawscoreline(targetid=None, targetrank=None, targetrank2=None, starttime=0,
     for raw in cursor:
         name = raw[1]
     if targetrank2 is not None:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank2}', timeout=10)
-        ranking = json.loads(resp.content)
+        ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank2}', server)
         targetid2 = ranking['rankings'][0]['userId']
         cursor = c.execute(f'SELECT * from "{prefix}{eventid}" where userid=?', (targetid2,))
         userscores2 = {}
@@ -464,18 +449,14 @@ def getstoptime(targetid=None, targetrank=None, returnjson=False, private=False,
     event = currentevent(server)
     eventid = event['id']
     if server == 'jp':
-        url = apiurl
         prefix = ''
     elif server == 'en':
-        url = enapiurl
         prefix = 'en'
     elif server == 'tw':
-        url = twapiurl
         prefix = 'tw'
     if not returnjson:
         if targetid is None:
-            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
-            ranking = json.loads(resp.content)
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', server)
             targetid = ranking['rankings'][0]['userId']
             private = True
     conn = sqlite3.connect('data/events.db')
@@ -561,8 +542,7 @@ def getranks():
         for rank in rankline:
             if rank != 100000000:
                 try:
-                    resp = requests.get(f'{apiurl}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={rank}', timeout=10)
-                    ranking = json.loads(resp.content)
+                    ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={rank}', 'jp')
                     ss[now][rank] = ranking['rankings'][0]['score']
                 except:
                     traceback.print_exc()
@@ -697,112 +677,6 @@ def skyc():
     text = text + '\n预测线来自xfl03(3-3.dev)\n预测生成时间为' + time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     return text
 
-def oldsk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, qqnum='未知'):
-    event = currentevent(server)
-    eventid = event['id']
-    if event['status'] == 'counting':
-        return '活动分数统计中，不要着急哦！'
-    if server == 'jp':
-        url = apiurl
-        masterdatadir = 'masterdata'
-    elif server == 'en':
-        url = enapiurl
-        masterdatadir = '../enapi/masterdata'
-    elif server == 'tw':
-        url = twapiurl
-        masterdatadir = '../twapi/masterdata'
-    if targetid is not None:
-        if not verifyid(targetid, server):
-            bind = getqqbind(targetid, server)
-            if bind is None:
-                return '查不到捏'
-            elif bind[2]:
-                return '查不到捏，可能是不给看'
-            else:
-                targetid = bind[1]
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetUserId={targetid}', timeout=10)
-    else:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
-    ranking = json.loads(resp.content)
-    try:
-        name = ranking['rankings'][0]['name']
-        rank = ranking['rankings'][0]['rank']
-        score = ranking['rankings'][0]['score']
-        userId = str(ranking['rankings'][0]['userId'])
-        if not recordname(qqnum, userId, name):
-            name = ''
-    except IndexError:
-        return '查不到数据捏，可能这期活动没打'
-    try:
-        TeamId = ranking['rankings'][0]['userCheerfulCarnival']['cheerfulCarnivalTeamId']
-        with open(f'{masterdatadir}/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
-            Teams = json.load(f)
-        with open('yamls/translate.yaml', encoding='utf-8') as f:
-            trans = yaml.load(f, Loader=yaml.FullLoader)
-        try:
-            translate = f"({trans['cheerfulCarnivalTeams'][TeamId]})"
-        except KeyError:
-            translate = ''
-        if server == 'tw':
-            translate = ''
-        for i in Teams:
-            if i['id'] == TeamId:
-                teamname = '队伍为' + i['teamName'] + translate + "，"
-                break
-    except KeyError:
-        teamname = ''
-    if not secret:
-        userId = ' - ' + userId
-    else:
-        userId = ''
-    msg = f'{name}{userId}\n{teamname}分数{score / 10000}W，排名{rank}'
-    if simple:
-        return msg
-    for i in range(0, 31):
-        if rank < rankline[i]:
-            break
-    if rank > 1:
-        if rank == rankline[i - 1]:
-            upper = rankline[i - 2]
-        else:
-            upper = rankline[i - 1]
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={upper}', timeout=10)
-        ranking = json.loads(resp.content)
-        linescore = ranking['rankings'][0]['score']
-        deviation = (linescore - score) / 10000
-        msg = msg + f'\n上一档排名{upper}的分数为{linescore/10000}W，相差{deviation}W'
-    if rank < 100000:
-        if rank == rankline[i]:
-            lower = rankline[i + 1]
-        else:
-            lower = rankline[i]
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={lower}', timeout=10)
-        ranking = json.loads(resp.content)
-        linescore = ranking['rankings'][0]['score']
-        deviation = (score - linescore) / 10000
-        msg = msg + f'\n下一档排名{lower}的分数为{linescore/10000}W，相差{deviation}W'
-
-    if event['status'] == 'going' and ispredict and server == 'jp':
-        for i in range(0, 17):
-            if rank < predictline[i]:
-                break
-        linescore = 0
-        if rank > 100:
-            upper = predictline[i - 1]
-            linescore = ssyc(upper, eventid)
-            if linescore != 0:
-                msg = msg + f'\n\n{upper}名预测{linescore/10000}W'
-        if rank < 100000:
-            if rank == predictline[i]:
-                lower = predictline[i + 1]
-            else:
-                lower = predictline[i]
-            linescore = ssyc(lower, eventid)
-            if linescore != 0:
-                msg = msg + f'\n{lower}名预测{linescore/10000}W'
-    if event['status'] == 'going':
-        msg = msg + '\n活动还剩' + event['remain']
-    return msg
 
 def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, qqnum='未知', ismain=True):
     # ismain是用来适配旧版分布式的 现在已停用没必要了 但很多代码懒得改就留着了
@@ -811,16 +685,12 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
     if event['status'] == 'counting':
         return '活动分数统计中，不要着急哦！'
     if server == 'jp':
-        url = apiurl
         masterdatadir = 'masterdata'
     elif server == 'en':
-        url = enapiurl
         masterdatadir = '../enapi/masterdata'
     elif server == 'tw':
-        url = twapiurl
         masterdatadir = '../twapi/masterdata'
     elif server == 'kr':
-        url = krapiurl
         masterdatadir = '../krapi/masterdata'
     if targetid is not None:
         if not verifyid(targetid, server):
@@ -831,12 +701,9 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
                 return '查不到捏，可能是不给看'
             else:
                 targetid = bind[1]
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetUserId={targetid}', timeout=10)
+        ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetUserId={targetid}', server)
     else:
-        resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', timeout=10)
-    ranking = json.loads(resp.content)
-    if ranking == {'status': 'maintenance_in'}:
-        raise maintenanceIn
+        ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank}', server)
     try:
         name = ranking['rankings'][0]['name']
         rank = ranking['rankings'][0]['rank']
@@ -908,8 +775,7 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         else:
             upper = rankline[i - 1]
         try:
-            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={upper}', timeout=10)
-            ranking = json.loads(resp.content)
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={upper}', server)
             linescore = ranking['rankings'][0]['score']
         except IndexError:
             linescore = 0
@@ -922,8 +788,7 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         else:
             lower = rankline[i]
         try:
-            resp = requests.get(f'{url}/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={lower}', timeout=10)
-            ranking = json.loads(resp.content)
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={lower}', server)
             linescore = ranking['rankings'][0]['score']
         except IndexError:
             linescore = 0
@@ -964,21 +829,16 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
 
 def teamcount(server='jp'):
     if server == 'jp':
-        url = apiurl
         masterdatadir = 'masterdata'
     elif server == 'en':
-        url = enapiurl
         masterdatadir = '../enapi/masterdata'
     elif server == 'tw':
-        url = twapiurl
         masterdatadir = '../twapi/masterdata'
     elif server == 'kr':
-        url = krapiurl
         masterdatadir = '../krapi/masterdata'
     event = currentevent(server)
     eventid = event['id']
-    resp = requests.get(f'{url}/cheerful-carnival-team-count/{eventid}', timeout=10)
-    data = json.loads(resp.content)
+    data = callapi(f'/cheerful-carnival-team-count/{eventid}', server)
 
     with open(f'{masterdatadir}/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
         Teams = json.load(f)
