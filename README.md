@@ -58,7 +58,7 @@ masterDB（项目内放在`masterdata`文件夹下） 可使用 [Sekai-World/sek
   YouTube: https://youtube.com/channel/UCv9Wgrqn0ovYhUggSSm5Qtg
 ```
 
-[chinosk114514/QQ-official-guild-bot]
+[chinosk114514/QQ-official-guild-bot](https://github.com/chinosk114514/QQ-official-guild-bot)
 
 ```
 MIT License
@@ -160,7 +160,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-- [noneplugin/nonebot-plugin-imageutils](https://github.com/noneplugin/nonebot-plugin-imageutils): Nonebot2 PIL工具插件
+[noneplugin/nonebot-plugin-imageutils](https://github.com/noneplugin/nonebot-plugin-imageutils)
 
 ```
 The MIT License (MIT)
