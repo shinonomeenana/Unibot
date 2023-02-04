@@ -8,7 +8,6 @@ from os import path
 from urllib.parse import quote
 import pymysql
 
-from imageutils import text2image
 from modules.config import env
 from modules.getdata import callapi
 from modules.mysql_config import *
@@ -276,6 +275,7 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
 
 
 def cheater_ban_reason(userid):
+    from imageutils import text2image
     mydb = pymysql.connect(host=host, port=port, user='username', password=password,
                         database='username', charset='utf8mb4')
     mycursor = mydb.cursor()

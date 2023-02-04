@@ -4,7 +4,6 @@ import os.path
 import time
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import requests
-from imageutils import text2image
 from modules.config import proxies
 from modules.getdata import callapi
 from modules.sk import verifyid, recordname, currentevent
@@ -272,6 +271,7 @@ def daibu(targetid=None, secret=False, server='jp', qqnum='未知'):
     if server == 'jp':
         text = text + "\n\n" + rk(targetid, None, secret, True)
     
+    from imageutils import text2image
     infopic = text2image(text=text, max_width=550, padding=(20, 10))
     infopic.save(f'piccache/{targetid}daibu.png')
     return f"[CQ:image,file=file:///{os.getcwd()}/piccache/{targetid}daibu.png,cache=0]"

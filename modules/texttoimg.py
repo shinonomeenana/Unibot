@@ -19,7 +19,7 @@ def ycmimg():
         c = c + datas['text'].replace("　", "  ") + '\n——————————————————————\n'
         if count == 6:
             break
-
+    c = '由于推特API(编程接口)将在2月9日改为收费使用，该命令将不可用\n' + c
     instance = Emoji2Pic(text=c, font='fonts\SourceHanSansCN-Medium.otf', emoji_folder='AppleEmoji')
     img = instance.make_img()
     img.save('piccache/ycm.png')

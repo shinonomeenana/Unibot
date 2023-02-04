@@ -6,7 +6,6 @@ import difflib
 import time
 import pymysql
 
-from imageutils import text2image
 from modules.mysql_config import *
 import requests
 from mutagen.mp3 import MP3
@@ -614,6 +613,7 @@ def pjskdel(alias, qqnum, username, qun):
 
 
 def pjskalias(alias, musicid=None):
+    from imageutils import text2image
     if musicid is None:
         resp = aliastomusicid(alias)
         if resp['musicid'] == 0:
