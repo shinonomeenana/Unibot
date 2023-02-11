@@ -7,7 +7,7 @@ import html2text
 import requests
 from PIL import Image, ImageDraw, ImageFont
 import os
-import json
+import ujson as json
 # https://github.com/twitterdev/Twitter-API-v2-sample-code/blob/main/Recent-Search/recent_search.py
 # To set your environment variables in your terminal run the following line:
 # export 'BEARER_TOKEN'='<your_bearer_token>'

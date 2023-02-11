@@ -1,5 +1,5 @@
 import math
-import json
+import ujson as json
 import os
 import traceback
 

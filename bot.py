@@ -2,13 +2,11 @@ import os
 import json
 import random
 from datetime import datetime
-from json import JSONDecodeError
 import asyncio
 import aiocqhttp
 import aiofiles
 import aiohttp
 import requests
-from requests import ReadTimeout
 import re
 import time
 import traceback

@@ -2,7 +2,7 @@ import os
 import re
 
 import pytz
-import json
+import ujson as json
 import datetime
 from hashlib import md5
 

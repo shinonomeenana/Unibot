@@ -1,6 +1,6 @@
-import json
+import ujson as json
 import traceback
-from json import JSONDecodeError
+from ujson import JSONDecodeError
 
 import requests
 import yaml

@@ -1,5 +1,5 @@
 # 基于FLANN的匹配器(FLANN based Matcher)定位图片
-import json
+import ujson as json
 import time
 
 import numpy as np

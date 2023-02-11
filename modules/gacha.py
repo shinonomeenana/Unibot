@@ -1,6 +1,6 @@
 import random
 import time
-import json
+import ujson as json
 
 from modules.config import piccacheurl
 from modules.otherpics import gachapic

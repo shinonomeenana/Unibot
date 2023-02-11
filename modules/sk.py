@@ -1,5 +1,5 @@
 import datetime
-import json
+import ujson as json
 import os.path
 import sqlite3
 import time

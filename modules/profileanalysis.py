@@ -1,5 +1,5 @@
 import io
-import json
+import ujson as json
 import os.path
 import time
 from PIL import Image, ImageFont, ImageDraw, ImageFilter

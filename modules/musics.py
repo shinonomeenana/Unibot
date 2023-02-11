@@ -1,6 +1,6 @@
 import datetime
 import io
-import json
+import ujson as json
 import os
 import re
 import sqlite3
