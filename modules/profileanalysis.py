@@ -4,7 +4,7 @@ import os.path
 import time
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import requests
-from modules.config import proxies
+from modules.config import proxies, env
 from modules.getdata import callapi
 from modules.sk import verifyid, recordname, currentevent
 from modules.texttoimg import texttoimg
@@ -230,11 +230,25 @@ def r30(userid, private=False, server='jp', qqnum='未知'):
         count += 1
         timeArray = time.localtime(musics['updatedAt'] / 1000)
         otherStyleTime = time.strftime("%m-%d %H:%M", timeArray)
-        text += f"{otherStyleTime}: {idtoname(musics['musicId'])} [{musics['musicDifficulty'].upper()}] {musics['playType']}\n"
+        if musics['updatedAt'] == musics["createdAt"]:
+            if musics["fullPerfectFlg"]:
+                addText = '初见AP'
+            elif musics["fullComboFlg"]:
+                addText = '初见FC'
+            else:
+                addText = 'Clear'
+        else:
+            addText = ''
+
+        text += f"{otherStyleTime}: {idtoname(musics['musicId'])} [{musics['musicDifficulty'].upper()}] {musics['playType']} {addText}\n"
         if count == 30:
             break
     text += '由于pjsk统计机制的问题会导致统计不全'
-    texttoimg(text, 800, f'{userid}r30')
+    from imageutils import text2image
+    infopic = text2image(text=text, max_width=1400, padding=(20, 10))
+    infopic.save(f'piccache/{userid}r30.png')
+    if env != 'prod':
+        infopic.show()
     return f'{userid}r30'
 
 
@@ -1093,37 +1107,26 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
               font=font_style)
     draw.text((50, 1752), '定数来源：https://profile.pjsekai.moe/  ※定数每次统计时可能会改变', fill='#00CCBB',
               font=font_style)
+    
+    # 创建一个单独的图层用于绘制rank阴影
     rankimg = Image.new("RGBA", (120, 55), (100, 110, 180, 0))
     draw = ImageDraw.Draw(rankimg)
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
     text_width = font_style.getsize(str(rank))
-    # 硬核画文字边框
-    draw.text((int(60 - text_width[0] / 2) + 3, int(20 - text_width[1] / 2)), str(rank), fill=(61, 74, 162, 210),
-              font=font_style)
-    draw.text((int(60 - text_width[0] / 2) - 3, int(20 - text_width[1] / 2)), str(rank), fill=(61, 74, 162, 210),
-              font=font_style)
-    draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2) + 3), str(rank), fill=(61, 74, 162, 210),
-              font=font_style)
-    draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2) - 3), str(rank), fill=(61, 74, 162, 210),
-              font=font_style)
-    draw.text((int(60 - text_width[0] / 2) - 2, int(20 - text_width[1] / 2) - 2), str(rank), fill=(61, 74, 162, 210),
-              font=font_style)
-    draw.text((int(60 - text_width[0] / 2) + 2, int(20 - text_width[1] / 2) + 2), str(rank), fill=(61, 74, 162, 210),
-              font=font_style)
-    draw.text((int(60 - text_width[0] / 2) - 2, int(20 - text_width[1] / 2) + 2), str(rank), fill=(61, 74, 162, 210),
-              font=font_style)
-    draw.text((int(60 - text_width[0] / 2) + 2, int(20 - text_width[1] / 2) - 2), str(rank), fill=(61, 74, 162, 210),
-              font=font_style)
+    draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(61, 74, 162, 210),
+              font=font_style, stroke_width=2, stroke_fill=(61, 74, 162, 210))
     rankimg = rankimg.filter(ImageFilter.GaussianBlur(1.2))
     draw = ImageDraw.Draw(rankimg)
     draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(255, 255, 255), font=font_style)
     r, g, b, mask = rankimg.split()
     pic.paste(rankimg, (565, 142), mask)
-    # pic.show()
+
     pic = pic.convert("RGB")
     if returnpic:
         return pic
     pic.save(f'piccache/{userid}b30.png')
+    if env != 'prod':
+        pic.show()
 
 def b30single(diff, musics):
     color = {
