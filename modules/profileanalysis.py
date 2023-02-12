@@ -8,6 +8,7 @@ from modules.config import proxies, env
 from modules.getdata import callapi
 from modules.sk import verifyid, recordname, currentevent
 from modules.texttoimg import texttoimg
+from ujson import JSONDecodeError
 
 assetpath = 'data/assets/sekai/assetbundle/resources'
 
@@ -258,7 +259,7 @@ def daibu(targetid=None, secret=False, server='jp', qqnum='未知'):
     try:
         profile = userprofile()
         profile.getprofile(targetid, server, qqnum)
-    except (json.decoder.JSONDecodeError, IndexError):
+    except (JSONDecodeError, IndexError):
         return '未找到玩家'
     if secret:
         text = f"{profile.name}\n"
