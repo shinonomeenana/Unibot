@@ -18,7 +18,13 @@ class userIdBan(Exception):
 class apiCallError(Exception):
     pass
 
+class serverNotSupported(Exception):
+    pass
+
 def callapi(url, server='jp'):
+    global twapiurls
+    global krapiurls
+
     if server == 'jp':
         urlroots = apiurls
     elif server == 'en':
@@ -28,7 +34,8 @@ def callapi(url, server='jp'):
     elif server == 'kr':
         urlroots = krapiurls
     else:
-        raise apiCallError
+        raise serverNotSupported
+    
     for urlroot in urlroots:
         try:
             if 'https' in urlroot:
@@ -59,8 +66,15 @@ def callapi(url, server='jp'):
                                 data['userMusicResults'][i]["fullComboFlg"] = False
                                 data['userMusicResults'][i]["fullPerfectFlg"] = False
                                 data['userMusicResults'][i]["playResult"] = "clear"
+
+            if urlroot == urlroots[1] and server in ['tw', 'kr']:
+                # 台服api不明原因容易卡死 卡死后切换到备用服务器
+                twapiurls[0], twapiurls[1] = twapiurls[1], twapiurls[0]
+                krapiurls[0], krapiurls[1] = krapiurls[1], krapiurls[0]
+                print('交换外服主从服务器次序，新地址:', twapiurls[0])
             return data
         except (requests.exceptions.ConnectionError, JSONDecodeError, ReadTimeout):
             print(urlroot, '请求失败')
             pass
+
     raise apiCallError
