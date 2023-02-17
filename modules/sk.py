@@ -255,12 +255,16 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
                         if data is None:
                             sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
                             mycursor.execute(sql_add, (str(userid), name, str(qqnum), reason))
+                        
+                        mycursor.execute('SELECT * from suspicious where userid=%s', (str(userid), ))
+                        data = mycursor.fetchall()
                         if data is not None:
-                            if data[6] == 'whitelist':
-                                mydb.commit()
-                                mycursor.close()
-                                mydb.close()
-                                return result
+                            for _ in data:
+                                if _[6] == 'whitelist':
+                                    mydb.commit()
+                                    mycursor.close()
+                                    mydb.close()
+                                    return result
         if alltext != '':
             mydb.commit()
             mycursor.close()
