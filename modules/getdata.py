@@ -54,18 +54,21 @@ def callapi(url, server='jp'):
                 '1234567890':
                 - 135
                 """
-                with open('yamls/apiremove.yaml', 'r', encoding='utf-8') as f:
-                    profileMusicDel = yaml.load(f, Loader=yaml.FullLoader)
-                for deluserid in profileMusicDel:
-                    if url == f'/user/{deluserid}/profile':
-                        print(f"删除{deluserid}fc/ap")
-                        for i in range(0, len(data['userMusicResults'])):
-                            if data['userMusicResults'][i]["musicId"] in profileMusicDel[deluserid] and \
-                                    data['userMusicResults'][i]["musicDifficulty"] == "master":
-                                print(f'删除{data["userMusicResults"][i]["musicId"]}')
-                                data['userMusicResults'][i]["fullComboFlg"] = False
-                                data['userMusicResults'][i]["fullPerfectFlg"] = False
-                                data['userMusicResults'][i]["playResult"] = "clear"
+                try:
+                    with open('yamls/apiremove.yaml', 'r', encoding='utf-8') as f:
+                        profileMusicDel = yaml.load(f, Loader=yaml.FullLoader)
+                    for deluserid in profileMusicDel:
+                        if url == f'/user/{deluserid}/profile':
+                            print(f"删除{deluserid}fc/ap")
+                            for i in range(0, len(data['userMusicResults'])):
+                                if data['userMusicResults'][i]["musicId"] in profileMusicDel[deluserid] and \
+                                        data['userMusicResults'][i]["musicDifficulty"] == "master":
+                                    print(f'删除{data["userMusicResults"][i]["musicId"]}')
+                                    data['userMusicResults'][i]["fullComboFlg"] = False
+                                    data['userMusicResults'][i]["fullPerfectFlg"] = False
+                                    data['userMusicResults'][i]["playResult"] = "clear"
+                except:
+                    pass
 
             if urlroot == urlroots[1] and server in ['tw', 'kr']:
                 # 台服api不明原因容易卡死 卡死后切换到备用服务器

@@ -8,7 +8,6 @@ from PIL import Image
 from mutagen.mp3 import MP3
 from pydub import AudioSegment
 
-from imageutils import text2image
 from modules.config import SEdir
 from modules.mysql_config import *
 from emoji2pic import Emoji2Pic
@@ -36,6 +35,7 @@ def getrandomchartold():
 
 
 def guessRank(guessType, typeText):
+    from imageutils import text2image
     mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
                            database='pjskguess', charset='utf8mb4')
     mycursor = mydb.cursor()
@@ -204,6 +204,15 @@ def defaultvocal(musicid):
                 return vocal['assetbundleName']
             elif vocal['musicVocalType'] == 'original_song' or vocal['musicVocalType'] == 'virtual_singer':
                 assetbundleName = vocal['assetbundleName']
+    else: # 解包2dmv用 有的vocal对应的mvid不是musicid 如8001
+        with open('masterdata/musicAssetVariants.json', 'r', encoding='utf-8') as f:
+            musicAssetVariants = json.load(f)
+        for variant in musicAssetVariants:
+            if variant['musicAssetType'] == 'mv':
+                if int(variant["assetbundleName"]) == musicid:
+                    for vocal in data:
+                        if vocal['id'] == variant["musicVocalId"]:
+                            return vocal['assetbundleName']
     return assetbundleName
 
 
