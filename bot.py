@@ -1097,6 +1097,12 @@ def sync_handle_msg(event):
         if event.message == '关闭端口' and event.user_id == 1103479519:  # 自用功能
             sendmsg(event, delete_RDP_port())
             return
+        if event.message == '申请出校':
+            from modules.auto_school_out import school_out_from_qq
+            msg = school_out_from_qq(event.user_id, event.group_id)
+            if msg != '':
+                sendmsg(event, msg)
+            return
         if event.message[-3:] == '排行榜':
             if event.message.startswith('pjsk猜曲'):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(1, 'pjsk猜曲')},cache=0]")
