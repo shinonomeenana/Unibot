@@ -952,7 +952,7 @@ class SUSwithskill:
         ))
 
         drawing.add(svgwrite.text.Text(
-            f'{str(self.meta.difficulty).upper()} {self.meta.playlevel} 譜面確認 by ぷろせかもえ！ (pjsekai.moe)',
+            f'{str(self.meta.difficulty).upper()} {self.meta.playlevel} 譜面確認 by profile.pjsekai.moe',
             insert=(
                 self.meta_size + self.padding * 3,
                 height + self.padding * 4,
@@ -989,9 +989,9 @@ class SUSwithskill:
         # scale['y'] = height + self.padding * 2
         # drawing.add(scale)
         drawing.add(svgwrite.text.Text(
-            'Code by ぷろせかもえ！ (pjsekai.moe)　& Unibot',
+            'Code by profile.pjsekai.moe　& Unibot',
             insert=(
-                width - 900,
+                width - 690,
                 height + self.padding * 4.2,
             ),
             class_='themehint',
@@ -999,7 +999,7 @@ class SUSwithskill:
         drawing.add(svgwrite.text.Text(
             'Modified by 33 (3-3.dev & bilibili @xfl03)',
             insert=(
-                width - 770,
+                width - 750,
                 height + self.padding * 5.9,
             ),
             class_='themehint',
