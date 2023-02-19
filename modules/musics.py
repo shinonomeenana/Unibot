@@ -360,7 +360,6 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
     return pic
 
 
-
 # from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
 def parse_bpm(music_id):
     try:
@@ -368,63 +367,66 @@ def parse_bpm(music_id):
                   '/startapp/music/music_score/%04d_01/expert' % music_id, encoding='utf-8') as f:
             r = f.read()
     except FileNotFoundError:
-        return 0, [{'time': 0.0, 'bpm': '无数据'}], 0
+        return 0, [{'time': 0.0, 'bpm': '无数据'}], 0, None
 
     score = {}
-    max_time = 0
+    bar_count = 0
     for line in r.split('\n'):
         match: re.Match = re.match(r'#(...)(...?)\s*\:\s*(\S*)', line)
         if match:
-            time, key, value = match.groups()
-            score[(time, key)] = value
-            if time.isdigit():
-                max_time = max(max_time, int(time) + 1)
+            bar, key, value = match.groups()
+            score[(bar, key)] = value
+            if bar.isdigit():
+                bar_count = max(bar_count, int(bar) + 1)
 
     bpm_palette = {}
-    for time, key in score:
-        if time == 'BPM':
-            bpm_palette[key] = float(score[(time, key)])
+    for bar, key in score:
+        if bar == 'BPM':
+            bpm_palette[key] = float(score[(bar, key)])
 
     bpm_events = {}
-    for time, key in score:
-        if time.isdigit() and key == '08':
-            value = score[(time, key)]
+    for bar, key in score:
+        if bar.isdigit() and key == '08':
+            value = score[(bar, key)]
             length = len(value) // 2
 
             for i in range(length):
-                bpm_key = value[i * 2:(i + 1) * 2]
+                bpm_key = value[i*2:(i+1)*2]
                 if bpm_key == '00':
                     continue
                 bpm = bpm_palette[bpm_key]
-                t = int(time) + i / length
+                t = int(bar) + i / length
                 bpm_events[t] = bpm
 
-    bpm_sequence = [{
-        'time': time,
+    bpm_events = [{
+        'bar': bar,
         'bpm': bpm,
-    } for time, bpm in sorted(bpm_events.items())]
+    } for bar, bpm in sorted(bpm_events.items())]
 
-    for i in range(len(bpm_sequence)):
-        if i > 0 and bpm_sequence[i]['bpm'] == bpm_sequence[i - 1]['bpm']:
-            bpm_sequence[i]['deleted'] = True
+    for i in range(len(bpm_events)):
+        if i > 0 and bpm_events[i]['bpm'] == bpm_events[i-1]['bpm']:
+            bpm_events[i]['deleted'] = True
 
-    bpm_sequence = [bpm_event for bpm_event in bpm_sequence if bpm_event.get('deleted') != True]
+    bpm_events = [bpm_event for bpm_event in bpm_events if bpm_event.get('deleted') != True]
 
     bpms = {}
-    for i in range(len(bpm_sequence)):
-        bpm = bpm_sequence[i]['bpm']
+    for i in range(len(bpm_events)):
+        bpm = bpm_events[i]['bpm']
         if bpm not in bpms:
             bpms[bpm] = 0.0
 
-        if i + 1 < len(bpm_sequence):
-            bpms[bpm] += (bpm_sequence[i + 1]['time'] - bpm_sequence[i]['time']) / bpm
+        if i+1 < len(bpm_events):
+            bpm_events[i]['duration'] = (bpm_events[i+1]['bar'] - bpm_events[i]['bar']) / bpm * 4 * 60
         else:
-            bpms[bpm] += (max_time - bpm_sequence[i]['time']) / bpm
+            bpm_events[i]['duration'] = (bar_count - bpm_events[i]['bar']) / bpm * 4 * 60
+
+        bpms[bpm] += bpm_events[i]['duration']
 
     sorted_bpms = sorted([(bpms[bpm], bpm) for bpm in bpms], reverse=True)
-    mean_bpm = sorted_bpms[0][1]
+    bpm_main = sorted_bpms[0][1]
+    duration = sum([bpm[0] for bpm in sorted_bpms])
 
-    return mean_bpm, bpm_sequence, max_time
+    return bpm_main, bpm_events, bar_count, duration
 
 
 def getPlayLevel(musicid, difficulty):

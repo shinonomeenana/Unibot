@@ -1,4 +1,5 @@
 import datetime
+import re
 import ujson as json
 import os
 import sqlite3
@@ -14,8 +15,8 @@ from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 import yaml
 from emoji2pic.main import Emoji2Pic
 
-from modules.config import loghtml
-from modules.ossupload import uploadLog, log_api_url, apiEncrypt
+from modules.config import loghtml, env
+from modules.ossupload import uploadLog
 
 
 class musicinfo(object):
@@ -61,6 +62,75 @@ def isSingleEmoji(content):
 
 def string_similar(s1, s2):
     return difflib.SequenceMatcher(None, s1, s2).quick_ratio()
+
+
+# from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
+def parse_bpm(music_id):
+    try:
+        with open('data/assets/sekai/assetbundle/resources'
+                  '/startapp/music/music_score/%04d_01/expert' % music_id, encoding='utf-8') as f:
+            r = f.read()
+    except FileNotFoundError:
+        return 0, [{'time': 0.0, 'bpm': '无数据'}], 0, None
+
+    score = {}
+    bar_count = 0
+    for line in r.split('\n'):
+        match: re.Match = re.match(r'#(...)(...?)\s*\:\s*(\S*)', line)
+        if match:
+            bar, key, value = match.groups()
+            score[(bar, key)] = value
+            if bar.isdigit():
+                bar_count = max(bar_count, int(bar) + 1)
+
+    bpm_palette = {}
+    for bar, key in score:
+        if bar == 'BPM':
+            bpm_palette[key] = float(score[(bar, key)])
+
+    bpm_events = {}
+    for bar, key in score:
+        if bar.isdigit() and key == '08':
+            value = score[(bar, key)]
+            length = len(value) // 2
+
+            for i in range(length):
+                bpm_key = value[i*2:(i+1)*2]
+                if bpm_key == '00':
+                    continue
+                bpm = bpm_palette[bpm_key]
+                t = int(bar) + i / length
+                bpm_events[t] = bpm
+
+    bpm_events = [{
+        'bar': bar,
+        'bpm': bpm,
+    } for bar, bpm in sorted(bpm_events.items())]
+
+    for i in range(len(bpm_events)):
+        if i > 0 and bpm_events[i]['bpm'] == bpm_events[i-1]['bpm']:
+            bpm_events[i]['deleted'] = True
+
+    bpm_events = [bpm_event for bpm_event in bpm_events if bpm_event.get('deleted') != True]
+
+    bpms = {}
+    for i in range(len(bpm_events)):
+        bpm = bpm_events[i]['bpm']
+        if bpm not in bpms:
+            bpms[bpm] = 0.0
+
+        if i+1 < len(bpm_events):
+            bpm_events[i]['duration'] = (bpm_events[i+1]['bar'] - bpm_events[i]['bar']) / bpm * 4 * 60
+        else:
+            bpm_events[i]['duration'] = (bar_count - bpm_events[i]['bar']) / bpm * 4 * 60
+
+        bpms[bpm] += bpm_events[i]['duration']
+
+    sorted_bpms = sorted([(bpms[bpm], bpm) for bpm in bpms], reverse=True)
+    bpm_main = sorted_bpms[0][1]
+    duration = sum([bpm[0] for bpm in sorted_bpms])
+
+    return bpm_main, bpm_events, bar_count, duration
 
 
 def aliastomusicid(alias):
@@ -165,14 +235,14 @@ def pjskinfo(musicid):
                 return True
             else:  # 已上线
                 if pjskinfotime.timestamp() < publishedAt:  # 缓存是上线前的
-                    return drawpjskinfo(musicid, False)
+                    return drawpjskinfo(musicid)
                 return False
         else:
-            return drawpjskinfo(musicid, False)
+            return drawpjskinfo(musicid)
     else:
-        return drawpjskinfo(musicid, False)
+        return drawpjskinfo(musicid)
 
-def drawpjskinfo(musicid, olddir=True):
+def drawpjskinfo(musicid):
     info = musicinfo()
     with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -304,8 +374,8 @@ def drawpjskinfo(musicid, olddir=True):
     draw.text((930, 350), info.composer, fill=(255, 255, 255), font=font_style)
     draw.text((930, 430), info.arranger, fill=(255, 255, 255), font=font_style)
     # 长度
-    info.length = musiclength(musicid, info.fillerSec)
-    if info.length:
+    info.length = parse_bpm(musicid)[3]
+    if info.length is not None:
         length = f'{round(info.length, 1)}秒 ({int(info.length / 60)}分{round(info.length - int(info.length / 60) * 60, 1)}秒)'
     else:
         length = 'No data'
@@ -415,10 +485,9 @@ def drawpjskinfo(musicid, olddir=True):
         img.paste(vocals, (758, 710), mask)
     else:
         img.paste(vocals, (758, 670), mask)
-    if olddir:
-        img.save(f'piccache/pjskinfo{musicid}.png')
-    else:
-        img.save(f'piccache/pjskinfo/{musicid}.png')
+    img.save(f'piccache/pjskinfo/{musicid}.png')
+    if env != 'prod':
+        img.show()
     return leak
 
 def vocalimg(musicid, alpha):
