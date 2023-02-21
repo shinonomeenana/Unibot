@@ -70,7 +70,7 @@ def callapi(url, server='jp'):
                 except:
                     pass
 
-            if urlroot == urlroots[1] and server in ['tw', 'kr']:
+            if server in ['tw', 'kr'] and len(urlroots) > 1 and urlroot == urlroots[1]:
                 # 台服api不明原因容易卡死 卡死后切换到备用服务器
                 twapiurls[0], twapiurls[1] = twapiurls[1], twapiurls[0]
                 krapiurls[0], krapiurls[1] = krapiurls[1], krapiurls[0]

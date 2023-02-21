@@ -1768,7 +1768,7 @@ async def handle_group_request(event: Event):
                 await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
                                                 approve=True)
                 await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'{event.user_id}申请加群\n{event.comment}\n误差<5，已自动通过')
+                                         message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n误差<5，已自动通过')
             else:
                 try:
                     groupaudit[event.user_id]
@@ -1776,9 +1776,9 @@ async def handle_group_request(event: Event):
                     groupaudit[event.user_id] = 0
 
                 await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                approve=False, reason=f'回答错误，请认真回答(使用阿拉伯数字)，你还有{3-groupaudit[event.user_id]}次机会')
+                                                approve=False, reason=f'bot判断回答错误，请用纯数字认真回答')
                 await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'{event.user_id}申请加群\n{event.comment}\n误差>5，已自动拒绝')
+                                         message=f'自动拒绝\n{event.user_id}申请加群\n{event.comment}\n误差>5，已自动拒绝')
                 groupaudit[event.user_id] += 1
         elif event.group_id == 467602419:
             answer = event.comment[event.comment.find("答案：") + len("答案："):].strip()
@@ -1786,13 +1786,13 @@ async def handle_group_request(event: Event):
                 await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
                                                 approve=True)
                 await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'{event.user_id}申请加群\n{event.comment}\n已自动通过')
+                                         message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n已自动通过')
             else:
                 await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
                                                     approve=False,
-                                                    reason=f'回答错误，请回答GitHub链接')
+                                                    reason=f'回答错误，请回答对应GitHub链接')
                 await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'{event.user_id}申请加群\n{event.comment}\n，已自动拒绝')
+                                         message=f'自动拒绝\n{event.user_id}申请加群\n{event.comment}\n，已自动拒绝')
 
 
 @bot.on_notice('group_ban')
