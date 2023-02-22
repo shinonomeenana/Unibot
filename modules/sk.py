@@ -10,8 +10,8 @@ from os import path
 from urllib.parse import quote
 import pymysql
 
-from modules.config import env
-from modules.getdata import callapi
+from modules.config import env, rank_query_ban_servers
+from modules.getdata import QueryBanned, callapi
 from modules.mysql_config import *
 from PIL import Image, ImageFont, ImageDraw
 import matplotlib
@@ -96,7 +96,10 @@ def eventtrack():
         try:
             conn = sqlite3.connect('data/events.db')
             c = conn.cursor()
-            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=1&lowerLimit=99', 'jp')
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?rankingViewType=top100', 'jp')
+            with open('data/jptop100.json', 'w', encoding='utf-8') as f:
+                f.write(json.dumps(ranking, sort_keys=True, indent=4))
+            
             for rank in ranking['rankings']:
                 targetid = rank['userId']
                 score = rank['score']
@@ -111,17 +114,6 @@ def eventtrack():
                     c.execute(f'insert into "{eventid}" (time, score, userid) values(?, ?, ?)',
                               (now, score, str(targetid)))
 
-                try:
-                    c.execute(f'insert into names (userid, name) values(?, ?)', (str(targetid), name))
-                except sqlite3.IntegrityError:
-                    c.execute(f'update names set name=? where userid=?', (name, str(targetid)))
-
-            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=101&lowerLimit=99', 'jp')
-            for rank in ranking['rankings']:
-                targetid = rank['userId']
-                score = rank['score']
-                name = rank['name']
-                c.execute(f'insert into "{eventid}" (time, score, userid) values(?, ?, ?)', (now, score, str(targetid)))
                 try:
                     c.execute(f'insert into names (userid, name) values(?, ?)', (str(targetid), name))
                 except sqlite3.IntegrityError:
@@ -231,52 +223,52 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
         text = '合规' if result else '不合规'
         mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
 
-    qqnum = getIdOwner(userid, server)
-    if userMusicResults is not None and server == 'jp':
-        # 判断是否有36+FC/AP
-        if masterscore[36][0] + masterscore[36][1] + masterscore[37][0] + masterscore[37][1] != 0:
-            mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s', (str(qqnum), str(userid)))
-            data = mycursor.fetchone()
-            if data is None:
-                sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
-                mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+FC/AP'))
-        alltext = ''
-        # 判断是否有34+初见FC/AP
-        for result in userMusicResults:
-            if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
-                if result["fullComboFlg"] or result["fullPerfectFlg"]:
-                    if result["updatedAt"] == result["createdAt"]:
-                        finish_time = datetime.datetime.fromtimestamp(result["updatedAt"] / 1000,
-                                                               pytz.timezone('Asia/Shanghai')).strftime('%Y/%m/%d %H:%M')
-                        reason = finish_time + ' ' + idtoname(result["musicId"]) + ' MASTER ' + result['playType'] + ' 初见' \
-                                 + ('AP' if result["fullPerfectFlg"] else 'FC')
-                        alltext += reason + '、'
-                        mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
-                                         (str(qqnum), str(userid), reason))
-                        data = mycursor.fetchone()
-                        if data is None:
-                            sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
-                            mycursor.execute(sql_add, (str(userid), name, str(qqnum), reason))
+    # qqnum = getIdOwner(userid, server)
+    # if userMusicResults is not None and server == 'jp':
+    #     # 判断是否有36+FC/AP
+    #     if masterscore[36][0] + masterscore[36][1] + masterscore[37][0] + masterscore[37][1] != 0:
+    #         mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s', (str(qqnum), str(userid)))
+    #         data = mycursor.fetchone()
+    #         if data is None:
+    #             sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
+    #             mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+FC/AP'))
+    #     alltext = ''
+    #     # 判断是否有34+初见FC/AP
+    #     for result in userMusicResults:
+    #         if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
+    #             if result["fullComboFlg"] or result["fullPerfectFlg"]:
+    #                 if result["updatedAt"] == result["createdAt"]:
+    #                     finish_time = datetime.datetime.fromtimestamp(result["updatedAt"] / 1000,
+    #                                                            pytz.timezone('Asia/Shanghai')).strftime('%Y/%m/%d %H:%M')
+    #                     reason = finish_time + ' ' + idtoname(result["musicId"]) + ' MASTER ' + result['playType'] + ' 初见' \
+    #                              + ('AP' if result["fullPerfectFlg"] else 'FC')
+    #                     alltext += reason + '、'
+    #                     mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
+    #                                      (str(qqnum), str(userid), reason))
+    #                     data = mycursor.fetchone()
+    #                     if data is None:
+    #                         sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
+    #                         mycursor.execute(sql_add, (str(userid), name, str(qqnum), reason))
                         
-                        mycursor.execute('SELECT * from suspicious where userid=%s', (str(userid), ))
-                        data = mycursor.fetchall()
-                        if data is not None:
-                            for _ in data:
-                                if _[6] == 'whitelist':
-                                    mydb.commit()
-                                    mycursor.close()
-                                    mydb.close()
-                                    return result
-        if alltext != '':
-            mydb.commit()
-            mycursor.close()
-            mydb.close()
-            raise cheaterFound(f'{name} - {userid}、' + alltext +
-                               '由于监测到打歌数据有高度开挂嫌疑，该账号id已被bot记录，如确认开挂，24小时内该账号与绑定qq将会被bot永久拉黑、'
-                               '如有异议可在群883721511内用充足的证据（账号交易记录，自证手元等）对上述成绩做出合理的解释')
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
+    #                     mycursor.execute('SELECT * from suspicious where userid=%s', (str(userid), ))
+    #                     data = mycursor.fetchall()
+    #                     if data is not None:
+    #                         for _ in data:
+    #                             if _[6] == 'whitelist':
+    #                                 mydb.commit()
+    #                                 mycursor.close()
+    #                                 mydb.close()
+    #                                 return result
+    #     if alltext != '':
+    #         mydb.commit()
+    #         mycursor.close()
+    #         mydb.close()
+    #         raise cheaterFound(f'{name} - {userid}、' + alltext +
+    #                            '由于监测到打歌数据有高度开挂嫌疑，该账号id已被bot记录，如确认开挂，24小时内该账号与绑定qq将会被bot永久拉黑、'
+    #                            '如有异议可在群883721511内用充足的证据（账号交易记录，自证手元等）对上述成绩做出合理的解释')
+    # mydb.commit()
+    # mycursor.close()
+    # mydb.close()
     return result
 
 
@@ -651,6 +643,7 @@ def verifyid(userid, server='jp'):
 
 
 def ssyc(targetrank, eventid):
+    raise QueryBanned
     try:
         with open('data/ssyc.yaml') as f:
             cachedata = yaml.load(f, Loader=yaml.FullLoader)
@@ -753,10 +746,15 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         score = ranking['rankings'][0]['score']
         userId = str(ranking['rankings'][0]['userId'])
         targetid = userId
+        if server in rank_query_ban_servers:
+            updateTime = ranking['updateTime']
         if not recordname(qqnum, userId, name):
             name = ''
     except IndexError:
-        return '查不到数据捏，可能这期活动没打'
+        if server in rank_query_ban_servers:
+            return '由于日服限制了查分api，只有排名前100可以使用该功能'
+        else:
+            return '查不到数据捏，可能这期活动没打'
     try:
         TeamId = ranking['rankings'][0]['userCheerfulCarnival']['cheerfulCarnivalTeamId']
         with open(f'{masterdatadir}/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
@@ -862,6 +860,9 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         pos += 10
         font3 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 16)
         draw.text((400, pos - 5), '预测线来自33（3-3.dev）\n     Generated by Unibot', (150, 150, 150), font3)
+    if server in rank_query_ban_servers:
+        font3 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 16)
+        draw.text((350, pos - 5), f'你的排名更新于{updateTime}\nGenerated by Unibot', (150, 150, 150), font3, align='right')
     if event['status'] == 'going':
         draw.text((20, pos), '活动还剩' + event['remain'], '#000000', font)
         pos += 38

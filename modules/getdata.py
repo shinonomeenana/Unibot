@@ -1,12 +1,13 @@
+import os
+import time
 import ujson as json
 import traceback
 from ujson import JSONDecodeError
 
 import requests
-import yaml
 from requests import ReadTimeout
 
-from modules.config import apiurls, enapiurls, twapiurls, krapiurls, proxies
+from modules.config import apiurls, enapiurls, twapiurls, krapiurls, proxies, rank_query_ban_servers
 
 
 class maintenanceIn(Exception):
@@ -19,6 +20,9 @@ class apiCallError(Exception):
     pass
 
 class serverNotSupported(Exception):
+    pass
+
+class QueryBanned(Exception):
     pass
 
 def callapi(url, server='jp'):
@@ -36,6 +40,39 @@ def callapi(url, server='jp'):
     else:
         raise serverNotSupported
     
+    if server in rank_query_ban_servers:
+        if '/ranking?targetRank' in url:
+            targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
+            with open('data/jptop100.json', 'r', encoding='utf-8') as f:
+                jptop100 = json.load(f)
+            updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+            for single in jptop100["rankings"]:
+                if single["rank"] == targetRank:
+                    return {
+                        "rankings": [single],
+                        'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                    }
+            else:
+                return {
+                        "rankings": []
+                    }
+        if '/ranking?targetUserId=' in url:
+            targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])
+            with open('data/jptop100.json', 'r', encoding='utf-8') as f:
+                jptop100 = json.load(f)
+            updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+            for single in jptop100["rankings"]:
+                if single["userId"] == targetUserId:
+                    return {
+                        "rankings": [single],
+                        'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                    }
+            else:
+                return {
+                        "rankings": []
+                    }
+    
+
     for urlroot in urlroots:
         try:
             if 'https' in urlroot:
@@ -47,29 +84,6 @@ def callapi(url, server='jp'):
                 raise maintenanceIn
             elif data == {'status': 'user_id_ban'}:
                 raise userIdBan
-            if 'profile' in url:
-                """
-                删除指定用户对应歌曲fc/ap到clear
-                格式示例：
-                '1234567890':
-                - 135
-                """
-                try:
-                    with open('yamls/apiremove.yaml', 'r', encoding='utf-8') as f:
-                        profileMusicDel = yaml.load(f, Loader=yaml.FullLoader)
-                    for deluserid in profileMusicDel:
-                        if url == f'/user/{deluserid}/profile':
-                            print(f"删除{deluserid}fc/ap")
-                            for i in range(0, len(data['userMusicResults'])):
-                                if data['userMusicResults'][i]["musicId"] in profileMusicDel[deluserid] and \
-                                        data['userMusicResults'][i]["musicDifficulty"] == "master":
-                                    print(f'删除{data["userMusicResults"][i]["musicId"]}')
-                                    data['userMusicResults'][i]["fullComboFlg"] = False
-                                    data['userMusicResults'][i]["fullPerfectFlg"] = False
-                                    data['userMusicResults'][i]["playResult"] = "clear"
-                except:
-                    pass
-
             if server in ['tw', 'kr'] and len(urlroots) > 1 and urlroot == urlroots[1]:
                 # 台服api不明原因容易卡死 卡死后切换到备用服务器
                 twapiurls[0], twapiurls[1] = twapiurls[1], twapiurls[0]

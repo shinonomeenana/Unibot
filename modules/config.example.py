@@ -6,6 +6,7 @@ enapiurls = ['https://xxxxx/api']
 twapiurls = ['https://xxxxx/api']
 krapiurls = ['https://xxxxx/api']
 
+rank_query_ban_servers = ['jp']
 predicturl = 'https://xxxxxxxx/predict.json'
 # 预测线地址，有需要可找33申请：https://3-3.dev/pjsk-predict
 
@@ -22,7 +23,7 @@ proxies = {
     'https': 'http://' + proxy
 }
 # 不用代理改None
-ispredict = True
+ispredict = False
 bearer_token = ''  # 需注册推特开发者（推车用）
 piccacheurl = ''  # 频道bot发送图片url前缀（带/）（频道bot用）
 charturl = ''  # 频道bot发送谱面预览url前缀（带/）（频道bot用）

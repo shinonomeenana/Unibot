@@ -17,7 +17,7 @@ from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel,
 from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
 from modules.blacklist import *
 from modules.cyo5000 import cyo5000
-from modules.getdata import apiCallError, maintenanceIn, userIdBan
+from modules.getdata import apiCallError, maintenanceIn, userIdBan, QueryBanned
 from modules.kk import kkwhitelist, kankan, uploadkk
 from modules.lighthouse import add_RDP_port, delete_RDP_port
 from modules.novelai import tencent_novelAI, AIcutcard
@@ -1097,12 +1097,6 @@ def sync_handle_msg(event):
         if event.message == '关闭端口' and event.user_id == 1103479519:  # 自用功能
             sendmsg(event, delete_RDP_port())
             return
-        if event.message == '申请出校':
-            from modules.auto_school_out import school_out_from_qq
-            msg = school_out_from_qq(event.user_id, event.group_id)
-            if msg != '':
-                sendmsg(event, msg)
-            return
         if event.message[-3:] == '排行榜':
             if event.message.startswith('pjsk猜曲'):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(1, 'pjsk猜曲')},cache=0]")
@@ -1640,6 +1634,8 @@ def sync_handle_msg(event):
         sendmsg(event, '查不到捏，可能啤酒烧烤在维护')
     except userIdBan:
         sendmsg(event, '该玩家因违反bot使用条款（包括但不限于开挂）已被bot拉黑')
+    except QueryBanned:
+        sendmsg(event, '由于日服api限制，数据已无法抓取，该功能已停用')
     except cheaterFound as a:
         text = repr(a)[14:-2].replace('、', '\n')
         infopic = text2image(text=text, max_width=1000)
