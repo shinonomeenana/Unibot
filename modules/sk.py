@@ -671,6 +671,7 @@ def ssyc(targetrank, eventid):
     return predict['data'][str(targetrank)]
 
 def skyc():
+    raise QueryBanned
     text = ''
     event = currentevent('jp')
     eventid = event['id']
@@ -718,7 +719,7 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
     # ismain是用来适配旧版分布式的 现在已停用没必要了 但很多代码懒得改就留着了
     event = currentevent(server)
     eventid = event['id']
-    if event['status'] == 'counting':
+    if server not in rank_query_ban_servers and event['status'] == 'counting':
         return '活动分数统计中，不要着急哦！'
     if server == 'jp':
         masterdatadir = 'masterdata'
