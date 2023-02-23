@@ -7,7 +7,8 @@ from ujson import JSONDecodeError
 import requests
 from requests import ReadTimeout
 
-from modules.config import apiurls, enapiurls, twapiurls, krapiurls, proxies, rank_query_ban_servers
+from modules.config import apiurls, enapiurls, twapiurls, krapiurls, proxies, \
+                            rank_query_ban_servers, suite_uploader_path
 
 
 class maintenanceIn(Exception):
@@ -25,7 +26,7 @@ class serverNotSupported(Exception):
 class QueryBanned(Exception):
     pass
 
-def callapi(url, server='jp'):
+def callapi(url, server='jp', query_type='unknown'):
     global twapiurls
     global krapiurls
 
@@ -71,6 +72,14 @@ def callapi(url, server='jp'):
                 return {
                         "rankings": []
                     }
+        if '/profile' in url and query_type != 'daibu':
+            userid = url[url.find('user/') + 5:url.find('/profile')]
+            if os.path.exists(f'{suite_uploader_path}{userid}.json'):
+                with open(f'{suite_uploader_path}{userid}.json', 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                return data
+            elif query_type in ['b30', 'jindu']:
+                raise QueryBanned
     
 
     for urlroot in urlroots:

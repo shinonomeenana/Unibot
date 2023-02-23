@@ -25,7 +25,7 @@ from modules.config import predicturl, proxies, ispredict
 
 rankline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000,
             10000, 20000, 30000, 40000, 50000, 100000, 100000000]
-predictline = [100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000, 100000, 100000000]
+predictline = [10, 20, 30, 40, 50, 100, 100000000]
 
 botpath = os.path.abspath(os.path.join(path.dirname(__file__), ".."))
 
@@ -671,7 +671,6 @@ def ssyc(targetrank, eventid):
     return predict['data'][str(targetrank)]
 
 def skyc():
-    raise QueryBanned
     text = ''
     event = currentevent('jp')
     eventid = event['id']
@@ -697,13 +696,13 @@ def skyc():
     if predict['data']['eventId'] != eventid:
         now = int(time.time())
         cachedata['cachetime'] = now
-        for i in range(0, 16):
+        for i in range(0, len(predictline)-1):
             cachedata[predictline[i]] = 0
         with open('data/ssyc.yaml', 'w') as f:
             yaml.dump(cachedata, f)
         return '预测暂时不可用'
     cachedata['cachetime'] = int(predict['data']['ts'] / 1000)
-    for i in range(0, 16):
+    for i in range(0, len(predictline)-1):
         cachedata[predictline[i]] = predict['data'][str(predictline[i])]
     with open('data/ssyc.yaml', 'w') as f:
         yaml.dump(cachedata, f)

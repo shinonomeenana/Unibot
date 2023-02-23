@@ -20,7 +20,7 @@ from modules.cyo5000 import cyo5000
 from modules.getdata import apiCallError, maintenanceIn, userIdBan, QueryBanned
 from modules.kk import kkwhitelist, kankan, uploadkk
 from modules.lighthouse import add_RDP_port, delete_RDP_port
-from modules.novelai import tencent_novelAI, AIcutcard
+from modules.novelai import self_stable_diffusion, AIcutcard
 
 from modules.findevent import findevent
 from modules.opencv import matchjacket
@@ -1280,7 +1280,7 @@ def sync_handle_msg(event):
                 pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 7,
                                              'starttime': int(time.time()), 'selfid': event.self_id}
             sendmsg(event, '生成中请稍后')
-            tencent_novelAI(r'data\assets\sekai\assetbundle\resources\startapp\thumbnail\music_jacket\jacket_s_%03d.png' % musicid, f'piccache/{event.group_id}.png')
+            self_stable_diffusion(r'data\assets\sekai\assetbundle\resources\startapp\thumbnail\music_jacket\jacket_s_%03d.png' % musicid, f'piccache/{event.group_id}.png')
             sendmsg(event, 'PJSK AI画图封面竞猜（随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲'
                     + fr"[CQ:image,file=file:///{botdir}\piccache/{event.group_id}.png,cache=0]")
             return
@@ -1310,7 +1310,7 @@ def sync_handle_msg(event):
                 pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 9,
                                              'starttime': int(time.time()), 'selfid': event.self_id}
             sendmsg(event, '生成中请稍后')
-            tencent_novelAI(r'data\assets\sekai\assetbundle\resources\startapp\thumbnail\music_jacket\jacket_s_%03d.png' % musicid, f'piccache/{event.group_id}.png', isbw=True)
+            self_stable_diffusion(r'data\assets\sekai\assetbundle\resources\startapp\thumbnail\music_jacket\jacket_s_%03d.png' % musicid, f'piccache/{event.group_id}.png', isbw=True)
             sendmsg(event, 'PJSK AI画图封面竞猜（随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲'
                     + fr"[CQ:image,file=file:///{botdir}\piccache/{event.group_id}.png,cache=0]")
             return
@@ -1368,12 +1368,12 @@ def sync_handle_msg(event):
                     cardinfo = getrandomcard()
                     charaguess[event.group_id] = {'isgoing': True, 'charaid': cardinfo[0],
                                                   'assetbundleName': cardinfo[1], 'prefix': cardinfo[2],
-                                                  'starttime': int(time.time()), 'selfid': event.self_id, 'type': 2}
+                                                  'starttime': int(time.time()) + 50, 'selfid': event.self_id, 'type': 2}
             except KeyError:
                 cardinfo = getrandomcard()
                 charaguess[event.group_id] = {'isgoing': True, 'charaid': cardinfo[0],
                                               'assetbundleName': cardinfo[1],
-                                              'prefix': cardinfo[2], 'starttime': int(time.time()),
+                                              'prefix': cardinfo[2], 'starttime': int(time.time()) + 50,
                                                'selfid': event.self_id, 'type': 2}
             sendmsg(event, '生成中请稍后')
             charaguess[event.group_id]['istrained'] = AIcutcard(cardinfo[1], cardinfo[3], event.group_id)

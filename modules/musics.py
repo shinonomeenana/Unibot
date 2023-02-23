@@ -286,10 +286,10 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
 
 
 # from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
-def parse_bpm(music_id):
+def parse_bpm(music_id, diff='expert'):
     try:
         with open('data/assets/sekai/assetbundle/resources'
-                  '/startapp/music/music_score/%04d_01/expert' % music_id, encoding='utf-8') as f:
+                  '/startapp/music/music_score/%04d_01/%s' % (music_id, diff), encoding='utf-8') as f:
             r = f.read()
     except FileNotFoundError:
         return 0, [{'time': 0.0, 'bpm': '无数据'}], 0, None

@@ -4,7 +4,7 @@ import os.path
 import time
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import requests
-from modules.config import proxies, env, rank_query_ban_servers
+from modules.config import proxies, env, rank_query_ban_servers, suite_uploader_path
 from modules.getdata import QueryBanned, callapi
 from modules.sk import verifyid, recordname, currentevent
 from modules.texttoimg import texttoimg
@@ -54,12 +54,13 @@ class userprofile(object):
         self.masterscore = {}
         self.expertscore = {}
         self.musicResult = {}
+        self.isNewData = False
         for i in range(26, 38):
             self.masterscore[i] = [0, 0, 0, 0]
         for i in range(21, 32):
             self.expertscore[i] = [0, 0, 0, 0]
 
-    def getprofile(self, userid, server, qqnum='未知', data=None):
+    def getprofile(self, userid, server, qqnum='未知', data=None, query_type='unknown'):
         if server == 'jp':
             masterdatadir = 'masterdata'
         elif server == 'en':
@@ -70,8 +71,14 @@ class userprofile(object):
             masterdatadir = '../krapi/masterdata'
 
         if data is None:
-            data = callapi(f'/user/{userid}/profile', server=server)
+            data = callapi(f'/user/{userid}/profile', server=server, query_type=query_type)
         
+        try:
+            data['totalPower']
+            self.isNewData = True
+        except:
+            pass
+
         try:
             self.twitterId = data['userProfile']['twitterId']
         except:
@@ -86,19 +93,25 @@ class userprofile(object):
 
         
         try:
-            if server in rank_query_ban_servers:
+            if server in rank_query_ban_servers and self.isNewData:
                 self.characterId = data['userChallengeLiveSoloResult']['characterId']
                 self.highScore = data['userChallengeLiveSoloResult']['highScore']
-            else:
+            elif self.isNewData:
                 self.characterId = data['userChallengeLiveSoloResults'][0]['characterId']
                 self.highScore = data['userChallengeLiveSoloResults'][0]['highScore']
+            else:
+                for i in data['userChallengeLiveSoloResults']:
+                    if i['highScore'] > self.highScore:
+                        self.characterId = i['characterId']
+                        self.highScore = i['highScore']
+                
         except:
             pass
         self.characterRank = data['userCharacters']
 
         self.userProfileHonors = data['userProfileHonors']
 
-        if server in rank_query_ban_servers:
+        if server in rank_query_ban_servers and self.isNewData:
             self.name = data['user']['name']
             self.rank = data['user']['rank']
             count_data = data['userMusicDifficultyClearCount']
@@ -204,10 +217,13 @@ class userprofile(object):
                             self.expertscore[playLevel][2] += 1
             self.musicResult = result
         for i in range(0, 5):
-            if server in rank_query_ban_servers:
+            if server in rank_query_ban_servers and self.isNewData:
                 self.userDecks[i] = data['userDeck'][f'member{i + 1}']
-            else:
+            elif self.isNewData:
                 self.userDecks[i] = data['userDecks'][0][f'member{i + 1}']
+            else:
+                decknum = data['user']['userGamedata']['deck'] - 1
+                self.userDecks[i] = data['userDecks'][decknum][f'member{i + 1}']
             for userCards in data['userCards']:
                 if userCards['cardId'] != self.userDecks[i]:
                     continue
@@ -277,7 +293,7 @@ def daibu(targetid=None, secret=False, server='jp', qqnum='未知'):
         return '你这ID有问题啊'
     try:
         profile = userprofile()
-        profile.getprofile(targetid, server, qqnum)
+        profile.getprofile(targetid, server, qqnum, query_type='daibu')
     except (JSONDecodeError, IndexError):
         return '未找到玩家'
     if secret:
@@ -414,10 +430,8 @@ def jinduChart(score):
 
 
 def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知'):
-    if server in rank_query_ban_servers:
-        raise QueryBanned
     profile = userprofile()
-    profile.getprofile(userid, server, qqnum)
+    profile.getprofile(userid, server, qqnum, query_type='jindu')
     if private:
         id = '保密'
     else:
@@ -502,6 +516,14 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
     chart = jinduChart(profile.masterscore)
     r,g,b,mask = chart.split()
     img.paste(chart, (280 - int(chart.size[0] / 2), 732), mask)
+
+    if server in rank_query_ban_servers and not profile.isNewData:
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+        updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
+        draw.text((68, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
+                   fill=(100, 100, 100), font=font_style)
+    if env != 'prod':
+        img.show()
     img.save(f'piccache/{userid}jindu.png')
 
 
@@ -648,6 +670,11 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知'):
                 img.paste(honorpic, (508, 228), mask)
             except:
                 pass
+    if server in rank_query_ban_servers and not profile.isNewData:
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+        updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
+        draw.text((118, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
+                   fill=(100, 100, 100), font=font_style)
     img = img.convert('RGB')
     img.save(f'piccache/{userid}profile.jpg', quality=80)
     return
@@ -988,9 +1015,7 @@ def fcrank(playlevel, rank):
 
 
 def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知'):
-    if server in rank_query_ban_servers:
-        raise QueryBanned
-    data = callapi(f'/user/{userid}/profile', server)
+    data = callapi(f'/user/{userid}/profile', server, query_type='b30')
 
     profile = userprofile()
     profile.getprofile(userid, server, qqnum, data)
@@ -1142,6 +1167,13 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(255, 255, 255), font=font_style)
     r, g, b, mask = rankimg.split()
     pic.paste(rankimg, (565, 142), mask)
+
+    if server in rank_query_ban_servers and not profile.isNewData:
+        draw = ImageDraw.Draw(pic)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+        updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
+        draw.text((68, 20), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
+                   fill=(100, 100, 100), font=font_style)
 
     pic = pic.convert("RGB")
     if returnpic:
