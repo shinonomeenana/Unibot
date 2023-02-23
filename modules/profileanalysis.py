@@ -93,17 +93,19 @@ class userprofile(object):
 
         
         try:
-            if server in rank_query_ban_servers and self.isNewData:
-                self.characterId = data['userChallengeLiveSoloResult']['characterId']
-                self.highScore = data['userChallengeLiveSoloResult']['highScore']
-            elif self.isNewData:
+            if server in rank_query_ban_servers:
+                if self.isNewData:
+                    self.characterId = data['userChallengeLiveSoloResult']['characterId']
+                    self.highScore = data['userChallengeLiveSoloResult']['highScore']
+                else:
+                    for i in data['userChallengeLiveSoloResults']:
+                        if i['highScore'] > self.highScore:
+                            self.characterId = i['characterId']
+                            self.highScore = i['highScore']
+            else:
                 self.characterId = data['userChallengeLiveSoloResults'][0]['characterId']
                 self.highScore = data['userChallengeLiveSoloResults'][0]['highScore']
-            else:
-                for i in data['userChallengeLiveSoloResults']:
-                    if i['highScore'] > self.highScore:
-                        self.characterId = i['characterId']
-                        self.highScore = i['highScore']
+                
                 
         except:
             pass
@@ -217,13 +219,14 @@ class userprofile(object):
                             self.expertscore[playLevel][2] += 1
             self.musicResult = result
         for i in range(0, 5):
-            if server in rank_query_ban_servers and self.isNewData:
-                self.userDecks[i] = data['userDeck'][f'member{i + 1}']
-            elif self.isNewData:
-                self.userDecks[i] = data['userDecks'][0][f'member{i + 1}']
+            if server in rank_query_ban_servers:
+                if self.isNewData:
+                    self.userDecks[i] = data['userDeck'][f'member{i + 1}']
+                else:
+                    decknum = data['user']['userGamedata']['deck'] - 1
+                    self.userDecks[i] = data['userDecks'][decknum][f'member{i + 1}']
             else:
-                decknum = data['user']['userGamedata']['deck'] - 1
-                self.userDecks[i] = data['userDecks'][decknum][f'member{i + 1}']
+                self.userDecks[i] = data['userDecks'][0][f'member{i + 1}']
             for userCards in data['userCards']:
                 if userCards['cardId'] != self.userDecks[i]:
                     continue
