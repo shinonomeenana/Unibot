@@ -13,7 +13,7 @@ import requests
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from dateutil.tz import tzlocal
 
-from modules.config import proxies
+from modules.config import proxies, rank_query_ban_servers, env, suite_uploader_path
 from modules.pjskinfo import aliastomusicid
 from modules.profileanalysis import userprofile, generatehonor
 from moesus.music_score import parse, genGuessChart
@@ -156,7 +156,19 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
         except KeyError:
             musicData[levelRound] = [music['musicId']]
 
-    rankPic = singleLevelRankPic(musicData, difficulty, oneRowCount=None if level != 0 else 5)
+    profile = None
+    error = False
+    if userid is not None and not isprivate:
+        profile = userprofile()
+        try:
+            profile.getprofile(userid=userid, server=server, qqnum=qqnum, query_type='rank')
+            rankPic = singleLevelRankPic(musicData, difficulty, profile.musicResult, oneRowCount=None if level != 0 else 5)
+        except:
+            profile.isNewData = True
+            rankPic = singleLevelRankPic(musicData, difficulty, oneRowCount=None if level != 0 else 5)
+            error = True
+    else:
+        rankPic = singleLevelRankPic(musicData, difficulty, oneRowCount=None if level != 0 else 5)
     rankPic = rankPic.resize((int(rankPic.size[0] / 1.8), int(rankPic.size[1] / 1.8)))
     pic = Image.new("RGBA", (rankPic.size[0] + 20 if rankPic.size[0] > 520 else 600, rankPic.size[1] + 430), (205, 255, 255, 255))
     bg = Image.open('pics/findevent.png')
@@ -172,10 +184,77 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
     r,g,b,mask = userdataimg.split()
     pic.paste(userdataimg, (0, 0), mask)
     draw = ImageDraw.Draw(pic)
-    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
-    draw.text((215, 65), '数据已无法获取', fill=(0, 0, 0), font=font_style)
-    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
-    draw.text((218, 114), '由于日服api限制，详细打歌数据已停用', fill=(0, 0, 0), font=font_style)
+
+    if error:
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+        draw.text((215, 65), '数据已无法获取', fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
+        draw.text((218, 114), '由于日服api限制，详细打歌数据已停用', fill=(0, 0, 0), font=font_style)
+    elif profile is not None:
+        with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
+            cards = json.load(f)
+        try:
+            assetbundleName = ''
+            for i in cards:
+                if i['id'] == profile.userDecks[0]:
+                    assetbundleName = i['assetbundleName']
+            if profile.special_training[0]:
+                cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_after_training.png')
+            else:
+                cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_normal.png')
+
+            cardimg = cardimg.resize((116, 116))
+            r, g, b, mask = cardimg.split()
+            pic.paste(cardimg, (68, 70), mask)
+        except FileNotFoundError:
+            pass
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+        draw.text((215, 65), profile.name, fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
+        draw.text((218, 114), '发送"不给看"可隐藏打歌数据', fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
+        draw.text((314, 150), str(profile.rank), fill=(255, 255, 255), font=font_style)
+
+        for i in profile.userProfileHonors:
+            if i['seq'] == 1:
+                try:
+                    honorpic = generatehonor(i, True, server)
+                    honorpic = honorpic.resize((226, 48))
+                    r, g, b, mask = honorpic.split()
+                    pic.paste(honorpic, (59, 206), mask)
+                except:
+                    pass
+
+        for i in profile.userProfileHonors:
+            if i['seq'] == 2:
+                try:
+                    honorpic = generatehonor(i, False, server)
+                    honorpic = honorpic.resize((107, 48))
+                    r, g, b, mask = honorpic.split()
+                    pic.paste(honorpic, (290, 206), mask)
+                except:
+                    pass
+
+        for i in profile.userProfileHonors:
+            if i['seq'] == 3:
+                try:
+                    honorpic = generatehonor(i, False, server)
+                    honorpic = honorpic.resize((107, 48))
+                    r, g, b, mask = honorpic.split()
+                    pic.paste(honorpic, (403, 206), mask)
+                except:
+                    pass
+    elif isprivate:
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+        draw.text((215, 65), '成绩已隐藏', fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
+        draw.text((218, 114), '发送"给看"可查看歌曲成绩', fill=(0, 0, 0), font=font_style)
+    else:
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+        draw.text((215, 65), '数据已无法获取', fill=(0, 0, 0), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
+        draw.text((218, 114), '由于日服api限制，详细打歌数据已停用', fill=(0, 0, 0), font=font_style)
+
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 30)
     draw.text((65, 264), title, fill=(0, 0, 0), font=font_style)
@@ -191,6 +270,16 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
               font=font_style)
     draw.text((50, pic.size[1] - 40), f'Updated in {time.strftime("%Y-%m-%d %H:%M:%S", updatetime)}        '
                                       '※定数每次统计时可能会改变', fill='#00CCBB', font=font_style)
+    
+    if server in rank_query_ban_servers and not profile.isNewData:
+        draw = ImageDraw.Draw(pic)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+        updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
+        draw.text((68, 20), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
+                   fill=(100, 100, 100), font=font_style)
+    
+    if env != 'prod':
+        pic.show()
     pic = pic.convert("RGB")
     pic.save(f'piccache/{userid}{level}{difficulty}{fcap}.jpg', quality=80)
     return f'piccache/{userid}{level}{difficulty}{fcap}.jpg'

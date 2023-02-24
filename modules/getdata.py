@@ -78,7 +78,7 @@ def callapi(url, server='jp', query_type='unknown'):
                 with open(f'{suite_uploader_path}{userid}.json', 'r', encoding='utf-8') as f:
                     data = json.load(f)
                 return data
-            elif query_type in ['b30', 'jindu']:
+            elif query_type in ['b30', 'jindu', 'rank']:
                 raise QueryBanned
     
 

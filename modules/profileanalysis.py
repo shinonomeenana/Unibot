@@ -223,8 +223,11 @@ class userprofile(object):
                 if self.isNewData:
                     self.userDecks[i] = data['userDeck'][f'member{i + 1}']
                 else:
-                    decknum = data['user']['userGamedata']['deck'] - 1
-                    self.userDecks[i] = data['userDecks'][decknum][f'member{i + 1}']
+                    decknum = data['user']['userGamedata']['deck']
+                    for deck in data['userDecks']:
+                        if deck['deckId'] == decknum:
+                            self.userDecks[i] = deck[f'member{i + 1}']
+                            break
             else:
                 self.userDecks[i] = data['userDecks'][0][f'member{i + 1}']
             for userCards in data['userCards']:
