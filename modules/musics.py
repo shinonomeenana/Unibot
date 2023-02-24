@@ -271,12 +271,13 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
     draw.text((50, pic.size[1] - 40), f'Updated in {time.strftime("%Y-%m-%d %H:%M:%S", updatetime)}        '
                                       '※定数每次统计时可能会改变', fill='#00CCBB', font=font_style)
     
-    if server in rank_query_ban_servers and not profile.isNewData:
-        draw = ImageDraw.Draw(pic)
-        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
-        updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
-        draw.text((68, 20), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
-                   fill=(100, 100, 100), font=font_style)
+    if profile is not None:
+        if server in rank_query_ban_servers and not profile.isNewData:
+            draw = ImageDraw.Draw(pic)
+            font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+            updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
+            draw.text((68, 20), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
+                    fill=(100, 100, 100), font=font_style)
     
     if env != 'prod':
         pic.show()
