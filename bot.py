@@ -621,6 +621,14 @@ def sync_handle_msg(event):
             pjskprofile(bind[1], bind[2], server, event.user_id)
             sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/{bind[1]}profile.jpg,cache=0]")
             return
+        if event.message == "pjskprofile2" or event.message == "个人信息2":
+            bind = getqqbind(event.user_id, server)
+            if bind is None:
+                sendmsg(event, '查不到捏，可能是没绑定')
+                return
+            pjskprofile(bind[1], bind[2], server, event.user_id, is_force_update=True)
+            sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/{bind[1]}profile.jpg,cache=0]")
+            return
 
         if event.message[:2] == "查房" or event.message[:2] == "cf":
             if event.group_id in blacklist['sk'] and event.message[:2] == "查房":

@@ -60,7 +60,7 @@ class userprofile(object):
         for i in range(21, 32):
             self.expertscore[i] = [0, 0, 0, 0]
 
-    def getprofile(self, userid, server, qqnum='未知', data=None, query_type='unknown'):
+    def getprofile(self, userid, server, qqnum='未知', data=None, query_type='unknown', is_force_update=False):
         if server == 'jp':
             masterdatadir = 'masterdata'
         elif server == 'en':
@@ -71,7 +71,8 @@ class userprofile(object):
             masterdatadir = '../krapi/masterdata'
 
         if data is None:
-            data = callapi(f'/user/{userid}/profile', server=server, query_type=query_type)
+            data = callapi(f'/user/{userid}/profile', server=server, query_type=query_type,
+                            is_force_update=is_force_update)
         
         try:
             data['totalPower']
@@ -533,9 +534,9 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
     img.save(f'piccache/{userid}jindu.png')
 
 
-def pjskprofile(userid, private=False, server='jp', qqnum='未知'):
+def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_update=False):
     profile = userprofile()
-    profile.getprofile(userid, server, qqnum)
+    profile.getprofile(userid, server, qqnum, is_force_update=is_force_update)
     if private:
         id = '保密'
     else:
@@ -679,7 +680,7 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知'):
     if server in rank_query_ban_servers and not profile.isNewData:
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
         updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
-        draw.text((118, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
+        draw.text((118, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime) + '  实时数据可使用“pjskprofile2”',
                    fill=(100, 100, 100), font=font_style)
     img = img.convert('RGB')
     img.save(f'piccache/{userid}profile.jpg', quality=80)

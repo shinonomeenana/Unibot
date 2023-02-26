@@ -26,7 +26,7 @@ class serverNotSupported(Exception):
 class QueryBanned(Exception):
     pass
 
-def callapi(url, server='jp', query_type='unknown'):
+def callapi(url, server='jp', query_type='unknown', is_force_update=False):
     global twapiurls
     global krapiurls
 
@@ -72,7 +72,7 @@ def callapi(url, server='jp', query_type='unknown'):
                 return {
                         "rankings": []
                     }
-        if '/profile' in url and query_type != 'daibu':
+        if '/profile' in url and query_type != 'daibu' and not is_force_update:
             userid = url[url.find('user/') + 5:url.find('/profile')]
             if os.path.exists(f'{suite_uploader_path}{userid}.json'):
                 with open(f'{suite_uploader_path}{userid}.json', 'r', encoding='utf-8') as f:
