@@ -427,9 +427,14 @@ def drawpjskinfo(musicid):
             img.paste(hotpic, text_coordinate, mask)
 
         for i in range(3, 5):
-            levelplus = str(round(info.playLevel[i] + info.playLevelAdjust[i], 1))
-            fclevelplus = str(round(info.playLevel[i] + info.fullComboAdjust[i], 1))
-            aplevelplus = str(round(info.playLevel[i] + info.fullPerfectAdjust[i], 1))
+            if info.playLevelAdjust[i] != '?':
+                levelplus = str(round(info.playLevel[i] + info.playLevelAdjust[i], 1))
+                fclevelplus = str(round(info.playLevel[i] + info.fullComboAdjust[i], 1))
+                aplevelplus = str(round(info.playLevel[i] + info.fullPerfectAdjust[i], 1))
+            else:
+                levelplus = f"{info.playLevel[i]}.?"
+                fclevelplus = f"{info.playLevel[i]}.?"
+                aplevelplus = f"{info.playLevel[i]}.?"
 
             text_width = font_style.getsize(str(levelplus))
             text_coordinate = (int(1363 + 116 * i - text_width[0] / 2), int(864 - text_width[1] / 2))
@@ -445,20 +450,21 @@ def drawpjskinfo(musicid):
 
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 20)
         for i in range(3, 5):
-            if info.playLevelAdjust[i] > 1.5:
-                adjust = "++"
-            elif info.playLevelAdjust[i] > 0.5:
-                adjust = "+"
-            elif info.playLevelAdjust[i] < -1.5:
-                adjust = "--"
-            elif info.playLevelAdjust[i] < -0.5:
-                adjust = "-"
-            else:
-                adjust = ""
-            if adjust != "":
-                text_width = font_style.getsize(str(adjust))
-                text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(915 - text_width[1] / 2))
-                draw.text(text_coordinate, str(adjust), fill=(1, 255, 221), font=font_style)
+            if info.playLevelAdjust[i] != '?':
+                if info.playLevelAdjust[i] > 1.5:
+                    adjust = "++"
+                elif info.playLevelAdjust[i] > 0.5:
+                    adjust = "+"
+                elif info.playLevelAdjust[i] < -1.5:
+                    adjust = "--"
+                elif info.playLevelAdjust[i] < -0.5:
+                    adjust = "-"
+                else:
+                    adjust = ""
+                if adjust != "":
+                    text_width = font_style.getsize(str(adjust))
+                    text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(915 - text_width[1] / 2))
+                    draw.text(text_coordinate, str(adjust), fill=(1, 255, 221), font=font_style)
     vocals = vocalimg(musicid, alpha)
     r, g, b, mask = vocals.split()
     if vocals.size[1] < 320:

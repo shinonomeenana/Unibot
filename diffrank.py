@@ -66,18 +66,22 @@ def generate_diff_json():
                 for i in range(len(diff_data)):
                     if diff_data[i]['musicId'] == music_id:
                         break
-
-                diff_data[i + 3]['fullComboAdjust'] = float(line[4]) - int(line[3])
-                diff_data[i + 3]['fullPerfectAdjust'] = float(line[5]) - int(line[3])
-                diff_data[i + 3]['playLevelAdjust'] = (
-                    diff_data[i + 3]['fullComboAdjust'] * 2/3 + diff_data[i + 3]['fullPerfectAdjust'] * 1/3
-                )
+                if line[4] != '':
+                    diff_data[i + 3]['fullComboAdjust'] = round(float(line[4]) - int(line[3]), 3)
+                    diff_data[i + 3]['fullPerfectAdjust'] = round(float(line[5]) - int(line[3]), 3)
+                    diff_data[i + 3]['playLevelAdjust'] = round((
+                        diff_data[i + 3]['fullComboAdjust'] * 2/3 + diff_data[i + 3]['fullPerfectAdjust'] * 1/3
+                    ), 3)
+                else:
+                    diff_data[i + 3]['fullComboAdjust'] = '?'
+                    diff_data[i + 3]['fullPerfectAdjust'] = '?'
+                    diff_data[i + 3]['playLevelAdjust'] = '?'
                 
-                diff_data[i + 4]['fullComboAdjust'] = float(line[7]) - int(line[6])
-                diff_data[i + 4]['fullPerfectAdjust'] = float(line[8]) - int(line[6])
-                diff_data[i + 4]['playLevelAdjust'] = (
+                diff_data[i + 4]['fullComboAdjust'] = round(float(line[7]) - int(line[6]), 3)
+                diff_data[i + 4]['fullPerfectAdjust'] = round(float(line[8]) - int(line[6]), 3)
+                diff_data[i + 4]['playLevelAdjust'] = round((
                     diff_data[i + 4]['fullComboAdjust'] * 2/3 + diff_data[i + 4]['fullPerfectAdjust'] * 1/3
-                )
+                ), 3)
             except ValueError:
                 pass
 
@@ -89,4 +93,4 @@ if __name__ == '__main__':
     if sys.argv[1] == 'gencsv':
         generate_diff_csv()
     elif sys.argv[1] == 'genjson':
-        generate_diff_json
+        generate_diff_json()
