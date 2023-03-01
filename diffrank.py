@@ -1,5 +1,6 @@
 import csv
 import sys
+import time
 import ujson as json
 
 
@@ -25,7 +26,7 @@ def get_custom_diff_list(music_id: int, custom_music_difficulties=None):
             try:
                 return [[custom_music_difficulties[j]['fullComboAdjust'] + custom_music_difficulties[j]['playLevel'] for j in range(i + 3, i + 5)],
                         [custom_music_difficulties[j]['fullPerfectAdjust'] + custom_music_difficulties[j]['playLevel'] for j in range(i + 3, i + 5)]]
-            except KeyError:
+            except (KeyError, TypeError):
                 return None
     return None
 
@@ -41,11 +42,12 @@ def generate_diff_csv():
     for music in musics:
         raw_diff = get_raw_diff_list(music['id'], raw_diff_data)
         custom_diff = get_custom_diff_list(music['id'], custom_diff_data)
+        release_time = time.strftime("%Y%m%d", time.localtime(music['publishedAt'] / 1000))
         if custom_diff is not None:
-            csvdata.append([music['title'], music['id'], music['publishedAt'], raw_diff[3], custom_diff[0][0], custom_diff[1][0],
+            csvdata.append([music['title'], music['id'], release_time, raw_diff[3], custom_diff[0][0], custom_diff[1][0],
                                                         raw_diff[4], custom_diff[0][1], custom_diff[1][1]])
         else:
-            csvdata.append([music['title'], music['id'], music['publishedAt'], raw_diff[3], '', '',
+            csvdata.append([music['title'], music['id'], release_time, raw_diff[3], '', '',
                                                         raw_diff[4], '', ''])
     with open("masterdata/realtime/musics.csv", "w", newline='', encoding='utf-8-sig') as csvfile: 
         writer = csv.writer(csvfile)
@@ -73,15 +75,16 @@ def generate_diff_json():
                         diff_data[i + 3]['fullComboAdjust'] * 2/3 + diff_data[i + 3]['fullPerfectAdjust'] * 1/3
                     ), 3)
                 else:
-                    diff_data[i + 3]['fullComboAdjust'] = '?'
-                    diff_data[i + 3]['fullPerfectAdjust'] = '?'
-                    diff_data[i + 3]['playLevelAdjust'] = '?'
+                    pass
                 
-                diff_data[i + 4]['fullComboAdjust'] = round(float(line[7]) - int(line[6]), 3)
-                diff_data[i + 4]['fullPerfectAdjust'] = round(float(line[8]) - int(line[6]), 3)
-                diff_data[i + 4]['playLevelAdjust'] = round((
-                    diff_data[i + 4]['fullComboAdjust'] * 2/3 + diff_data[i + 4]['fullPerfectAdjust'] * 1/3
-                ), 3)
+                if line[7] != '':
+                    diff_data[i + 4]['fullComboAdjust'] = round(float(line[7]) - int(line[6]), 3)
+                    diff_data[i + 4]['fullPerfectAdjust'] = round(float(line[8]) - int(line[6]), 3)
+                    diff_data[i + 4]['playLevelAdjust'] = round((
+                        diff_data[i + 4]['fullComboAdjust'] * 2/3 + diff_data[i + 4]['fullPerfectAdjust'] * 1/3
+                    ), 3)
+                else:
+                    pass
             except ValueError:
                 pass
 

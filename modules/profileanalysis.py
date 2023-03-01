@@ -1101,18 +1101,18 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         try:
             diff[i]['playLevelAdjust']
         except KeyError:
-            diff[i]['playLevelAdjust'] = 0
-            diff[i]['fullComboAdjust'] = 0
-            diff[i]['fullPerfectAdjust'] = 0
-        if diff[i]['playLevelAdjust'] == '?':
-            diff[i]['playLevelAdjust'] = 0
-            diff[i]['fullComboAdjust'] = 0
-            diff[i]['fullPerfectAdjust'] = 0
+            diff[i]['playLevelAdjust'] = None
+            diff[i]['fullComboAdjust'] = None
+            diff[i]['fullPerfectAdjust'] = None
     for i in range(0, len(diff)):
         diff[i]['result'] = 0
         diff[i]['rank'] = 0
-        diff[i]['fclevel+'] = diff[i]['playLevel'] + diff[i]['fullComboAdjust']
-        diff[i]['aplevel+'] = diff[i]['playLevel'] + diff[i]['fullPerfectAdjust']
+        if diff[i]['fullComboAdjust'] is not None:
+            diff[i]['fclevel+'] = diff[i]['playLevel'] + diff[i]['fullComboAdjust']
+            diff[i]['aplevel+'] = diff[i]['playLevel'] + diff[i]['fullPerfectAdjust']
+        else:
+            diff[i]['fclevel+'] = diff[i]['playLevel']
+            diff[i]['aplevel+'] = diff[i]['playLevel']
     if server == 'jp':
         diff.sort(key=lambda x: x["aplevel+"], reverse=True)
         highest = 0
@@ -1229,7 +1229,7 @@ def b30single(diff, musics):
         draw.ellipse((312, 32, 356, 76), fill=color[diff['musicDifficulty']])
 
 
-        if diff['playLevelAdjust'] != 0:
+        if diff['playLevelAdjust'] is not None:
             if diff['result'] == 2:
                 resultpic = Image.open('pics/AllPerfect.png')
                 draw.text((259, 24), str(round(diff['aplevel+'], 1)), (255, 255, 255), font)

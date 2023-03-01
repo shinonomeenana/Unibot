@@ -263,21 +263,24 @@ def drawpjskinfo(musicid):
         if data[i]['musicId'] == musicid:
             info.playLevel = [data[i]['playLevel'], data[i + 1]['playLevel'],
                               data[i + 2]['playLevel'], data[i + 3]['playLevel'], data[i + 4]['playLevel']]
-            try:
-                info.noteCount = [data[i]['noteCount'], data[i + 1]['noteCount'],
-                                data[i + 2]['noteCount'], data[i + 3]['noteCount'], data[i + 4]['noteCount']]
-            except KeyError:
-                info.noteCount = [data[i]['totalNoteCount'], data[i + 1]['totalNoteCount'],
-                                data[i + 2]['totalNoteCount'], data[i + 3]['totalNoteCount'], data[i + 4]['totalNoteCount']]
-            try:
-                info.playLevelAdjust = [0, 0, 0, data[i + 3]['playLevelAdjust'],
-                                        data[i + 4]['playLevelAdjust']]
-                info.fullComboAdjust = [0, 0, 0, data[i + 3]['fullComboAdjust'],
-                                        data[i + 4]['fullComboAdjust']]
-                info.fullPerfectAdjust = [0, 0, 0, data[i + 3]['fullPerfectAdjust'],
-                                          data[i + 4]['fullPerfectAdjust']]
-            except KeyError:
-                pass
+            info.noteCount = [data[i]['totalNoteCount'], data[i + 1]['totalNoteCount'],
+                            data[i + 2]['totalNoteCount'], data[i + 3]['totalNoteCount'], data[i + 4]['totalNoteCount']]
+            if 'playLevelAdjust' not in data[i + 3]:
+                data[i + 3]['playLevelAdjust'] = None
+                data[i + 3]['fullComboAdjust'] = None
+                data[i + 3]['fullPerfectAdjust'] = None
+            if 'playLevelAdjust' not in data[i + 4]:
+                data[i + 4]['playLevelAdjust'] = None
+                data[i + 4]['fullComboAdjust'] = None
+                data[i + 4]['fullPerfectAdjust'] = None
+
+            info.playLevelAdjust = [0, 0, 0, data[i + 3]['playLevelAdjust'],
+                                    data[i + 4]['playLevelAdjust']]
+            info.fullComboAdjust = [0, 0, 0, data[i + 3]['fullComboAdjust'],
+                                    data[i + 4]['fullComboAdjust']]
+            info.fullPerfectAdjust = [0, 0, 0, data[i + 3]['fullPerfectAdjust'],
+                                        data[i + 4]['fullPerfectAdjust']]
+
             break
     if info.playLevel[0] == 0:
         with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
@@ -382,7 +385,7 @@ def drawpjskinfo(musicid):
     if info.playLevelAdjust[4] != 0:
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 28)
         for i in range(3, 5):
-            if info.playLevelAdjust[i] != '?':
+            if info.playLevelAdjust[i] is not None:
                 levelplus = str(round(info.playLevel[i] + info.playLevelAdjust[i], 1))
                 fclevelplus = str(round(info.playLevel[i] + info.fullComboAdjust[i], 1))
                 aplevelplus = str(round(info.playLevel[i] + info.fullPerfectAdjust[i], 1))
@@ -405,7 +408,7 @@ def drawpjskinfo(musicid):
 
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 20)
         for i in range(3, 5):
-            if info.playLevelAdjust[i] != '?':
+            if info.playLevelAdjust[i] is not None:
                 if info.playLevelAdjust[i] > 1.5:
                     adjust = "++"
                 elif info.playLevelAdjust[i] > 0.5:
