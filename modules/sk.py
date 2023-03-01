@@ -677,41 +677,32 @@ def skyc():
     if event['status'] != 'going':
         return '预测暂时不可用'
     try:
-        with open('data/ssyc.yaml') as f:
-            cachedata = yaml.load(f, Loader=yaml.FullLoader)
-        if cachedata[100] == 0:
-            return '预测暂时不可用'
-        cachetime = cachedata['cachetime']
+        with open('data/ssyc.json', 'r', encoding='utf-8') as f:
+            cachedata = json.load(f)
+        cachetime = cachedata['data']['ts'] / 1000
         now = int(time.time())
-        timepass = now - cachetime
-        if timepass < 60 * 30 + 10:
-            for i in range(0, len(predictline)-1):
-                text = text + f'{predictline[i]}名预测：{cachedata[predictline[i]]}\n'
-            timeArray = time.localtime(cachetime)
-            text = text + '\n预测线来自xfl03(3-3.dev)\n预测生成时间为' + time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-            return text
+        if now - cachetime < 60 * 30 + 10:
+            # 本地缓存有效
+            predict = cachedata
+        else:
+            # 本地缓存过期
+            predict = json.loads(requests.get(predicturl, proxies=proxies).content)
     except FileNotFoundError:
-        cachedata = {}
-    predict = json.loads(requests.get(predicturl, proxies=proxies).content)
-    if predict['data']['eventId'] != eventid:
-        now = int(time.time())
-        cachedata['cachetime'] = now
-        for i in range(0, len(predictline)-1):
-            cachedata[predictline[i]] = 0
-        with open('data/ssyc.yaml', 'w') as f:
-            yaml.dump(cachedata, f)
-        return '预测暂时不可用'
-    cachedata['cachetime'] = int(predict['data']['ts'] / 1000)
-    for i in range(0, len(predictline)-1):
-        cachedata[predictline[i]] = predict['data'][str(predictline[i])]
-    with open('data/ssyc.yaml', 'w') as f:
-        yaml.dump(cachedata, f)
+        # 无本地缓存
+        predict = json.loads(requests.get(predicturl, proxies=proxies).content)
 
-    for i in range(0, len(predictline) - 1):
-        text = text + f'{predictline[i]}名预测：{cachedata[predictline[i]]}\n'
-    timeArray = time.localtime(cachedata['cachetime'])
-    text = text + '\n预测线来自xfl03(3-3.dev)\n预测生成时间为' + time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-    return text
+    if predict['data']['eventId'] == eventid:
+        for line in predict['data']:
+            if line.isdigit():
+                text = text + f'{line}名预测：{predict["data"][line]}\n'
+        timeArray = time.localtime(predict['data']['ts'] / 1000)
+        text = text + '\n预测线来自xfl03(3-3.dev)\n预测生成时间为' + time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+        text = text + '\n预测的活动为' + predict['data']['eventName']
+        with open('data/ssyc.json', 'w', encoding='utf-8') as f:
+            f.write(json.dumps(predict, indent=4, ensure_ascii=False))
+        return text
+    else:
+        return '预测暂时不可用'
 
 
 def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, qqnum='未知', ismain=True):
