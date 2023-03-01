@@ -22,33 +22,6 @@ from moesus.music_score import parse, genGuessChart
 assetpath = 'data/assets/sekai/assetbundle/resources'
 
 
-def hotrank():
-    with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
-        musics = json.load(f)
-    for i in range(0, len(musics)):
-        try:
-            musics[i]['hot']
-        except KeyError:
-            musics[i]['hot'] = 0
-    musics.sort(key=lambda x: x["hot"], reverse=True)
-    text = ''
-    for i in range(0, 40):
-        text = text + f"{i + 1} {musics[i]['title']} ({int(musics[i]['hot'])})\n"
-
-    IMG_SIZE = (500, 40 + 33 * 34)
-    img = Image.new('RGB', IMG_SIZE, (255, 255, 255))
-    draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 18)
-    draw.text((20, 20), '热度排行Top40', '#000000', font, spacing=10)
-    font = ImageFont.truetype('fonts/FOT-RodinNTLGPro-DB.ttf', 18)
-    draw.text((20, 53), text, '#000000', font, spacing=10)
-    font = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 15)
-    updatetime = time.localtime(os.path.getmtime(r"masterdata/realtime/musics.json"))
-    draw.text((20, 1100), '数据来源：https://profile.pjsekai.moe/\nUpdated in '
-              + time.strftime("%Y-%m-%d %H:%M:%S", updatetime), '#000000', font)
-    img.save(f'piccache/hotrank.png')
-
-
 def idtoname(musicid):
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         musics = json.load(f)
@@ -58,9 +31,10 @@ def idtoname(musicid):
     return ''
 
 
-def isleak(musicid):
-    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
-        musics = json.load(f)
+def isleak(musicid, musics=None):
+    if musics is None:
+        with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+            musics = json.load(f)
     for i in musics:
         if i['id'] == musicid:
             if int(time.time() * 1000) < i['publishedAt']:
@@ -70,72 +44,24 @@ def isleak(musicid):
     return True
 
 
-def levelrank(level, difficulty, fcap=0):
-    target = []
-    with open('masterdata/realtime/musicDifficulties.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
-        musics = json.load(f)
-    for i in data:
-        if i['playLevel'] == level and i['musicDifficulty'] == difficulty:
-            try:
-                i['playLevelAdjust']
-                target.append(i)
-            except KeyError:
-                pass
-    if fcap == 0:
-        title = f'{difficulty.upper()} {level}难度排行（仅供参考）'
-        target.sort(key=lambda x: x["playLevelAdjust"], reverse=True)
-    elif fcap == 1:
-        title = f'{difficulty.upper()} {level}FC难度排行（仅供参考）'
-        target.sort(key=lambda x: x["fullComboAdjust"], reverse=True)
-    else:
-        title = f'{difficulty.upper()} {level}AP难度排行（仅供参考）'
-        target.sort(key=lambda x: x["fullPerfectAdjust"], reverse=True)
-    text = ''
-    musictitle = ''
-    for i in target:
-        for j in musics:
-            if j['id'] == i['musicId']:
-                musictitle = j['title']
-                break
-        if fcap == 0:
-            text = text + f"{musictitle} ({round(i['playLevel'] + i['playLevelAdjust'], 1)})\n"
-        elif fcap == 1:
-            text = text + f"{musictitle} ({round(i['playLevel'] + i['fullComboAdjust'], 1)})\n"
-        else:
-            text = text + f"{musictitle} ({round(i['playLevel'] + i['fullPerfectAdjust'], 1)})\n"
-    if text == '':
-        return False
-    IMG_SIZE = (500, int(100 + text.count('\n') * 31.5))
-    img = Image.new('RGB', IMG_SIZE, (255, 255, 255))
-    draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 22)
-    draw.text((20, 15), title, '#000000', font, spacing=10)
-    font = ImageFont.truetype('fonts/FOT-RodinNTLGPro-DB.ttf', 22)
-    draw.text((20, 55), text, '#000000', font, spacing=10)
-    font = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 15)
-    updatetime = time.localtime(os.path.getmtime(r"masterdata/realtime/musicDifficulties.json"))
-    draw.text((20, int(45 + text.count('\n') * 31.5)), '数据来源：https://profile.pjsekai.moe/\nUpdated in '
-              + time.strftime("%Y-%m-%d %H:%M:%S", updatetime), '#000000', font)
-    img = img.convert("RGB")
-    img.save(f'piccache/{level}{difficulty}{fcap}.jpg', quality=80)
-    return True
-
 
 def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server='jp', qqnum='未知'):
     target = []
     with open('masterdata/realtime/musicDifficulties.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
-    with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         musics = json.load(f)
+    now = time.time() * 1000
     for i in data:
+        if isleak(i['musicId'], musics):
+            continue
         if (i['playLevel'] == level if level != 0 else True) and i['musicDifficulty'] == difficulty:
             try:
                 i['playLevelAdjust']
-                target.append(i)
             except KeyError:
-                pass
+                for playLevelKey in ["playLevelAdjust", "fullComboAdjust", "fullPerfectAdjust"]:
+                    i[playLevelKey] = 0
+            target.append(i)
 
     if fcap == 0:
         title = f'{difficulty.upper()} {level if level != 0 else ""} 难度表（仅供参考）'
@@ -150,7 +76,10 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
     target.sort(key=lambda x: x['playLevel'] + x[playLevelKey], reverse=True)
     musicData = {}
     for music in target:
-        levelRound = str(round(music['playLevel'] + music[playLevelKey], 1))
+        if music[playLevelKey] == 0:
+            levelRound = str(music['playLevel']) + '.?'
+        else:
+            levelRound = str(round(music['playLevel'] + music[playLevelKey], 1))
         try:
             musicData[levelRound].append(music['musicId'])
         except KeyError:
@@ -710,7 +639,7 @@ def tasseiritsu(para):
 def findbpm(targetbpm):
     bpm = {}
     text = ''
-    with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     for music in data:
         bpm[music['id']] = parse_bpm(music['id'])[1]

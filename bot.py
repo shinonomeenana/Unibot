@@ -27,7 +27,7 @@ from modules.opencv import matchjacket
 from modules.otherpics import geteventpic
 from modules.gacha import getcharaname, getcurrentgacha, fakegacha
 from modules.homo import generate_homo
-from modules.musics import hotrank, parse_bpm, aliastochart, idtoname, notecount, tasseiritsu, findbpm, \
+from modules.musics import parse_bpm, aliastochart, idtoname, notecount, tasseiritsu, findbpm, \
     getcharttheme, setcharttheme, getPlayLevel, levelRankPic
 from modules.pjskguess import getrandomjacket, cutjacket, getrandomchart, cutchartimg, getrandomcard, cutcard, \
     getrandommusic, cutmusic, getrandomchartold, cutchartimgold, recordGuessRank, guessRank, getRandomSE, cutSE
@@ -792,10 +792,6 @@ def sync_handle_msg(event):
                     return
             return
         try:
-            if event.message == "热度排行":
-                hotrank()
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\hotrank.png,cache=0]")
-                return
             if event.message[:4] == "难度排行" or event.message[2:6] == "难度排行" or event.message[-4:] == "难度排行":
                 if 'fc' in event.message:
                     fcap = 1

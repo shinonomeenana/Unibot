@@ -222,7 +222,7 @@ def isleak(musicid):
 def pjskinfo(musicid):
     if os.path.exists(f'piccache/pjskinfo/{musicid}.png'):
         pjskinfotime = get_filectime(f'piccache/pjskinfo/{musicid}.png')
-        playdatatime = get_filectime('masterdata/realtime/musics.json')
+        playdatatime = get_filectime('masterdata/realtime/musicDifficulties.json')
         masterdatatime = get_filectime('masterdata/musics.json')
         with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
             musics = json.load(f)
@@ -244,34 +244,17 @@ def pjskinfo(musicid):
 
 def drawpjskinfo(musicid):
     info = musicinfo()
-    with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     for music in data:
-        if music['id'] == musicid:
-            info.title = music['title']
-            info.lyricist = music['lyricist']
-            info.composer = music['composer']
-            info.arranger = music['arranger']
-            info.publishedAt = music['publishedAt']
-            info.fillerSec = music['fillerSec']
-            try:
-                info.hot = music['hot']
-                info.hotAdjust = music['hotAdjust']
-            except KeyError:
-                pass
-            break
-    if info.title == '':
-        with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        for music in data:
-            if music['id'] != musicid:
-                continue
-            info.title = music['title']
-            info.lyricist = music['lyricist']
-            info.composer = music['composer']
-            info.arranger = music['arranger']
-            info.publishedAt = music['publishedAt']
-            info.fillerSec = music['fillerSec']
+        if music['id'] != musicid:
+            continue
+        info.title = music['title']
+        info.lyricist = music['lyricist']
+        info.composer = music['composer']
+        info.arranger = music['arranger']
+        info.publishedAt = music['publishedAt']
+        info.fillerSec = music['fillerSec']
 
 
     with open('masterdata/realtime/musicDifficulties.json', 'r', encoding='utf-8') as f:
@@ -287,14 +270,11 @@ def drawpjskinfo(musicid):
                 info.noteCount = [data[i]['totalNoteCount'], data[i + 1]['totalNoteCount'],
                                 data[i + 2]['totalNoteCount'], data[i + 3]['totalNoteCount'], data[i + 4]['totalNoteCount']]
             try:
-                info.playLevelAdjust = [data[i]['playLevelAdjust'], data[i + 1]['playLevelAdjust'],
-                                        data[i + 2]['playLevelAdjust'], data[i + 3]['playLevelAdjust'],
+                info.playLevelAdjust = [0, 0, 0, data[i + 3]['playLevelAdjust'],
                                         data[i + 4]['playLevelAdjust']]
-                info.fullComboAdjust = [data[i]['fullComboAdjust'], data[i + 1]['fullComboAdjust'],
-                                        data[i + 2]['fullComboAdjust'], data[i + 3]['fullComboAdjust'],
+                info.fullComboAdjust = [0, 0, 0, data[i + 3]['fullComboAdjust'],
                                         data[i + 4]['fullComboAdjust']]
-                info.fullPerfectAdjust = [data[i]['fullPerfectAdjust'], data[i + 1]['fullPerfectAdjust'],
-                                          data[i + 2]['fullPerfectAdjust'], data[i + 3]['fullPerfectAdjust'],
+                info.fullPerfectAdjust = [0, 0, 0, data[i + 3]['fullPerfectAdjust'],
                                           data[i + 4]['fullPerfectAdjust']]
             except KeyError:
                 pass
@@ -326,7 +306,7 @@ def drawpjskinfo(musicid):
             img2 = Image.open('pics/leak_alpha.png')
             leak = True
         else:
-            if info.playLevelAdjust[0] == 0:
+            if info.playLevelAdjust[4] == 0:
                 img2 = Image.open('pics/pjskinfonew_alpha.png')
             else:
                 img2 = Image.open('pics/pjskinfo_alpha.png')
@@ -339,7 +319,7 @@ def drawpjskinfo(musicid):
             img = Image.open('pics/leak.png')
             leak = True
         else:
-            if info.playLevelAdjust[0] == 0:
+            if info.playLevelAdjust[4] == 0:
                 img = Image.open('pics/pjskinfonew.png')
             else:
                 img = Image.open('pics/pjskinfo.png')
@@ -399,7 +379,7 @@ def drawpjskinfo(musicid):
         text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(960 - text_width[1] / 2))
         draw.text(text_coordinate, str(info.noteCount[i]), fill=color, font=font_style)
 
-    if info.playLevelAdjust[0] != 0:
+    if info.playLevelAdjust[4] != 0:
 
         if info.hotAdjust > 0.5:
             hotpic = Image.open('pics/hot.png')
@@ -464,7 +444,7 @@ def drawpjskinfo(musicid):
             draw.text(text_coordinate, aplevelplus, fill=color, font=font_style)
 
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 20)
-        for i in range(0, 5):
+        for i in range(3, 5):
             if info.playLevelAdjust[i] > 1.5:
                 adjust = "++"
             elif info.playLevelAdjust[i] > 0.5:

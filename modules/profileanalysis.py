@@ -1115,7 +1115,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         for i in range(0, 30):
             highest = highest + diff[i]['aplevel+']
         highest = round(highest / 30, 2)
-    with open('masterdata/realtime/musics.json', 'r', encoding='utf-8') as f:
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         musics = json.load(f)
     for music in data['userMusicResults']:
         playResult = music['playResult']
