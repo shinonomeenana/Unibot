@@ -380,52 +380,7 @@ def drawpjskinfo(musicid):
         draw.text(text_coordinate, str(info.noteCount[i]), fill=color, font=font_style)
 
     if info.playLevelAdjust[4] != 0:
-
-        if info.hotAdjust > 0.5:
-            hotpic = Image.open('pics/hot.png')
-        elif info.hotAdjust > 0:
-            hotpic = Image.open('pics/hot3.png')
-        elif info.hotAdjust > -1:
-            hotpic = Image.open('pics/hot2.png')
-        elif info.hotAdjust > -2:
-            hotpic = Image.open('pics/hot1.png')
-        else:
-            hotpic = Image.open('pics/hot0.png')
-
-        if info.hot == 0:
-            hot = '最新最热'
-            hotpic = Image.open('pics/new.png')
-        else:
-            hot = str(round(info.hot))
-
-        hotpic = hotpic.resize((48, 48))
-        r, g, b, mask = hotpic.split()
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 28)
-        text_width = font_style.getsize(str(hot))
-        text_coordinate = (int(1760 - text_width[0]), int(805 - text_width[1] / 2))
-        if hot == '最新最热':
-            text_coordinate = (1680, 786)
-        draw.text(text_coordinate, hot, fill=color, font=font_style)
-        if info.hotAdjust > 0.5:
-            if info.hotAdjust > 2:
-                text_coordinate = (int(1720 + text_width[0] / 2), int(802 - text_width[1] / 2))
-                img.paste(hotpic, text_coordinate, mask)
-                text_coordinate = (int(1755 + text_width[0] / 2), int(802 - text_width[1] / 2))
-                img.paste(hotpic, text_coordinate, mask)
-                text_coordinate = (int(1790 + text_width[0] / 2), int(802 - text_width[1] / 2))
-                img.paste(hotpic, text_coordinate, mask)
-            elif info.hotAdjust > 1:
-                text_coordinate = (int(1745 + text_width[0] / 2), int(802 - text_width[1] / 2))
-                img.paste(hotpic, text_coordinate, mask)
-                text_coordinate = (int(1785 + text_width[0] / 2), int(802 - text_width[1] / 2))
-                img.paste(hotpic, text_coordinate, mask)
-            else:
-                text_coordinate = (int(1755 + text_width[0] / 2), int(802 - text_width[1] / 2))
-                img.paste(hotpic, text_coordinate, mask)
-        else:
-            text_coordinate = (int(1755 + text_width[0] / 2), int(802 - text_width[1] / 2))
-            img.paste(hotpic, text_coordinate, mask)
-
         for i in range(3, 5):
             if info.playLevelAdjust[i] != '?':
                 levelplus = str(round(info.playLevel[i] + info.playLevelAdjust[i], 1))

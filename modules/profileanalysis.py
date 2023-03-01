@@ -1104,6 +1104,10 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
             diff[i]['playLevelAdjust'] = 0
             diff[i]['fullComboAdjust'] = 0
             diff[i]['fullPerfectAdjust'] = 0
+        if diff[i]['playLevelAdjust'] == '?':
+            diff[i]['playLevelAdjust'] = 0
+            diff[i]['fullComboAdjust'] = 0
+            diff[i]['fullPerfectAdjust'] = 0
     for i in range(0, len(diff)):
         diff[i]['result'] = 0
         diff[i]['rank'] = 0
@@ -1159,7 +1163,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         textadd = ''
     draw.text((50, 1722), f'注：33+FC权重减1，其他减1.5，非官方算法，仅供参考娱乐{textadd}', fill='#00CCBB',
               font=font_style)
-    draw.text((50, 1752), '定数来源：https://profile.pjsekai.moe/  ※定数每次统计时可能会改变', fill='#00CCBB',
+    draw.text((50, 1752), '定数非官方，可能在之后会有改变', fill='#00CCBB',
               font=font_style)
     
     # 创建一个单独的图层用于绘制rank阴影

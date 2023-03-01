@@ -61,6 +61,9 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
             except KeyError:
                 for playLevelKey in ["playLevelAdjust", "fullComboAdjust", "fullPerfectAdjust"]:
                     i[playLevelKey] = 0
+            if i['playLevelAdjust'] == '?':
+                for playLevelKey in ["playLevelAdjust", "fullComboAdjust", "fullPerfectAdjust"]:
+                    i[playLevelKey] = 0
             target.append(i)
 
     if fcap == 0:
