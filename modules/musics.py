@@ -60,10 +60,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
                 i['playLevelAdjust']
             except KeyError:
                 for playLevelKey in ["playLevelAdjust", "fullComboAdjust", "fullPerfectAdjust"]:
-                    i[playLevelKey] = 0
-            if i['playLevelAdjust'] == '?':
-                for playLevelKey in ["playLevelAdjust", "fullComboAdjust", "fullPerfectAdjust"]:
-                    i[playLevelKey] = 0
+                    i[playLevelKey] = None
             target.append(i)
 
     if fcap == 0:
@@ -76,10 +73,10 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
         title = f'{difficulty.upper()} {level if level != 0 else ""} AP难度表（仅供参考）'
         playLevelKey = "fullPerfectAdjust"
 
-    target.sort(key=lambda x: x['playLevel'] + x[playLevelKey], reverse=True)
+    target.sort(key=lambda x: x['playLevel'] + (x[playLevelKey] if x[playLevelKey] is not None else 0), reverse=True)
     musicData = {}
     for music in target:
-        if music[playLevelKey] == 0:
+        if music[playLevelKey] is None:
             levelRound = str(music['playLevel']) + '.?'
         else:
             levelRound = str(round(music['playLevel'] + music[playLevelKey], 1))
