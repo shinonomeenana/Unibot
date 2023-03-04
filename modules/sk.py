@@ -655,9 +655,7 @@ def ssyc(targetrank, eventid):
     except FileNotFoundError:
         cachedata = {}
     predict = json.loads(requests.get(predicturl, proxies=proxies).content)
-    if predict['data']['eventId'] != eventid:
-        now = int(time.time())
-        cachedata['cachetime'] = now
+    if predict['event']['id'] != eventid:
         for i in range(0, 16):
             cachedata[predictline[i]] = 0
         with open('data/ssyc.yaml', 'w') as f:
@@ -671,7 +669,7 @@ def ssyc(targetrank, eventid):
     return predict['data'][str(targetrank)]
 
 def skyc():
-    text = ''
+    text = '由于服务器限制，预测误差极大，请谨慎参考！\n'
     event = currentevent('jp')
     eventid = event['id']
     if event['status'] != 'going':
@@ -691,13 +689,13 @@ def skyc():
         # 无本地缓存
         predict = json.loads(requests.get(predicturl, proxies=proxies).content)
 
-    if predict['data']['eventId'] == eventid:
+    if predict['event']['id'] == eventid:
         for line in predict['data']:
             if line.isdigit():
                 text = text + f'{line}名预测：{predict["data"][line]}\n'
         timeArray = time.localtime(predict['data']['ts'] / 1000)
         text = text + '\n预测线来自xfl03(3-3.dev)\n预测生成时间为' + time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-        text = text + '\n预测的活动为' + predict['data']['eventName']
+        text = text + '\n预测的活动为' + predict['event']['name']
         with open('data/ssyc.json', 'w', encoding='utf-8') as f:
             f.write(json.dumps(predict, indent=4, ensure_ascii=False))
         return text

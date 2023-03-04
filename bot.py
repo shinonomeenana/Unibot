@@ -422,8 +422,8 @@ def sync_handle_msg(event):
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\ss.png,cache=0]")
             return
         if event.message == "sk预测":
-            texttoimg(skyc(), 500, 'skyc')
-            sendmsg(event, 'sk预测' + fr"[CQ:image,file=file:///{botdir}\piccache\skyc.png,cache=0]")
+            texttoimg(skyc(), 540, 'skyc')
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\skyc.png,cache=0]")
             return
         elif msg := re.match('^(?:查询?卡面?|findcard)(.*)', event.message):
             if event.message.startswith('查卡') and event.group_id in [583819619, 809799430]:
