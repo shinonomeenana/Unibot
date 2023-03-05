@@ -44,7 +44,7 @@ def getcurrentgacha():
         now = int(round(time.time() * 1000))
         if int(startAt) < now < int(endAt):
             for gachaBehaviors in data[i]['gachaBehaviors']:
-                if (gachaBehaviors['costResourceType'] == 'jewel'
+                if ('costResourceType' in gachaBehaviors and gachaBehaviors['costResourceType'] == 'jewel'
                         and gachaBehaviors['gachaBehaviorType'] == 'over_rarity_3_once'
                         and gachaBehaviors['costResourceQuantity'] == 3000):
                     if len(data[i]['gachaPickups']) > 2 and data[i]['name'][:4] != '[復刻]':
