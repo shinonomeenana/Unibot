@@ -7,6 +7,10 @@ sidebar: false
 该页面可能更新比较缓慢，最新更新信息可查看[Github Commit记录](https://github.com/watagashi-uni/Unibot/commits/main)
 :::
 
+### 2023-02-22
+由于日服api受限 停用受限功能
+
+
 ### 2023-01-12
 增加 [Yozora](https://github.com/cYanosora) 写的查活动、获取活动图鉴功能：
 [一些改动和一个新功能](https://github.com/watagashi-uni/Unibot/pull/3)

@@ -11,8 +11,8 @@
 由于风控严重，猜曲，猜卡面，看卡图，模拟抽卡功能已开启白名单模式。如你所在的群未开启以上功能，请使用官方平台的频道bot游玩
 :::
 
-::: warning 注意
-由于pjsk日服api做了修改，以后只能查到前100排名，profile api只能看clear和fc数，受影响的日服功能有：
+::: danger 注意
+由于pjsk日服api做了修改，只能查到前100排名，profile api只能看clear和fc数，受影响的日服功能有：
 sk，pjskprofile中ap数，pjsk进度，pjsk b30，rk，难度排行
 :::
 
@@ -27,14 +27,14 @@ bot频道版已上线，[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv
 :::
 
 ## 查询pjsk歌曲信息
->热度，难度偏差等统计信息来自 [profile.pjsekai.moe](https://profile.pjsekai.moe/)
+>热度，难度偏差等统计信息来自 [profile.pjsekai.moe](https://profile.pjsekai.moe/)（因为api改了已寄）
 
 ### pjskinfo
-- `pjskinfo+曲名` 查看当前歌曲详细信息，玩家游玩，热度等信息(图片版)，并列出当前歌曲所有昵称（可使用`song+曲名`）
+- `pjskinfo+曲名` 查看当前歌曲详细信息
 - `pjskbpm+曲名` 查看当前歌曲的bpm（频道可直接使用`bpm+曲名`）
 - `查bpm+数字` 查询对应bpm所有歌曲
 ### 谱面预览
-- `谱面预览 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[ぷろせかもえ！](https://pjsekai.moe/)（开发中））
+- `谱面预览 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[ぷろせかもえ！](https://pjsekai.moe/)（~~开发中~~ 因为api改了多半不会继续做了）
   - `难度`支持的输入: `easy`, `norml`, `hard`, `expert`, `master`, `ex`, `nm`, `hd`, `ex`, `ma`
   - 如果查询`master`可省略难度
 - `谱面预览2 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[プロセカ譜面保管所](https://sdvx.in/prsk.html)）
@@ -67,6 +67,13 @@ bot频道版已上线，[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv
 > ⚠稳定性未知
 > 
 > 在命令前加`tw`即可查询台服信息，如`tw绑定`, `twsk`, `tw逮捕`, `twpjsk进度`, `twpjskprofile`
+
+
+::: danger 注意
+由于pjsk日服api做了修改，只能查到前100排名，profile api只能看clear和fc数，受影响的日服功能有：
+sk，pjskprofile中ap数，pjsk进度，pjsk b30，rk，难度排行
+:::
+
 
 - `绑定+id` 绑定id
 ### 活动查询
@@ -167,6 +174,6 @@ bot频道版已上线，[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv
 - SDK: [nonebot/aiocqhttp](https://github.com/nonebot/aiocqhttp)
 ### 数据来源
 - 预测线: [33Kit](https://3-3.dev/)
-- 歌曲达成率，难度偏差，热度等信息: [Project Sekai Profile](https://profile.pjsekai.moe/)
-- 谱面预览: [ぷろせかもえ！](https://pjsekai.moe/)（开发中）, [プロセカ譜面保管所](https://sdvx.in/prsk.html)
+- 歌曲达成率，难度偏差，热度等信息: [Project Sekai Profile](https://profile.pjsekai.moe/)（因为api改了已寄）
+- 谱面预览: [ぷろせかもえ！](https://pjsekai.moe/)（~~开发中~~ 因为api改了多半不会继续做了）, [プロセカ譜面保管所](https://sdvx.in/prsk.html)
 - 台服国际服牌子图片：[Sekai Viewer](https://sekai.best/)
