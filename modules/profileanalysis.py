@@ -1189,7 +1189,8 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     pic = pic.convert("RGB")
     if returnpic:
         return pic
-    pic.save(f'piccache/{userid}b30.png')
+    pic = pic.convert('RGB')
+    pic.save(f'piccache/{userid}b30.jpg')
     if env != 'prod':
         pic.show()
 
