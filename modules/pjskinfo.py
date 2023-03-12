@@ -382,7 +382,7 @@ def drawpjskinfo(musicid):
         text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(960 - text_width[1] / 2))
         draw.text(text_coordinate, str(info.noteCount[i]), fill=color, font=font_style)
 
-    if info.playLevelAdjust[4] != 0:
+    if info.playLevelAdjust[4] != 0 and not leak:
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 28)
         for i in range(3, 5):
             if info.playLevelAdjust[i] is not None:
@@ -405,6 +405,7 @@ def drawpjskinfo(musicid):
             text_width = font_style.getsize(str(aplevelplus))
             text_coordinate = (int(1363 + 116 * i - text_width[0] / 2), int(980 - text_width[1] / 2))
             draw.text(text_coordinate, aplevelplus, fill=color, font=font_style)
+            
 
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 20)
         for i in range(3, 5):
