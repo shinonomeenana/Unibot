@@ -726,6 +726,25 @@ def sync_handle_msg(event):
                 return
         if event.message == '5v5人数':
             sendmsg(event, teamcount(server))
+        if event.message[:2] == "rk":
+            if event.message == "rk":
+                bind = getqqbind(event.user_id, server=server)
+                if bind is None:
+                    sendmsg(event, '你没有绑定id！')
+                    return
+                result = rk(bind[1], None, bind[2], server=server)
+                sendmsg(event, result)
+            else:
+                userid = event.message.replace("rk", "").strip()
+                try:
+                    if int(userid) > 10000000:
+                        result = rk(userid, server=server)
+                    else:
+                        result = rk(None, userid, server=server)
+                    sendmsg(event, result)
+                except ValueError:
+                    return
+            return
         # ----------------------- 恢复原命令 ---------------------------
         if server != 'jp':
             event.message = server + event.message
@@ -775,25 +794,6 @@ def sync_handle_msg(event):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{picdir},cache=0]")
             else:
                 sendmsg(event, f"未找到活动或生成失败")
-            return
-        if event.message[:2] == "rk":
-            if event.message == "rk":
-                bind = getqqbind(event.user_id, 'jp')
-                if bind is None:
-                    sendmsg(event, '你没有绑定id！')
-                    return
-                result = rk(bind[1], None, bind[2])
-                sendmsg(event, result)
-            else:
-                userid = event.message.replace("rk", "").strip()
-                try:
-                    if int(userid) > 10000000:
-                        result = rk(userid)
-                    else:
-                        result = rk(None, userid)
-                    sendmsg(event, result)
-                except ValueError:
-                    return
             return
         try:
             if event.message[:4] == "难度排行" or event.message[2:6] == "难度排行" or event.message[-4:] == "难度排行":

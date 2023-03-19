@@ -240,17 +240,35 @@ class userprofile(object):
             self.name = ''
 
 
-def currentrankmatch():
-    with open('masterdata/rankMatchSeasons.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
+def currentrankmatch(server='jp'):
+    try:
+        if server == 'jp':
+            with open('masterdata/rankMatchSeasons.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        elif server == 'tw':
+            with open('../twapi/masterdata/rankMatchSeasons.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        elif server == 'en':
+            with open('../enapi/masterdata/rankMatchSeasons.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        elif server == 'kr':
+            with open('../krapi/masterdata/rankMatchSeasons.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+    except FileNotFoundError:
+        return None
+
     for i in range(0, len(data)):
         startAt = data[i]['startAt']
         endAt = data[i]['closedAt']
         now = int(round(time.time() * 1000))
-        if not startAt < now < endAt:
-            continue
-        return data[i]['id']
+        if startAt < now < endAt:
+            return data[i]['id']
+
+    if len(data) == 1:  # 如果只有一个数据，有可能是开第一次排位之前，也有可能是第一次排位之后，排除第一个排位之前的
+        if now < data[0]['startAt']:
+            return None
     return data[len(data) - 1]['id']
+
 
 def r30(userid, private=False, server='jp', qqnum='未知'):
     if int(userid) < 10000000:
@@ -331,17 +349,21 @@ def daibu(targetid=None, secret=False, server='jp', qqnum='未知'):
     return text
 
 
-def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未知"):
-    raise QueryBanned
-    rankmatchid = currentrankmatch()
+def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未知", server='jp'):
+    if server in rank_query_ban_servers:
+        raise QueryBanned
+    rankmatchid = currentrankmatch(server)
+    print(rankmatchid)
+    if rankmatchid is None:
+        return '你查询的服务器当前没有排位'
     if targetid is not None:
         if not verifyid(targetid):
             return '你这ID有问题啊'
         data = callapi(f'/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
-                            f'ranking?targetUserId={targetid}', 'jp')
+                            f'ranking?targetUserId={targetid}', server)
     else:
         data = callapi(f'/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
-                            f'ranking?targetRank={targetrank}', 'jp')
+                            f'ranking?targetRank={targetrank}', server)
     try:
         ranking = data['rankings'][0]['userRankMatchSeason']
         grade = int((ranking['rankMatchTierId'] - 1) / 4) + 1
