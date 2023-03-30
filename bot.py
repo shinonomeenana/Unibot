@@ -619,7 +619,7 @@ def sync_handle_msg(event):
             if bind is None:
                 sendmsg(event, '查不到捏，可能是没绑定')
                 return
-            pjskprofile(bind[1], bind[2], server, event.user_id)
+            pjskprofile(bind[1], bind[2], server, event.user_id, is_force_update=True)
             sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/{bind[1]}profile.jpg,cache=0]")
             return
         if event.message == "pjskprofile2" or event.message == "个人信息2":

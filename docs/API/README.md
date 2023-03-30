@@ -37,7 +37,32 @@ API域名：`api.unipjsk.com`
 
 >`getalias`为旧接口，返回纯文本，不建议使用
 
-## 查询活动得分信息
+
+## 查询个人Profile信息
+
+>该api返回数据已被彩盘削减，数据结构大改并且只返回FC/Clear数，如需获取以前的数据只能使用 https://suite.unipjsk.com/ 上传个人信息并勾选公开API读取，然后参考下面一个API
+
+`GET /api/user/{targetUserId}/profile`
+
+例如 `GET /api/user/5152947432357899/profile`
+
+
+## 查询上传并勾选公开API读取的个人Profile信息
+
+API域名：`suite.unipjsk.com`
+
+>注意，域名与上面的api域名并不一样，请注意修改
+
+`GET /api/user/{targetUserId}/profile`
+
+例如 `GET /api/user/5152947432357899/profile`
+
+返回 `404` 则为该用户没有上传过数据，`403` 为该用户没有勾选公开API读取
+
+此接口返回大量数据，如个人介绍、卡组信息、卡牌信息、牌子信息、角色等级、打歌信息等
+
+
+<!-- ## 查询活动得分信息
 
 ::: warning 注意
 请注意不要修改`/api/user/`后的`{user_id}`否则会请求失败，下同
@@ -75,4 +100,4 @@ API域名：`api.unipjsk.com`
 例如 `GET /api/user/5152947432357899/profile`
 
 
-此接口返回大量数据，如个人介绍、卡组信息、角色等级、自定义profile、打歌信息等
+此接口返回大量数据，如个人介绍、卡组信息、角色等级、自定义profile、打歌信息等 -->
