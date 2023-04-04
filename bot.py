@@ -39,6 +39,7 @@ from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettim
     getstoptime, ss, drawscoreline, cheaterFound, cheater_ban_reason
 from modules.texttoimg import texttoimg, ycmimg, blank
 from modules.twitter import newesttwi
+from modules.baiduocr import is_dog
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from imageutils import text2image
 
@@ -418,6 +419,11 @@ def sync_handle_msg(event):
         #             result = gacha(targetgacha)
         #     sendmsg(event, result)
         #     return
+        if event.group_id in [883721511, msggroup] and '[CQ:image,' in event.message:
+            image_url = event.message[event.message.find(',url=') + 5: event.message.find(',cache=0')]
+            if is_dog(image_url):
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/pics/dog.jpg,cache=0]")
+            return
         if event.message == "时速":
             texttoimg(ss(), 300, 'ss')
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\ss.png,cache=0]")
