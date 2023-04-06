@@ -422,7 +422,7 @@ def sync_handle_msg(event):
         if event.group_id in [883721511, msggroup] and '[CQ:image,' in event.message:
             image_url = event.message[event.message.find(',url=') + 5: event.message.find(',cache=0')]
             if is_dog(image_url):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/pics/dog.jpg,cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/pics/dog{random.randint(1, 4)}.png,cache=0]")
             return
         if event.message == "时速":
             texttoimg(ss(), 300, 'ss')
