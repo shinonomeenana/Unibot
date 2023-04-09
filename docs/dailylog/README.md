@@ -5,6 +5,10 @@ sidebar: false
 
 歌曲昵称/角色昵称的设置日志
 
+### 2023年4月
+
+[昵称设置日志](https://assets.unipjsk.com/logs/202304.html)
+
 ### 2023年3月
 
 [昵称设置日志](https://assets.unipjsk.com/logs/202303.html)
