@@ -1,6 +1,6 @@
 ---
 home: true
-heroImage: /kndlogo.png
+heroImage: /nekoknd.png
 heroText: Unibot
 tagline: 一个多功能PJSK群机器人
 actionText: 功能列表 →
