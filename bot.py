@@ -1,8 +1,8 @@
 import os
-import json
+import ujson as json
 import random
 from datetime import datetime
-from json import JSONDecodeError
+from ujson import JSONDecodeError
 import asyncio
 import aiocqhttp
 import aiofiles
