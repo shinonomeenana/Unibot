@@ -35,7 +35,7 @@ bot频道版已上线，[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv
 - `查bpm+数字` 查询对应bpm所有歌曲
 ### 谱面预览
 - `谱面预览 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[ぷろせかもえ！](https://pjsekai.moe/)（~~开发中~~ 因为api改了多半不会继续做了）
-  - `难度`支持的输入: `easy`, `norml`, `hard`, `expert`, `master`, `ex`, `nm`, `hd`, `ex`, `ma`
+  - `难度`支持的输入: `easy`, `normal`, `hard`, `expert`, `master`, `ez`, `nm`, `hd`, `ex`, `ma`
   - 如果查询`master`可省略难度
 - `谱面预览2 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[プロセカ譜面保管所](https://sdvx.in/prsk.html)）
 ### 各种排行
