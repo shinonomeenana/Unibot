@@ -386,10 +386,24 @@ def getchart(musicid, difficulty, theme='white'):
     if os.path.exists(path):  # 本地有缓存
         return path
     else:  # 本地无缓存
+        # 可能生成过没有music_meta的版本
+        if theme == 'skill' and os.path.exists(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'):
+            with open('masterdata/realtime/music_metas.json', 'r', encoding='utf-8') as f:
+                music_metas = json.load(f)
+            for mm in music_metas:
+                if mm['music_id'] == musicid and mm['difficulty'] == difficulty:
+                    break
+            else:
+                # 如果music_meta还是没有则返回之前的缓存
+                return f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
         if not os.path.exists(path[:-3] + 'png'):
             withSkill = False if theme != 'skill' else True
             parse(musicid, difficulty, theme, withSkill=withSkill)  # 生成moe
-        im = Image.open(path[:-3] + 'png')
+        try:
+            im = Image.open(path[:-3] + 'png')
+        except FileNotFoundError:
+            im = Image.open(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.png')
+            path = f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
         # im = im.convert('RGB')
         im.save(path, quality=60)
         return path

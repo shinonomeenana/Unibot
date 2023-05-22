@@ -140,7 +140,10 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
     else:
         sus.export(file_name + '.svg', style_sheet=style_sheet, themehint=themehint)
     if savepng:
-        cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '.png', scale=1.3)
+        if withSkill and (music_meta is None):
+            cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '_nometa.png', scale=1.3)
+        else:
+            cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '.png', scale=1.3)
 
 
 # from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
