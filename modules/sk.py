@@ -1,5 +1,5 @@
 import datetime
-from matplotlib.dates import DateFormatter, date2num
+from matplotlib.dates import DateFormatter, DayLocator, date2num
 import pandas as pd
 import ujson as json
 import os.path
@@ -470,6 +470,15 @@ def drawscoreline(targetid=None, targetrank=None, targetrank2=None, starttime=0,
     df_full.plot(ax=ax)
     date_form = DateFormatter("%m-%d %H:%M")
     ax.xaxis.set_major_formatter(date_form)
+
+    # 将matplotlib日期数字转回日期格式
+    df_full.index = pd.to_datetime(df_full.index, origin='unix', unit='D')
+    # 找到每天0点的位置，并在这个位置绘制垂直线
+    for loc in DayLocator().tick_values(df_full.index.min(), df_full.index.max()):
+        ax.axvline(loc, color='gray', linewidth=0.7, linestyle='--')
+    # 将日期转回matplotlib日期数字格式，以便于显示
+    df_full.index = date2num(df_full.index.to_pydatetime())
+
     plt.xticks(rotation=20)
     font = FontProperties(fname="fonts/FOT-RodinNTLGPro-DB.ttf")
     if targetrank2 is not None:
