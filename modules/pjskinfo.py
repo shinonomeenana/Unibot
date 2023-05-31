@@ -1,5 +1,6 @@
 import datetime
 import re
+import emoji
 import ujson as json
 import os
 import sqlite3
@@ -47,17 +48,9 @@ def isSingleEmoji(content):
         return False
     if not content:
         return False
-    if u"\U0001F600" <= content and content <= u"\U0001F64F":
+    if emoji.is_emoji(content):
         return True
-    elif u"\U0001F300" <= content and content <= u"\U0001F5FF":
-        return True
-    elif u"\U0001F680" <= content and content <= u"\U0001F6FF":
-        return True
-    elif u"\U0001F1E0" <= content and content <= u"\U0001F1FF":
-        return True
-    else:
-        return False
-
+    return False
 
 
 def string_similar(s1, s2):
