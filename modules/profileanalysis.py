@@ -360,7 +360,7 @@ def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未�
     if rankmatchid is None:
         return '你查询的服务器当前没有排位'
     if targetid is not None:
-        if not verifyid(targetid):
+        if not verifyid(targetid, server):
             return '你这ID有问题啊'
         data = callapi(f'/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
                             f'ranking?targetUserId={targetid}', server)
