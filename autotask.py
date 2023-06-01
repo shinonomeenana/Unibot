@@ -155,6 +155,5 @@ if __name__ == '__main__':
     scheduler.add_job(cleancache, 'interval', seconds=300, id='cleancache')
     scheduler.add_job(updatealltrans, 'interval', hours=2, id='updatealltrans')
     scheduler.add_job(update_cheerful_predict, 'cron', minute=52)
-    scheduler.add_job(update_cheerful_predict, 'cron', minute=22)
     scheduler.add_job(update_music_meta, 'cron', hour=13, id='update_music_meta')
     scheduler.start()

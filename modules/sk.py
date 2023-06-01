@@ -905,7 +905,7 @@ def teamcount(server='jp'):
                 predictData = json.load(f)
             predictRates = predictData['predictRates'] if eventid == predictData['eventId'] else {}
             timestamp = datetime.datetime.fromtimestamp(predictData['timestamp']/1000, datetime.timezone(datetime.timedelta(hours=8)))
-            timestamp_str = timestamp.strftime("预测于%Y/%m/%d %H:%M")
+            timestamp_str = timestamp.strftime("预测于%Y/%m/%d %H:%M\n预测来自3-3.dev")
         except FileNotFoundError:
             pass
     
@@ -916,7 +916,7 @@ def teamcount(server='jp'):
         translate = f"({trans['cheerfulCarnivalTeams'].get(TeamId, '')})"
         team = next((i for i in Teams if i['id'] == TeamId), None)
         if team:
-            predictRate = f" (预测胜率: {predictRates.get(str(TeamId), 0):.2%})"
+            predictRate = f" (预测胜率: {predictRates.get(str(TeamId), ''):.2%})" if server == 'jp' and str(TeamId) in predictRates else ""
             text += team['teamName'] + translate + " " + str(memberCount) + '人' + predictRate + '\n'
     text += timestamp_str
     return text if text != '' else '没有5v5捏'
