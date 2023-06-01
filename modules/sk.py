@@ -80,7 +80,8 @@ def currentevent(server):
             status = 'counting'
         else:
             status = 'end'
-        return {'id': data[i]['id'], 'status': status, 'remain': remain, 'assetbundleName': assetbundleName}
+        return {'id': data[i]['id'], 'status': status, 'remain': remain,
+                 'assetbundleName': assetbundleName, 'eventType': data[i]['eventType']}
 
 
 def eventtrack():
@@ -872,35 +873,54 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
 
 
 def teamcount(server='jp'):
-    if server == 'jp':
-        masterdatadir = 'masterdata'
-    elif server == 'en':
-        masterdatadir = '../enapi/masterdata'
-    elif server == 'tw':
-        masterdatadir = '../twapi/masterdata'
-    elif server == 'kr':
-        masterdatadir = '../krapi/masterdata'
+    server_directories = {
+        'jp': 'masterdata',
+        'en': '../enapi/masterdata',
+        'tw': '../twapi/masterdata',
+        'kr': '../krapi/masterdata'
+    }
+    masterdatadir = server_directories.get(server, 'masterdata')
+
     event = currentevent(server)
     eventid = event['id']
     data = callapi(f'/cheerful-carnival-team-count/{eventid}', server)
-
-    with open(f'{masterdatadir}/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
-        Teams = json.load(f)
-    with open('yamls/translate.yaml', encoding='utf-8') as f:
-        trans = yaml.load(f, Loader=yaml.FullLoader)
+    
+    try:
+        with open(f'{masterdatadir}/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
+            Teams = json.load(f)
+    except FileNotFoundError:
+        Teams = []
+        
+    try:
+        with open('yamls/translate.yaml', encoding='utf-8') as f:
+            trans = yaml.load(f, Loader=yaml.FullLoader)
+    except FileNotFoundError:
+        trans = {}
+    
+    predictRates = {}
+    timestamp_str = ''
+    if server == 'jp':
+        try:
+            with open('masterdata/realtime/cheerful_predict.json', 'r', encoding='utf-8') as f:
+                predictData = json.load(f)
+            predictRates = predictData['predictRates'] if eventid == predictData['eventId'] else {}
+            timestamp = datetime.datetime.fromtimestamp(predictData['timestamp']/1000, datetime.timezone(datetime.timedelta(hours=8)))
+            timestamp_str = timestamp.strftime("预测于%Y/%m/%d %H:%M")
+        except FileNotFoundError:
+            pass
+    
     text = ''
     for Counts in data['cheerfulCarnivalTeamMemberCounts']:
         TeamId = Counts['cheerfulCarnivalTeamId']
         memberCount = Counts['memberCount']
-        try:
-            translate = f"({trans['cheerfulCarnivalTeams'][TeamId]})"
-        except KeyError:
-            translate = ''
-        for i in Teams:
-            if i['id'] == TeamId:
-                text += i['teamName'] + translate + " " + str(memberCount)+ '人\n'
-                break
+        translate = f"({trans['cheerfulCarnivalTeams'].get(TeamId, '')})"
+        team = next((i for i in Teams if i['id'] == TeamId), None)
+        if team:
+            predictRate = f" (预测胜率: {predictRates.get(str(TeamId), 0):.2%})"
+            text += team['teamName'] + translate + " " + str(memberCount) + '人' + predictRate + '\n'
+    text += timestamp_str
     return text if text != '' else '没有5v5捏'
+
 
 def getqqbind(qqnum, server):
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,

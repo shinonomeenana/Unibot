@@ -8,7 +8,8 @@ import yaml
 import requests
 from apscheduler.schedulers.blocking import BlockingScheduler
 from zhconv import convert
-from modules.config import proxies, music_meta_url
+from modules.config import proxies, music_meta_url, cheerful_predict_url
+from modules.sk import currentevent
 
 
 def time_printer(str):
@@ -122,6 +123,28 @@ def update_music_meta():
         with open("masterdata/realtime/music_metas.json", "wb") as f:
             f.write(jsondata.content)
 
+
+def update_cheerful_predict():
+    event = currentevent('jp')
+    if event['status'] == 'going' and event['eventType'] == 'cheerful_carnival':
+        time_printer('尝试更新cheerful_predict.json')
+        try:
+            jsondata = requests.get(cheerful_predict_url, proxies=proxies)
+            jsondata.json()
+        except:
+            print('\n' + 'cheerful_predict下载失败')
+            return
+        try:
+            with open('masterdata/realtime/cheerful_predict.json', 'rb') as f:
+                data = f.read()
+        except FileNotFoundError:
+            data = b''
+        if hashlib.md5(data).hexdigest() != hashlib.md5(jsondata.content).hexdigest():
+            time_printer('更新cheerful_predict.json')
+            with open("masterdata/realtime/cheerful_predict.json", "wb") as f:
+                f.write(jsondata.content)
+
+
 if __name__ == '__main__':
     cleancache()
     detectplaydata()
@@ -131,5 +154,7 @@ if __name__ == '__main__':
     scheduler.add_job(detectplaydata, 'interval', seconds=300, id='playinfocheck')
     scheduler.add_job(cleancache, 'interval', seconds=300, id='cleancache')
     scheduler.add_job(updatealltrans, 'interval', hours=2, id='updatealltrans')
+    scheduler.add_job(update_cheerful_predict, 'cron', minute=52)
+    scheduler.add_job(update_cheerful_predict, 'cron', minute=22)
     scheduler.add_job(update_music_meta, 'cron', hour=13, id='update_music_meta')
     scheduler.start()
