@@ -731,7 +731,10 @@ def sync_handle_msg(event):
             except ValueError:
                 return
         if event.message == '5v5人数':
-            sendmsg(event, teamcount(server))
+            if event.self_id == guildbot:  # 傻逼频道bot发网址要验证 不验证不让发
+                sendmsg(event, teamcount(server).replace('\n预测来自3-3.dev', ''))
+            else:
+                sendmsg(event, teamcount(server))
         if event.message[:2] == "rk":
             if event.message == "rk":
                 bind = getqqbind(event.user_id, server=server)
