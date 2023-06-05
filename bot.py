@@ -423,7 +423,6 @@ def sync_handle_msg(event):
             image_url = event.message[event.message.find(',url=') + 5: event.message.find(',cache=0')]
             if is_dog(image_url):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/pics/dog{random.randint(1, 4)}.png,cache=0]")
-            return
         if event.message == "时速":
             texttoimg(ss(), 300, 'ss')
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\ss.png,cache=0]")

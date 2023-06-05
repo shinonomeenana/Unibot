@@ -48,7 +48,9 @@ def matchimage(queryImage, trainImage):
                        matchesMask=matchesMask,
                        flags=2)
     result = cv2.drawMatches(template, kp1, target, kp2, good, None, **draw_params)
+    plt.figure()  # 添加这一行来创建新的图像
     plt.imshow(result, 'gray')
+    plt.axis('off')  # 关闭坐标轴
     now = int(time.time())
     plt.savefig(f'piccache/{now}.png')
     return True, f'piccache/{now}.png'
