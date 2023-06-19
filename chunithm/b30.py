@@ -1,4 +1,5 @@
 from datetime import datetime
+import hashlib
 import math
 import uuid
 import pymysql
@@ -250,7 +251,7 @@ def chunib30(userid):
     pic.paste(rankimg, (492, 110), mask)
 
     pic = pic.convert("RGB")
-    pic.save(f'piccache/{userid}b30.jpg')
+    pic.save(f'piccache/{hashlib.sha256(userid.encode()).hexdigest()}b30.jpg')
     # pic.show()
 
 def b30single(single_data):

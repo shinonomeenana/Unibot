@@ -42,7 +42,7 @@ from modules.twitter import newesttwi
 from modules.baiduocr import is_dog
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from imageutils import text2image
-
+import hashlib
 from chunithm.b30 import chunib30, getchunibind, bind_aimeid
 
 if os.path.basename(__file__) == 'bot.py':
@@ -1216,10 +1216,10 @@ def sync_handle_msg(event):
         if re.match('^aqua *b30$', event.message):
             bind = getchunibind(event.user_id)
             if bind is None:
-                sendmsg(event, '查不到捏，可能是没绑定')
+                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
                 return
             chunib30(userid=bind)
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind}b30.jpg,cache=0]")
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
             return
         
         # 猜曲
