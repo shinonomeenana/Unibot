@@ -43,6 +43,8 @@ from modules.baiduocr import is_dog
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from imageutils import text2image
 
+from chunithm.b30 import chunib30, getchunibind, bind_aimeid
+
 if os.path.basename(__file__) == 'bot.py':
     bot = CQHttp()
     botdebug = False
@@ -998,7 +1000,11 @@ def sync_handle_msg(event):
         #     sendmsg(event, f"[CQ:image,file=file:///{botdir}/pics/33{random.randint(0, 1)}.gif,cache=0]")
         #     return
         if event.message == '推车':
-            ycmimg()
+            try:
+                ycmimg()
+            except:
+                sendmsg(event, "获取错误，疑似因为推特API已转为付费，免费用户无法继续使用推特搜索API")
+                return
             sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/ycm.png,cache=0]")
             return
         if event.message[:4] == 'homo':
@@ -1199,7 +1205,23 @@ def sync_handle_msg(event):
             writelog()
             sendmsg(event, '更新成功')
             return
-
+        if event.message.startswith("aqua 绑定"):
+            userid = event.message.replace("aqua 绑定", "").strip()
+            try:
+                int(userid)
+                sendmsg(event, bind_aimeid(event.user_id, userid))
+                return
+            except ValueError:
+                return
+        if re.match('^aqua *b30$', event.message):
+            bind = getchunibind(event.user_id)
+            if bind is None:
+                sendmsg(event, '查不到捏，可能是没绑定')
+                return
+            chunib30(userid=bind)
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind}b30.jpg,cache=0]")
+            return
+        
         # 猜曲
         if event.message == 'pjsk猜谱面' or event.message == 'pjsk猜曲 3':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
