@@ -1,4 +1,5 @@
 import datetime
+from urllib.parse import quote
 from matplotlib.dates import DateFormatter, date2num
 import pandas as pd
 import ujson as json
@@ -185,92 +186,92 @@ class cheaterFound(Error):
 
 
 def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, server='jp'):
-    return True
-    # if env != 'prod':
-    #     return True
-    # try:
-    #     mydb = pymysql.connect(host=host, port=port, user='username', password=password,
-    #                         database='username', charset='utf8mb4')
-    # except pymysql.err.OperationalError:
-    #     return True
-    # mycursor = mydb.cursor()
+    # return True
+    if env != 'prod':
+        return True
+    try:
+        mydb = pymysql.connect(host=host, port=port, user='username', password=password,
+                            database='username', charset='utf8mb4')
+    except pymysql.err.OperationalError:
+        return True
+    mycursor = mydb.cursor()
 
-    # # 审核游戏昵称
-    # mycursor.execute('SELECT * from examresult where name=%s', (name,))
-    # data = mycursor.fetchone()
-    # if data is not None:
-    #     if data[2]:
-    #         result = True
-    #     else:
-    #         result = False
-    # else:
-    #     try:
-    #         resp = requests.get(f'http://127.0.0.1:5000/exam/{quote(name.replace("/", " "), "utf-8")}')
-    #         sql_add = 'insert into examresult (name, result) values(%s, %s)'
-    #         result = resp.json()['conclusion']
-    #     except:
-    #         traceback.print_exc()
-    #         result = True
-    #     if result:
-    #         mycursor.execute(sql_add, (name, 1))
-    #     else:
-    #         mycursor.execute(sql_add, (name, 0))
+    # 审核游戏昵称
+    mycursor.execute('SELECT * from examresult where name=%s', (name,))
+    data = mycursor.fetchone()
+    if data is not None:
+        if data[2]:
+            result = True
+        else:
+            result = False
+    else:
+        try:
+            resp = requests.get(f'http://127.0.0.1:5000/exam/{quote(name.replace("/", " "), "utf-8")}')
+            sql_add = 'insert into examresult (name, result) values(%s, %s)'
+            result = resp.json()['conclusion']
+        except:
+            traceback.print_exc()
+            result = True
+        if result:
+            mycursor.execute(sql_add, (name, 1))
+        else:
+            mycursor.execute(sql_add, (name, 0))
 
-    # # 记录游戏昵称
-    # mycursor.execute('SELECT * from names where qqnum=%s and userid=%s and name=%s', (str(qqnum), str(userid), name))
-    # data = mycursor.fetchone()
-    # if data is None:
-    #     sql_add = f'insert into names (userid, name, qqnum, result) values(%s, %s, %s, %s)'
-    #     text = '合规' if result else '不合规'
-    #     mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
+    # 记录游戏昵称
+    mycursor.execute('SELECT * from names where qqnum=%s and userid=%s and name=%s', (str(qqnum), str(userid), name))
+    data = mycursor.fetchone()
+    if data is None:
+        sql_add = f'insert into names (userid, name, qqnum, result) values(%s, %s, %s, %s)'
+        text = '合规' if result else '不合规'
+        mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
 
-    # # qqnum = getIdOwner(userid, server)
-    # # if userMusicResults is not None and server == 'jp':
-    # #     # 判断是否有36+FC/AP
-    # #     if masterscore[36][0] + masterscore[36][1] + masterscore[37][0] + masterscore[37][1] != 0:
-    # #         mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s', (str(qqnum), str(userid)))
-    # #         data = mycursor.fetchone()
-    # #         if data is None:
-    # #             sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
-    # #             mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+FC/AP'))
-    # #     alltext = ''
-    # #     # 判断是否有34+初见FC/AP
-    # #     for result in userMusicResults:
-    # #         if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
-    # #             if result["fullComboFlg"] or result["fullPerfectFlg"]:
-    # #                 if result["updatedAt"] == result["createdAt"]:
-    # #                     finish_time = datetime.datetime.fromtimestamp(result["updatedAt"] / 1000,
-    # #                                                            pytz.timezone('Asia/Shanghai')).strftime('%Y/%m/%d %H:%M')
-    # #                     reason = finish_time + ' ' + idtoname(result["musicId"]) + ' MASTER ' + result['playType'] + ' 初见' \
-    # #                              + ('AP' if result["fullPerfectFlg"] else 'FC')
-    # #                     alltext += reason + '、'
-    # #                     mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
-    # #                                      (str(qqnum), str(userid), reason))
-    # #                     data = mycursor.fetchone()
-    # #                     if data is None:
-    # #                         sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
-    # #                         mycursor.execute(sql_add, (str(userid), name, str(qqnum), reason))
+    # qqnum = getIdOwner(userid, server)
+    # if userMusicResults is not None and server == 'jp':
+    #     # 判断是否有36+FC/AP
+    #     if masterscore[36][0] + masterscore[36][1] + masterscore[37][0] + masterscore[37][1] != 0:
+    #         mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s', (str(qqnum), str(userid)))
+    #         data = mycursor.fetchone()
+    #         if data is None:
+    #             sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
+    #             mycursor.execute(sql_add, (str(userid), name, str(qqnum), '36+FC/AP'))
+    #     alltext = ''
+    #     # 判断是否有34+初见FC/AP
+    #     for result in userMusicResults:
+    #         if result["musicDifficulty"] == 'master' and result["musicId"] in masterscore['33+musicId']:
+    #             if result["fullComboFlg"] or result["fullPerfectFlg"]:
+    #                 if result["updatedAt"] == result["createdAt"]:
+    #                     finish_time = datetime.datetime.fromtimestamp(result["updatedAt"] / 1000,
+    #                                                            pytz.timezone('Asia/Shanghai')).strftime('%Y/%m/%d %H:%M')
+    #                     reason = finish_time + ' ' + idtoname(result["musicId"]) + ' MASTER ' + result['playType'] + ' 初见' \
+    #                              + ('AP' if result["fullPerfectFlg"] else 'FC')
+    #                     alltext += reason + '、'
+    #                     mycursor.execute('SELECT * from suspicious where qqnum=%s and userid=%s and reason=%s',
+    #                                      (str(qqnum), str(userid), reason))
+    #                     data = mycursor.fetchone()
+    #                     if data is None:
+    #                         sql_add = f'insert into suspicious (userid, name, qqnum, reason) values(%s, %s, %s, %s)'
+    #                         mycursor.execute(sql_add, (str(userid), name, str(qqnum), reason))
                         
-    # #                     mycursor.execute('SELECT * from suspicious where userid=%s', (str(userid), ))
-    # #                     data = mycursor.fetchall()
-    # #                     if data is not None:
-    # #                         for _ in data:
-    # #                             if _[6] == 'whitelist':
-    # #                                 mydb.commit()
-    # #                                 mycursor.close()
-    # #                                 mydb.close()
-    # #                                 return result
-    # #     if alltext != '':
-    # #         mydb.commit()
-    # #         mycursor.close()
-    # #         mydb.close()
-    # #         raise cheaterFound(f'{name} - {userid}、' + alltext +
-    # #                            '由于监测到打歌数据有高度开挂嫌疑，该账号id已被bot记录，如确认开挂，24小时内该账号与绑定qq将会被bot永久拉黑、'
-    # #                            '如有异议可在群883721511内用充足的证据（账号交易记录，自证手元等）对上述成绩做出合理的解释')
-    # # mydb.commit()
-    # # mycursor.close()
-    # # mydb.close()
-    # return result
+    #                     mycursor.execute('SELECT * from suspicious where userid=%s', (str(userid), ))
+    #                     data = mycursor.fetchall()
+    #                     if data is not None:
+    #                         for _ in data:
+    #                             if _[6] == 'whitelist':
+    #                                 mydb.commit()
+    #                                 mycursor.close()
+    #                                 mydb.close()
+    #                                 return result
+    #     if alltext != '':
+    #         mydb.commit()
+    #         mycursor.close()
+    #         mydb.close()
+    #         raise cheaterFound(f'{name} - {userid}、' + alltext +
+    #                            '由于监测到打歌数据有高度开挂嫌疑，该账号id已被bot记录，如确认开挂，24小时内该账号与绑定qq将会被bot永久拉黑、'
+    #                            '如有异议可在群883721511内用充足的证据（账号交易记录，自证手元等）对上述成绩做出合理的解释')
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    return result
 
 
 def cheater_ban_reason(userid):

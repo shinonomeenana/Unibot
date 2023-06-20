@@ -212,7 +212,10 @@ def chunib30(userid):
     
     rating_sum = 0
     for i in range(0, 30):
-        single = b30single(ratings[i])
+        try:
+            single = b30single(ratings[i])
+        except IndexError:
+            break
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(52 + (i % 5) * 290)), int(287 + int(i / 5) * 127)), mask)
         pic.paste(single, ((int(53+(i%5)*290)), int(289+int(i/5)*127)))
@@ -224,7 +227,10 @@ def chunib30(userid):
     ratings = process_r10(userid)
     rating_sum = 0
     for i in range(0, 10):
-        single = b30single(ratings[i])
+        try:
+            single = b30single(ratings[i])
+        except IndexError:
+            break
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(1582 + (i % 2) * 290)), int(287 + int(i / 2) * 127)), mask)
         pic.paste(single, ((int(1582+(i%2)*290)), int(289+int(i/2)*127)))
