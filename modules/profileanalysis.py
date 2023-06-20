@@ -75,25 +75,11 @@ class userprofile(object):
             data = callapi(f'/user/{userid}/profile', server=server, query_type=query_type,
                             is_force_update=is_force_update)
         
-        try:
-            data['totalPower']
-            self.isNewData = True
-        except:
-            pass
-
-        try:
-            self.twitterId = data['userProfile']['twitterId']
-        except:
-            pass
-
+        self.isNewData = 'totalPower' in data
+        self.twitterId = data.get('userProfile', {}).get('twitterId', "")
         self.userid = userid
+        self.word = data.get('userProfile', {}).get('word', "")
 
-        try:
-            self.word = data['userProfile']['word']
-        except:
-            pass
-
-        
         try:
             if server in rank_query_ban_servers:
                 if self.isNewData:
@@ -107,15 +93,13 @@ class userprofile(object):
             else:
                 self.characterId = data['userChallengeLiveSoloResults'][0]['characterId']
                 self.highScore = data['userChallengeLiveSoloResults'][0]['highScore']
-                
-                
         except:
+            # 可能存在没打过挑战live，对应字段不存在的情况
             pass
-        self.characterRank = data['userCharacters']
 
-        self.userProfileHonors = data['userProfileHonors']
-
-        self.userHonorMissions = data['userHonorMissions']
+        self.characterRank = data.get('userCharacters')
+        self.userProfileHonors = data.get('userProfileHonors')
+        self.userHonorMissions = data.get('userHonorMissions', [])
 
         if server in rank_query_ban_servers and self.isNewData:
             self.name = data['user']['name']
