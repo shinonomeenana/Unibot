@@ -147,7 +147,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
         for i in profile.userProfileHonors:
             if i['seq'] == 1:
                 try:
-                    honorpic = generatehonor(i, True, server)
+                    honorpic = generatehonor(i, True, server, profile.userHonorMissions)
                     honorpic = honorpic.resize((226, 48))
                     r, g, b, mask = honorpic.split()
                     pic.paste(honorpic, (59, 206), mask)
@@ -157,7 +157,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
         for i in profile.userProfileHonors:
             if i['seq'] == 2:
                 try:
-                    honorpic = generatehonor(i, False, server)
+                    honorpic = generatehonor(i, False, server, profile.userHonorMissions)
                     honorpic = honorpic.resize((107, 48))
                     r, g, b, mask = honorpic.split()
                     pic.paste(honorpic, (290, 206), mask)
@@ -167,7 +167,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
         for i in profile.userProfileHonors:
             if i['seq'] == 3:
                 try:
-                    honorpic = generatehonor(i, False, server)
+                    honorpic = generatehonor(i, False, server, profile.userHonorMissions)
                     honorpic = honorpic.resize((107, 48))
                     r, g, b, mask = honorpic.split()
                     pic.paste(honorpic, (403, 206), mask)

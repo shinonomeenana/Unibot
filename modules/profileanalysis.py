@@ -48,6 +48,7 @@ class userprofile(object):
         self.mvpCount = 0
         self.superStarCount = 0
         self.userProfileHonors = {}
+        self.userHonorMissions = []
         self.characterRank = {}
         self.characterId = 0
         self.highScore = 0
@@ -113,6 +114,8 @@ class userprofile(object):
         self.characterRank = data['userCharacters']
 
         self.userProfileHonors = data['userProfileHonors']
+
+        self.userHonorMissions = data['userHonorMissions']
 
         if server in rank_query_ban_servers and self.isNewData:
             self.name = data['user']['name']
@@ -676,7 +679,7 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
     for i in profile.userProfileHonors:
         if i['seq'] == 1:
             try:
-                honorpic = generatehonor(i, True, server)
+                honorpic = generatehonor(i, True, server, profile.userHonorMissions)
                 honorpic = honorpic.resize((266, 56))
                 r, g, b, mask = honorpic.split()
                 img.paste(honorpic, (104, 228), mask)
@@ -686,7 +689,7 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
     for i in profile.userProfileHonors:
         if i['seq'] == 2:
             try:
-                honorpic = generatehonor(i, False, server)
+                honorpic = generatehonor(i, False, server, profile.userHonorMissions)
                 honorpic = honorpic.resize((126, 56))
                 r, g, b, mask = honorpic.split()
                 img.paste(honorpic, (375, 228), mask)
@@ -696,7 +699,7 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
     for i in profile.userProfileHonors:
         if i['seq'] == 3:
             try:
-                honorpic = generatehonor(i, False, server)
+                honorpic = generatehonor(i, False, server, profile.userHonorMissions)
                 honorpic = honorpic.resize((126, 56))
                 r, g, b, mask = honorpic.split()
                 img.paste(honorpic, (508, 228), mask)
@@ -712,17 +715,16 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
     return
 
 
-def generatehonor(honor, ismain=True, server='jp'):
+def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
     star = False
     backgroundAssetbundleName = ''
     assetbundleName = ''
     groupId = 0
     honorRarity = 0
     honorType = ''
-    try:
-        honor['profileHonorType']
-    except:
-        honor['profileHonorType'] = 'normal'
+    honor['profileHonorType'] = honor.get('profileHonorType', 'normal')
+
+    is_live_master = False
     if server == 'jp':
         masterdatadir = 'masterdata'
     elif server == 'en':
@@ -737,25 +739,37 @@ def generatehonor(honor, ismain=True, server='jp'):
             honorGroups = json.load(f)
         for i in honors:
             if i['id'] == honor['honorId']:
-                assetbundleName = i['assetbundleName']
-                groupId = i['groupId']
-                honorRarity = i['honorRarity']
                 try:
-                    level2 = i['levels'][1]['level']
-                    star = True
-                except IndexError:
-                    pass
-                for j in honorGroups:
-                    if j['id'] == i['groupId']:
-                        try:
-                            backgroundAssetbundleName = j['backgroundAssetbundleName']
-                        except KeyError:
-                            backgroundAssetbundleName = ''
-                        honorType = j['honorType']
-                        break
-        filename = 'honor'
-        mainname = 'rank_main.png'
-        subname = 'rank_sub.png'
+                    assetbundleName = i['assetbundleName']
+                    honorRarity = i['honorRarity']
+                    try:
+                        level2 = i['levels'][1]['level']
+                        star = True
+                    except IndexError:
+                        pass
+
+                    for j in honorGroups:
+                        if j['id'] == i['groupId']:
+                            try:
+                                backgroundAssetbundleName = j['backgroundAssetbundleName']
+                            except KeyError:
+                                backgroundAssetbundleName = ''
+                            honorType = j['honorType']
+                            break
+                    filename = 'honor'
+                    mainname = 'rank_main.png'
+                    subname = 'rank_sub.png'
+                except KeyError:
+                    honorMissionType = i['honorMissionType']
+                    for level in i['levels']:
+                        if honor['honorLevel'] == level['level']:
+                            assetbundleName = level['assetbundleName']
+                            honorRarity = level['honorRarity']
+                    filename = 'honor'
+                    mainname = 'scroll.png'
+                    subname = 'scroll.png'
+                    is_live_master = True
+        
         if honorType == 'rank_match':
             filename = 'rank_live/honor'
             mainname = 'main.png'
@@ -787,7 +801,36 @@ def generatehonor(honor, ismain=True, server='jp'):
                     pic.paste(frame, (0, 0), mask)
                 if rankpic is not None:
                     r, g, b, mask = rankpic.split()
-                    pic.paste(rankpic, (190, 0), mask)
+                    if is_live_master:
+                        pic.paste(rankpic, (218, 3), mask)
+                        for i in userHonorMissions:
+                            if honorMissionType == i['honorMissionType']:
+                                progress = i['progress']
+                        draw = ImageDraw.Draw(pic)
+                        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 20)
+                        text_width = font_style.getsize(str(progress))
+                        text_coordinate = (int(270 - text_width[0] / 2), int(58 - text_width[1] / 2))
+                        draw.text(text_coordinate, str(progress), fill=(255, 255, 255), font=font_style)
+                        
+                        star_count = (progress // 10) % 10 + 1
+                        stars_pos = [
+                            (223, 68), (216, 56), (208, 42), (216, 27), (223, 13),
+                            (295, 68), (304, 56), (311, 42), (303, 27), (295, 13)
+                        ]
+
+                        with_star = Image.open('pics/live_master_honor_star_1.png')
+                        with_star_alpha = with_star.split()[3]
+                        without_star = Image.open('pics/live_master_honor_star_2.png')
+                        without_star_alpha = without_star.split()[3]
+
+                        for i in range(10):
+                            if star_count <= i:
+                                star_pic, star_alpha = without_star, without_star_alpha
+                            else:
+                                star_pic, star_alpha = with_star, with_star_alpha
+                            pic.paste(star_pic, (stars_pos[i][0], stars_pos[i][1] - 8), star_alpha)
+                    else:
+                        pic.paste(rankpic, (190, 0), mask)
             else:
                 pic = gethonorasset(server, 'data/assets/sekai/assetbundle/resources'
                                  f'/startapp/{filename}/{backgroundAssetbundleName}/degree_main.png')
@@ -845,7 +888,18 @@ def generatehonor(honor, ismain=True, server='jp'):
                     pic.paste(frame, (0, 0), mask)
                 if rankpic is not None:
                     r, g, b, mask = rankpic.split()
-                    pic.paste(rankpic, (34, 42), mask)
+                    if is_live_master:
+                        pic.paste(rankpic, (40, 3), mask)
+                        for i in userHonorMissions:
+                            if honorMissionType == i['honorMissionType']:
+                                progress = i['progress']
+                        draw = ImageDraw.Draw(pic)
+                        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 20)
+                        text_width = font_style.getsize(str(progress))
+                        text_coordinate = (int(90 - text_width[0] / 2), int(58 - text_width[1] / 2))
+                        draw.text(text_coordinate, str(progress), fill=(255, 255, 255), font=font_style)
+                    else:
+                        pic.paste(rankpic, (34, 42), mask)
             else:
                 pic = gethonorasset(server, 'data/assets/sekai/assetbundle/resources'
                                  f'/startapp/{filename}/{backgroundAssetbundleName}/degree_sub.png')
@@ -1093,7 +1147,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     for i in profile.userProfileHonors:
         if i['seq'] == 1:
             try:
-                honorpic = generatehonor(i, True, server)
+                honorpic = generatehonor(i, True, server, profile.userHonorMissions)
                 honorpic = honorpic.resize((226, 48))
                 r, g, b, mask = honorpic.split()
                 pic.paste(honorpic, (59, 226), mask)
@@ -1103,7 +1157,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     for i in profile.userProfileHonors:
         if i['seq'] == 2:
             try:
-                honorpic = generatehonor(i, False, server)
+                honorpic = generatehonor(i, False, server, profile.userHonorMissions)
                 honorpic = honorpic.resize((107, 48))
                 r, g, b, mask = honorpic.split()
                 pic.paste(honorpic, (290, 226), mask)
@@ -1113,7 +1167,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     for i in profile.userProfileHonors:
         if i['seq'] == 3:
             try:
-                honorpic = generatehonor(i, False, server)
+                honorpic = generatehonor(i, False, server, profile.userHonorMissions)
                 honorpic = honorpic.resize((107, 48))
                 r, g, b, mask = honorpic.split()
                 pic.paste(honorpic, (403, 226), mask)
