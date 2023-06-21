@@ -1,6 +1,5 @@
 from datetime import datetime
 import hashlib
-import math
 import uuid
 import pymysql
 from modules.mysql_config import *
@@ -18,6 +17,14 @@ def process_user_music_list(user_music_list):
         processed_list.extend(detail_list)
 
     return processed_list
+
+
+def truncate_two_decimal_places(number):
+    str_number = str(number)
+    decimal_index = str_number.find('.')
+    if decimal_index != -1:
+        str_number = str_number[:decimal_index + 3]  # 保留两位小数
+    return float(str_number)
 
 
 def get_all_music(userid):
@@ -219,8 +226,8 @@ def chunib30(userid):
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(52 + (i % 5) * 290)), int(287 + int(i / 5) * 127)), mask)
         pic.paste(single, ((int(53+(i%5)*290)), int(289+int(i/5)*127)))
-        rating_sum += math.floor(ratings[i]['rating'] * 100) / 100
-    b30 = math.floor(rating_sum / 30 * 100) / 100
+        rating_sum += truncate_two_decimal_places(ratings[i]['rating'])
+    b30 = truncate_two_decimal_places(rating_sum / 30)
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
     draw.text((208, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
 
@@ -234,11 +241,11 @@ def chunib30(userid):
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(1582 + (i % 2) * 290)), int(287 + int(i / 2) * 127)), mask)
         pic.paste(single, ((int(1582+(i%2)*290)), int(289+int(i/2)*127)))
-        rating_sum += math.floor(ratings[i]['rating'] * 100) / 100
-    r10 = math.floor(rating_sum / 10 * 100) / 100
+        rating_sum += truncate_two_decimal_places(ratings[i]['rating'])
+    r10 = truncate_two_decimal_places(rating_sum / 10)
     draw.text((1726, 205), str(r10), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
     
-    rank = math.floor((b30 * 3 + r10) / 4 * 100) / 100
+    rank = truncate_two_decimal_places((b30 * 3 + r10) / 4)
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
     
@@ -291,7 +298,7 @@ def b30single(single_data):
     draw.rectangle((262, 165, 334, 209), fill=color[single_data['musicDifficulty']])
     draw.ellipse((312, 165, 356, 209), fill=color[single_data['musicDifficulty']])
     draw.text((259, 157), str(single_data['playLevel']), (255, 255, 255), font)
-    draw.text((370, 157), '→ ' + str(math.floor(single_data['rating'] * 100) / 100), (0, 0, 0), font)
+    draw.text((370, 157), '→ ' + str(truncate_two_decimal_places(single_data['rating'])), (0, 0, 0), font)
 
     pic = pic.resize((280, 105))
     return pic
