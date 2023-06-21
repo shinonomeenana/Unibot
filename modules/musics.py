@@ -671,7 +671,6 @@ def findbpm(targetbpm):
 
 
 def updaterebase():
-    print('\nupdate rebase')
     offset = 0
     timeformat = "%Y-%m-%dT%H:%M:%S.%f%z"
     deletelist = []

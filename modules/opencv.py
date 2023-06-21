@@ -77,3 +77,33 @@ def matchjacket(queryImage=None, url=None):
         return match[2], jacketdir % (match[0], match[0])
     else:
         return False, ''
+    
+def matchcard(queryImage=None, url=None):
+    if url is not None:
+        resp = requests.get(url)
+        now = int(time.time())
+        with open(f'piccache/{now}.png', 'wb') as f:
+            f.write(resp.content)
+        queryImage = f'piccache/{now}.png'
+    jacketdir = 'E:/bot/unibot/data/assets/sekai/assetbundle/resources/startapp/character/member/'
+    with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
+        cards = json.load(f)
+    match = [0, 0, '']
+    for card in cards:
+        print(card['id'], card['prefix'])
+        result = matchimage(queryImage, jacketdir + card['assetbundleName'] + '/card_normal.png')
+        if result[0]:
+            return card['title'], card['characterId'], result[1]
+        elif result[1] > match[1]:
+            match = [card['id'], result[1], card['title']]
+
+        if card['cardRarityType'] in ["rarity_3", "rarity_4"]:
+            result = matchimage(queryImage, jacketdir + card['assetbundleName'] + '/card_after_training.png')
+        if result[0]:
+            return card['title'], card['characterId'], result[1]
+        elif result[1] > match[1]:
+            match = [card['id'], result[1], card['title']]
+    if match[1] > 0:
+        return match
+    else:
+        return False, ''

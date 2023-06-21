@@ -5,6 +5,10 @@
 - UniBot is a functional Discord bot that mainly provides query services related to "Project SEKAI Colorful Stage" Japanese server, international server, Traditional Chinese server and Korean Server.
 - By using this bot, you agree to the [Terms of Use](/en/licence/) and [Privacy Policy](/en/privacy/).
 
+::: warning Note
+The bot mainly serves users who use Simplified Chinese. Although most commands support English, the bot's response is in Chinese, and it is difficult to match the alias database in English
+:::
+
 ::: danger Note
 Due to modifications in the pjsk Japanese server API, only the top 100 rankings can be retrieved. The affected functions in the Japanese server are:
 sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
@@ -65,7 +69,7 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 - > Due to conflicts with other bot commands, the functionalities of `sk`, `pjskcheck`, `pjskpeek`, `stoptime` can be enabled or disabled by group administrators using the commands `关闭sk` and `开启sk`.
 - `sk+id` to query rankings (this command does not bind an ID).
 - `sk+rank` to query the score corresponding to the ranking.
-- `sk预测` to view the prediction line, prediction information is sourced from [3-3.dev](https://3-3.dev/) (Japanese server only).
+- `pjskpredict` to view the prediction line, prediction information is sourced from [3-3.dev](https://3-3.dev/) (Japanese server only).
 - `pjskspeed` to query the real-time speed line of the last hour (Japanese server only).
 - `pjsk5v5` to view the real-time number of players in 5v5 mode.
 - `pjskpeek+id` or `pjskpeek+rank` to query the weekly play count, speed, average points, etc. for the top 200 players (Japanese server, Taiwanese server).
@@ -73,48 +77,48 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 - `scoreline+id` or `scoreline+rank` to plot the score trend for the top 200 players over time (Japanese server, Taiwanese server).
 
 ### User Query
-- `pjskcheck@[xxx]` If the person has bound an ID, you can view their FC and AP count, as well as ranking information for the EX and Master difficulties.
 - `pjskcheck+id` to view the FC and AP count, as well as ranking information for the EX and Master difficulties of the corresponding ID.
+- `pjskcheck` to view the FC and AP count, as well as ranking information for the EX and Master difficulties of the bound ID.
 - `pjskprogress` to generate a progress image of master songs for the bound ID (FC/AP/Clear/All).
 - `pjskprofile` to generate a profile image for the bound ID
 - `pjsk b30` to generate a best 30 image for the bound ID.
 ### Privacy-related
-- `pjskprivate` to disallow others from arresting you, but you can still arrest yourself. Your ID will not be displayed when checking scores or arresting yourself using `sk`.
+- `pjskprivate` Your ID will not be displayed when checking scores or arresting yourself.
 - `pjskpublic` to allow others to see.
 
-### Card and Event Information Query (Commmand not translated)
+### Card and Event Information Query
 > The `findcard/event` functionalities were written by [Yozora](https://github.com/cYanosora). Many thanks.
-- `查卡/查卡面/查询卡面/findcard [character alias]`: Get all cards of the current character.
-- `查卡/查卡面/查询卡面/cardinfo [card ID]`: Get detailed information about the card with the specified ID.
-- `查活动/查询活动/event [event ID]`: View information about the specified event (can use `event` to view current event information directly).
-- `查活动/查询活动/findevent [keywords]`: Filter events by keywords and return a summary image. If no keywords are provided, a prompt image will be returned.
+- `findcard [character alias]`: Get all cards of the current character.
+- `cardinfo [card ID]`: Get detailed information about the card with the specified ID.
+- `event [event ID]`: View information about the specified event (can use `event` to view current event information directly).
+- `findevent [keywords]`: Filter events by keywords and return a summary image. If no keywords are provided, a prompt image will be returned.
   - Single keyword method:
     - `findevent 5v5`: Return events with the 5v5 type.
-    - `findevent 紫月`: Return events with the Purple Moon attribute.
+    - `findevent mysterious`: Return events with the Purple Moon attribute.
     - `findevent knd`: Return events that include knd cards (including rewards).
     - `findevent miku`: Return events with any combination of Miku cards.
     - `findevent 25miku`: Return events with White Leek cards.
     - `findevent 25h`: Return events with any 25 members (excluding vs), not limited to the 25-box event.
   - Multiple keyword method:
-    - `findevent 草 5v5`: Return events with the 5v5 type and Green Grass attribute.
-    - `findevent knd 蓝`: Return events with the Blue Star attribute and knd cards.
-    - `findevent 普活 紫月 knd`: Return Marathon-type events with the Purple Moon attribute and knd cards (even if knd cards have different attributes, they will be displayed).
+    - `findevent pure 5v5`: Return events with the 5v5 type and Green Grass attribute.
+    - `findevent knd cool`: Return events with the Blue Star attribute and knd cards.
+    - `findevent marathon mysterious knd`: Return Marathon-type events with the Purple Moon attribute and knd cards (even if knd cards have different attributes, they will be displayed).
   - Examples:
     - `findevent 25h`: Only return events related to the 25-box event.
     - `findevent 25h 25miku`: Return events related to the 25-box event with White Leek cards.
     - `findevent knd ick`: Return events with mixed knd and ick cards.
-- `活动图鉴/活动列表/活动总览/findevent all`: Return a summary of all current events. This functionality cannot be used in channel bots due to large image size.
+- `findevent all`: Return a summary of all current events. This functionality cannot be used in channel bots due to large image size.
 
 ## Project Sekai Guessing
 ::: warning About Channel Version Guessing
 Please answer within the specified time. The bot will not automatically end the guessing. If the answer exceeds the time limit, it will automatically end and prompt a timeout.
 :::
 
-- Guessing with colored song cuted illustrations: `pjskguess`
-- Guessing with black and white song cuted illustrations: `pjskguess2`
+- Guessing with cropped colored song illustrations: `pjskguess`
+- Guessing with cropped black and white song illustrations: `pjskguess2`
 - Guessing with very small cut (30*30): `pjsk非人类猜曲`
-- Guessing the difficulty of the song: `chartguess`
-- Guessing the card's character: `charaguess`
+- Guessing the song with chart: `chartguess`
+- Guessing the card's character with cropped card's image: `charaguess`
 
 
 ## Project Sekai Card Drawing (Gacha) Simulation
