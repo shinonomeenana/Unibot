@@ -1,18 +1,35 @@
 const { defaultTheme } = require('vuepress')
 
 module.exports = {
-  title: "Unibot使用文档",
-  description: "一个多功能PJSK查询bot",
-  base: "/",
-  theme: defaultTheme({
-   repo: 'watagashi-uni/Unibot',
-   docsDir: 'docs',
-   docsBranch: 'main',
-   repoLabel: 'GitHub',
-   editLinks: true,
-   editLinkText: '在 GitHub 上编辑此页',
-   lastUpdatedText: '上次更新',
-   contributorsText: '贡献者',
+    locales: {
+      '/': {
+        lang: 'zh-CN',
+      },
+      '/en/': {
+        lang: 'en-US',
+      },
+    },
+    title: "Unibot使用文档",
+    description: "一个多功能PJSK查询bot",
+    base: "/",
+    theme: defaultTheme({
+      locales: {
+        '/': {
+          selectLanguageName: '简体中文',
+        },
+        '/en/': {
+          selectLanguageName: 'English',
+        },
+      },
+    repo: 'watagashi-uni/Unibot',
+    docsDir: 'docs',
+    docsBranch: 'main',
+    repoLabel: 'GitHub',
+    editLinks: true,
+    editLinkText: '在 GitHub 上编辑此页',
+    lastUpdatedText: '上次更新',
+    contributorsText: '贡献者',
+    selectLanguageText: 'Language',
     sidebar: 'auto',
     navbar: [
       { text: "首页", link: "/" },

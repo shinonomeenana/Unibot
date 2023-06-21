@@ -2,28 +2,28 @@
 
 >  本文档将引导您使用 UniBot
 > 
-- UniBot是一款功能型机器人, 主要提供《世界计划 多彩舞台》日服，国际服，台服（稳定性测试中）相关查询服务。
+- UniBot是一款功能型机器人, 主要提供《世界计划 多彩舞台》日服，国际服，台服，韩服相关查询服务。
 - 使用该Bot，即意味着你同意[使用条款](/licence/)及[隐私条款](/privacy/)
 
 ::: warning 注意
 该bot没有开放任何私聊功能
 
-由于风控严重，猜曲，猜卡面，看卡图，模拟抽卡功能已开启白名单模式。如你所在的群未开启以上功能，请使用官方平台的频道bot游玩
+由于QQ风控严重，猜曲，猜卡面，看卡图，模拟抽卡功能已开启白名单模式。如你所在的群未开启以上功能，请使用官方平台的频道 bot 或 Discord 游玩
 :::
 
 ::: danger 注意
-由于pjsk日服api做了修改，只能查到前100排名，profile api只能看clear和fc数，受影响的日服功能有：
-sk，pjskprofile中ap数，pjsk进度，pjsk b30，rk，难度排行
+由于pjsk日服api做了修改，只能查到前100排名，受影响的日服功能有：
+sk，pjsk进度，pjsk b30，rk，难度排行
 :::
 
 ::: tip 关于bot分布式部署
 
-群bot由于风控严重不再接受新群邀请，如需要可使用[分布式客户端](/distributed/)自行部署
+QQ群bot由于风控严重不再接受新群邀请，如需要可使用[分布式客户端](/distributed/)自行部署
 
 :::
 
 ::: tip 关于频道版
-bot频道版已上线，[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)Unibot频道使用，[使用文档](/guild/)
+bot QQ频道版已上线，[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)Unibot频道使用，[使用文档](/guild/)
 :::
 
 ## 查询pjsk歌曲信息
@@ -64,14 +64,13 @@ bot频道版已上线，[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv
 
 > 在命令前加`en`即可查询国际服信息，如`en绑定`, `ensk`, `en逮捕`, `enpjsk进度`, `enpjskprofile`
 
-> ⚠稳定性未知
-> 
 > 在命令前加`tw`即可查询台服信息，如`tw绑定`, `twsk`, `tw逮捕`, `twpjsk进度`, `twpjskprofile`
 
+> 在命令前加`kr`即可查询韩服信息，如`kr绑定`, `krsk`, `kr逮捕`, `krpjsk进度`, `krpjskprofile`
 
 ::: danger 注意
-由于pjsk日服api做了修改，只能查到前100排名，profile api只能看clear和fc数，受影响的日服功能有：
-sk，pjskprofile中ap数，pjsk进度，pjsk b30，rk，难度排行
+由于pjsk日服api做了修改，只能查到前100排名，受影响的日服功能有：
+sk，pjsk进度，pjsk b30，rk，难度排行
 :::
 
 
