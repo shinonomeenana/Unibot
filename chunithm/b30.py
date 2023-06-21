@@ -284,11 +284,11 @@ def b30single(single_data):
     pic.paste(jacket, (32, 28))
 
     draw = ImageDraw.Draw(pic)
-    font = ImageFont.truetype('fonts/SourceHanSansCN-Bold.otf', 35)
+    font = ImageFont.truetype('fonts/YuGothicUI-Semibold.ttf', 36)
     size = font.getsize(musictitle)
     if size[0] > 365:
         musictitle = musictitle[:int(len(musictitle)*(345/size[0]))] + '...'
-    draw.text((238, 25), musictitle, '#000000', font)
+    draw.text((240, 27), musictitle, '#000000', font)
 
     font = ImageFont.truetype('fonts/FOT-RodinNTLGPro-DB.ttf', 58)
     draw.text((234, 87), str(single_data['score']), '#000000', font)
