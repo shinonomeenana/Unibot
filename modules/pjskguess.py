@@ -33,8 +33,7 @@ def getrandomchartold():
     else:
         return musicid
 
-
-def guessRank(guessType, typeText):
+def guessRank(guessType, typeText, qqnum=None):
     from imageutils import text2image
     mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
                            database='pjskguess', charset='utf8mb4')
@@ -46,22 +45,37 @@ def guessRank(guessType, typeText):
     mydb.close()
     count = 0
     text = typeText + ' TOP20\n'
+    user_rank = None
+    user_count = None
+    top20_generated = False
     for raw in data:
         raw = raw[1:]
         count += 1
         name = raw[1]
-        if len(name) > 10:
-            name = name[:3] + '...' + name[-3:]
-        if len(raw[0]) >= 15:
-            text += f'{name}(频道用户): {raw[2]}次\n'
-        else:
-            text += f'{name}({raw[0][:3]}***{raw[0][-3:]}): {raw[2]}次\n'
-        if count == 20:
+        if len(name) > 20:
+            name = name[:5] + '...' + name[-5:]
+        if raw[0] == str(qqnum):
+            user_rank = count
+            user_count = raw[2]
+        if count <= 20:
+            if len(raw[0]) >= 15:
+                if '#' in name:
+                    text += f'{name}(Discord用户): {raw[2]}次\n'
+                else:
+                    text += f'{name}(频道用户): {raw[2]}次\n'
+            else:
+                text += f'{name}({raw[0][:3]}***{raw[0][-3:]}): {raw[2]}次\n'
+            if count == 20:
+                top20_generated = True
+        if user_rank is not None and top20_generated:
             break
+    if qqnum is not None and user_rank is not None:
+        text += f'\n您的排名: {user_rank}位, 次数: {user_count}次'
+    elif qqnum is not None:
+        text += f'\n您的排名: 暂无排名'
     infopic = text2image(text=text, max_width=1000, padding=(30, 30))
-    infopic.save(f'piccache/guess{guessType}.png')
-    return f'piccache/guess{guessType}.png'
-    # texttoimg(text, 550, f'guess{guessType}')
+    infopic.save(f'piccache/guess{guessType}{qqnum}.png')
+    return f'piccache/guess{guessType}{qqnum}.png'
 
 
 def recordGuessRank(qqnum, name, guessType):

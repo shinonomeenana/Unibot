@@ -13,6 +13,7 @@ import time
 import traceback
 import yaml
 from aiocqhttp import CQHttp, Event
+from chunithm.daily_bonus import chuni_signin
 from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel, aliastocharaid, get_card, cardidtopic, \
     findcard, getvits, getcardinfo
 from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
@@ -1018,25 +1019,25 @@ def sync_handle_msg(event):
             except ValueError:
                 return
             return
-        if "生成" in event.message:
-            if event.message[:2] == "生成":
-                rainbow = False
-            elif event.message[:4] == "彩虹生成":
-                rainbow = True
-            else:
-                return
-            if event.group_id in blacklist['ettm']:
-                return
-            event.message = event.message[event.message.find("生成") + len("生成"):].strip()
-            para = event.message.split(" ")
-            now = int(time.time() * 1000)
-            if len(para) < 2:
-                para = event.message.split("/")
-                if len(para) < 2:
-                    return
-            cyo5000(para[0], para[1], f"piccache/{now}.png", rainbow)
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{now}.png,cache=0]")
-            return
+        # if "生成" in event.message:
+        #     if event.message[:2] == "生成":
+        #         rainbow = False
+        #     elif event.message[:4] == "彩虹生成":
+        #         rainbow = True
+        #     else:
+        #         return
+        #     if event.group_id in blacklist['ettm']:
+        #         return
+        #     event.message = event.message[event.message.find("生成") + len("生成"):].strip()
+        #     para = event.message.split(" ")
+        #     now = int(time.time() * 1000)
+        #     if len(para) < 2:
+        #         para = event.message.split("/")
+        #         if len(para) < 2:
+        #             return
+        #     cyo5000(para[0], para[1], f"piccache/{now}.png", rainbow)
+        #     sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{now}.png,cache=0]")
+        #     return
         if event.message[:5] == "白名单添加" and event.user_id in whitelist:
             event.message = event.message[event.message.find("白名单添加") + len("白名单添加"):].strip()
             requestwhitelist.append(int(event.message))
@@ -1121,34 +1122,34 @@ def sync_handle_msg(event):
             return
         if event.message[-3:] == '排行榜':
             if event.message.startswith('pjsk猜曲'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(1, 'pjsk猜曲')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(1, 'pjsk猜曲', event.user_id)},cache=0]")
                 return
             if event.message.startswith('pjsk阴间猜曲'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(2, 'pjsk阴间猜曲')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(2, 'pjsk阴间猜曲', event.user_id)},cache=0]")
                 return
             if event.message.startswith('pjsk猜谱面'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(3, 'pjsk猜谱面')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(3, 'pjsk猜谱面', event.user_id)},cache=0]")
                 return
             if event.message.startswith('pjsk猜卡面'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(4, 'pjsk猜卡面')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(4, 'pjsk猜卡面', event.user_id)},cache=0]")
                 return
             if event.message.startswith('pjsk听歌猜曲'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(5, 'pjsk听歌猜曲')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(5, 'pjsk听歌猜曲', event.user_id)},cache=0]")
                 return
             if event.message.startswith('pjsk倒放猜曲'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(6, 'pjsk倒放猜曲')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(6, 'pjsk倒放猜曲', event.user_id)},cache=0]")
                 return
             if event.message.startswith('ai猜曲'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(7, 'ai猜曲')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(7, 'ai猜曲', event.user_id)},cache=0]")
                 return
             if event.message.startswith('ai猜卡面'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(8, 'ai猜卡面')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(8, 'ai猜卡面', event.user_id)},cache=0]")
                 return
             if event.message.startswith('ai阴间猜曲'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(9, 'ai阴间猜曲')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(9, 'ai阴间猜曲', event.user_id)},cache=0]")
                 return
             if event.message.startswith('pjsk音效猜曲'):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(10, 'pjsk音效猜曲')},cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(10, 'pjsk音效猜曲', event.user_id)},cache=0]")
                 return
         if event.message[:1] == '看' or event.message[:2] == '来点':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
@@ -1221,7 +1222,13 @@ def sync_handle_msg(event):
             chunib30(userid=bind)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
             return
-        
+        if event.message in ['aqua 中二签到', 'knd 中二签到']:
+            bind = getchunibind(event.user_id)
+            if bind is None:
+                sendmsg(event, '签到不了捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
+                return
+            sendmsg(event, chuni_signin(str(event.user_id), str(bind)))
+            return
         # 猜曲
         if event.message == 'pjsk猜谱面' or event.message == 'pjsk猜曲 3':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
