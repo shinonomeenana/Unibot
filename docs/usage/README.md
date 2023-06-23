@@ -3,27 +3,18 @@
 >  本文档将引导您使用 UniBot
 > 
 - UniBot是一款功能型机器人, 主要提供《世界计划 多彩舞台》日服，国际服，台服，韩服相关查询服务。
+- 该Bot不提供私聊服务，猜曲，猜卡面，看卡图，模拟抽卡等功能仅在QQ频道Bot和Discord对所有人开放
 - 使用该Bot，即意味着你同意[使用条款](/licence/)及[隐私条款](/privacy/)
-
-::: warning 注意
-该bot没有开放任何私聊功能
-
-由于QQ风控严重，猜曲，猜卡面，看卡图，模拟抽卡功能已开启白名单模式。如你所在的群未开启以上功能，请使用官方平台的频道 bot 或 Discord 游玩
-:::
 
 ::: danger 注意
 由于pjsk日服api做了修改，只能查到前100排名，受影响的日服功能有：
 sk，pjsk进度，pjsk b30，rk，难度排行
 :::
 
-::: tip 关于bot分布式部署
+::: tip 可用的Bot
+bot QQ频道版：[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)Unibot频道使用，[使用文档](/guild/)
 
-QQ群bot由于风控严重不再接受新群邀请，如需要可使用[分布式客户端](/distributed/)自行部署
-
-:::
-
-::: tip 关于频道版
-bot QQ频道版已上线，[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)Unibot频道使用，[使用文档](/guild/)
+bot Discord版：[点击添加](https://discord.com/api/oauth2/authorize?client_id=975690393339457547&permissions=274877908992&scope=bot)
 :::
 
 ## 查询pjsk歌曲信息

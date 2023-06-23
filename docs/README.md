@@ -2,7 +2,7 @@
 home: true
 heroImage: /nekoknd.png
 heroText: Unibot
-tagline: 一个多功能PJSK群机器人
+tagline: 一个多功能PJSK机器人
 actionText: 功能列表 →
 actions:
   - text: 功能列表
