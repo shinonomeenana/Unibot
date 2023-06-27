@@ -215,7 +215,6 @@ def isleak(musicid):
 def pjskinfo(musicid):
     if os.path.exists(f'piccache/pjskinfo/{musicid}.png'):
         pjskinfotime = get_filectime(f'piccache/pjskinfo/{musicid}.png')
-        playdatatime = get_filectime('masterdata/realtime/musicDifficulties.json')
         masterdatatime = get_filectime('masterdata/musics.json')
         with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
             musics = json.load(f)
@@ -223,7 +222,7 @@ def pjskinfo(musicid):
         for i in musics:
             if i['id'] == musicid:
                 publishedAt = i['publishedAt'] / 1000
-        if pjskinfotime > playdatatime and pjskinfotime > masterdatatime:  # 缓存后数据未变化
+        if pjskinfotime > masterdatatime:  # 缓存后数据未变化
             if time.time() < publishedAt:  # 捷豹
                 return True
             else:  # 已上线
@@ -250,46 +249,21 @@ def drawpjskinfo(musicid):
         info.fillerSec = music['fillerSec']
 
 
-    with open('masterdata/realtime/musicDifficulties.json', 'r', encoding='utf-8') as f:
+    
+    with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     for i in range(0, len(data)):
-        if data[i]['musicId'] == musicid:
-            info.playLevel = [data[i]['playLevel'], data[i + 1]['playLevel'],
-                              data[i + 2]['playLevel'], data[i + 3]['playLevel'], data[i + 4]['playLevel']]
+        if data[i]['musicId'] != musicid:
+            continue
+        info.playLevel = [data[i]['playLevel'], data[i + 1]['playLevel'],
+                            data[i + 2]['playLevel'], data[i + 3]['playLevel'], data[i + 4]['playLevel']]
+        try:
+            info.noteCount = [data[i]['noteCount'], data[i + 1]['noteCount'],
+                            data[i + 2]['noteCount'], data[i + 3]['noteCount'], data[i + 4]['noteCount']]
+        except KeyError:
             info.noteCount = [data[i]['totalNoteCount'], data[i + 1]['totalNoteCount'],
                             data[i + 2]['totalNoteCount'], data[i + 3]['totalNoteCount'], data[i + 4]['totalNoteCount']]
-            if 'playLevelAdjust' not in data[i + 3]:
-                data[i + 3]['playLevelAdjust'] = None
-                data[i + 3]['fullComboAdjust'] = None
-                data[i + 3]['fullPerfectAdjust'] = None
-            if 'playLevelAdjust' not in data[i + 4]:
-                data[i + 4]['playLevelAdjust'] = None
-                data[i + 4]['fullComboAdjust'] = None
-                data[i + 4]['fullPerfectAdjust'] = None
-
-            info.playLevelAdjust = [0, 0, 0, data[i + 3]['playLevelAdjust'],
-                                    data[i + 4]['playLevelAdjust']]
-            info.fullComboAdjust = [0, 0, 0, data[i + 3]['fullComboAdjust'],
-                                    data[i + 4]['fullComboAdjust']]
-            info.fullPerfectAdjust = [0, 0, 0, data[i + 3]['fullPerfectAdjust'],
-                                        data[i + 4]['fullPerfectAdjust']]
-
-            break
-    if info.playLevel[0] == 0:
-        with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        for i in range(0, len(data)):
-            if data[i]['musicId'] != musicid:
-                continue
-            info.playLevel = [data[i]['playLevel'], data[i + 1]['playLevel'],
-                              data[i + 2]['playLevel'], data[i + 3]['playLevel'], data[i + 4]['playLevel']]
-            try:
-                info.noteCount = [data[i]['noteCount'], data[i + 1]['noteCount'],
-                                data[i + 2]['noteCount'], data[i + 3]['noteCount'], data[i + 4]['noteCount']]
-            except KeyError:
-                info.noteCount = [data[i]['totalNoteCount'], data[i + 1]['totalNoteCount'],
-                                data[i + 2]['totalNoteCount'], data[i + 3]['totalNoteCount'], data[i + 4]['totalNoteCount']]
-            break
+        break
     now = int(time.time() * 1000)
     leak = False
 
@@ -302,10 +276,7 @@ def drawpjskinfo(musicid):
             img2 = Image.open('pics/leak_alpha.png')
             leak = True
         else:
-            if info.playLevelAdjust[4] == 0:
-                img2 = Image.open('pics/pjskinfonew_alpha.png')
-            else:
-                img2 = Image.open('pics/pjskinfo_alpha.png')
+            img2 = Image.open('pics/pjskinfo_alpha.png')
         r, g, b, mask = img2.split()
         img.paste(img2, (0, 0), mask)
     else:
@@ -315,10 +286,7 @@ def drawpjskinfo(musicid):
             img = Image.open('pics/leak.png')
             leak = True
         else:
-            if info.playLevelAdjust[4] == 0:
-                img = Image.open('pics/pjskinfonew.png')
-            else:
-                img = Image.open('pics/pjskinfo.png')
+            img = Image.open('pics/pjskinfo.png')
     try:
         jacket = Image.open('data/assets/sekai/assetbundle/resources'
                             f'/startapp/music/jacket/jacket_s_{str(musicid).zfill(3)}/jacket_s_{str(musicid).zfill(3)}.png')
@@ -375,48 +343,6 @@ def drawpjskinfo(musicid):
         text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(960 - text_width[1] / 2))
         draw.text(text_coordinate, str(info.noteCount[i]), fill=color, font=font_style)
 
-    if info.playLevelAdjust[4] != 0 and not leak:
-        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 28)
-        for i in range(3, 5):
-            if info.playLevelAdjust[i] is not None:
-                levelplus = str(round(info.playLevel[i] + info.playLevelAdjust[i], 1))
-                fclevelplus = str(round(info.playLevel[i] + info.fullComboAdjust[i], 1))
-                aplevelplus = str(round(info.playLevel[i] + info.fullPerfectAdjust[i], 1))
-            else:
-                levelplus = f"{info.playLevel[i]}.?"
-                fclevelplus = f"{info.playLevel[i]}.?"
-                aplevelplus = f"{info.playLevel[i]}.?"
-
-            text_width = font_style.getsize(str(levelplus))
-            text_coordinate = (int(1363 + 116 * i - text_width[0] / 2), int(864 - text_width[1] / 2))
-            draw.text(text_coordinate, levelplus, fill=color, font=font_style)
-
-            text_width = font_style.getsize(str(fclevelplus))
-            text_coordinate = (int(1363 + 116 * i - text_width[0] / 2), int(922 - text_width[1] / 2))
-            draw.text(text_coordinate, fclevelplus, fill=color, font=font_style)
-
-            text_width = font_style.getsize(str(aplevelplus))
-            text_coordinate = (int(1363 + 116 * i - text_width[0] / 2), int(980 - text_width[1] / 2))
-            draw.text(text_coordinate, aplevelplus, fill=color, font=font_style)
-            
-
-        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 20)
-        for i in range(3, 5):
-            if info.playLevelAdjust[i] is not None:
-                if info.playLevelAdjust[i] > 1.5:
-                    adjust = "++"
-                elif info.playLevelAdjust[i] > 0.5:
-                    adjust = "+"
-                elif info.playLevelAdjust[i] < -1.5:
-                    adjust = "--"
-                elif info.playLevelAdjust[i] < -0.5:
-                    adjust = "-"
-                else:
-                    adjust = ""
-                if adjust != "":
-                    text_width = font_style.getsize(str(adjust))
-                    text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(915 - text_width[1] / 2))
-                    draw.text(text_coordinate, str(adjust), fill=(1, 255, 221), font=font_style)
     vocals = vocalimg(musicid, alpha)
     r, g, b, mask = vocals.split()
     if vocals.size[1] < 320:
