@@ -295,3 +295,30 @@ def cutSE(musicid, qunnum):
     mix = cut.overlay(cut2)
     mix.export(f"piccache/{qunnum}mix.mp3", format="mp3", bitrate="96k")
 
+
+def get_two_lines(filename):
+    """
+    从文件中获取连续的两行，忽略空行。
+    """
+    with open(filename, 'r', encoding='utf-8') as f:
+        lines = [line.strip() for line in f if line.strip()]
+        if len(lines) < 2:
+            return None
+        line_num = random.randint(0, len(lines) - 2)
+        return '\n'.join(lines[line_num:line_num+2])
+
+
+def random_lyrics():
+    """
+    从 'musics.json' 中随机选择一首歌，并获取其歌词的两行。
+    """
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    while True:
+        item = random.choice(data)
+        id = item.get('id')
+        if os.path.exists(f'moesus/lyrics/{id}.txt'):
+            lines = get_two_lines(f'moesus/lyrics/{id}.txt')
+            if lines is not None:
+                return id, lines

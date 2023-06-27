@@ -31,7 +31,7 @@ from modules.gacha import getcharaname, getcurrentgacha, fakegacha
 from modules.homo import generate_homo
 from modules.musics import parse_bpm, aliastochart, idtoname, notecount, tasseiritsu, findbpm, \
     getcharttheme, setcharttheme, getPlayLevel, levelRankPic
-from modules.pjskguess import getrandomjacket, cutjacket, getrandomchart, cutchartimg, getrandomcard, cutcard, \
+from modules.pjskguess import getrandomjacket, cutjacket, getrandomchart, cutchartimg, getrandomcard, cutcard, random_lyrics,\
     getrandommusic, cutmusic, getrandomchartold, cutchartimgold, recordGuessRank, guessRank, getRandomSE, cutSE
 from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskinfo, writelog
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
@@ -1151,6 +1151,9 @@ def sync_handle_msg(event):
             if event.message.startswith('pjsk音效猜曲'):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(10, 'pjsk音效猜曲', event.user_id)},cache=0]")
                 return
+            if event.message.startswith('pjsk歌词猜曲'):
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(11, 'pjsk歌词猜曲', event.user_id)},cache=0]")
+                return
         if event.message[:1] == '看' or event.message[:2] == '来点':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
                 return
@@ -1448,6 +1451,8 @@ def sync_handle_msg(event):
                         musicid, assetbundleName = getrandommusic()
                     elif event.message == 'pjsk音效猜曲':
                         musicid = getRandomSE()
+                    elif event.message == 'pjsk歌词猜曲':
+                        musicid, lyrics = random_lyrics()
                     else:
                         musicid = getrandomjacket()
                     pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid,
@@ -1457,6 +1462,8 @@ def sync_handle_msg(event):
                     musicid, assetbundleName = getrandommusic()
                 elif event.message == 'pjsk音效猜曲':
                     musicid = getRandomSE()
+                elif event.message == 'pjsk歌词猜曲':
+                    musicid, lyrics = random_lyrics()
                 else:
                     musicid = getrandomjacket()
                 pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'starttime': int(time.time()), 'selfid': event.self_id}
@@ -1503,6 +1510,11 @@ def sync_handle_msg(event):
                 guessType = 10
                 pjskguess[event.group_id]['type'] = guessType
                 pjskguess[event.group_id]['starttime'] = int(time.time()) + 40
+                return
+            elif event.message == 'pjsk歌词猜曲':
+                sendmsg(event, 'PJSK歌词竞猜 （随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲\n\n' + lyrics)
+                guessType = 11
+                pjskguess[event.group_id]['type'] = guessType
                 return
             else:
                 cutjacket(musicid, event.group_id, size=140, isbw=False)
