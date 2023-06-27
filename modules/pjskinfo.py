@@ -1,4 +1,5 @@
 import datetime
+import random
 import re
 import emoji
 import ujson as json
@@ -349,6 +350,11 @@ def drawpjskinfo(musicid):
         img.paste(vocals, (758, 710), mask)
     else:
         img.paste(vocals, (758, 670), mask)
+
+    qidong = Image.open(f'pics/qidong/{get_random_character(musicid)}.png')
+    qidong = qidong.resize((355, 307))
+    img.paste(qidong, (1510, 720), qidong.split()[3])
+
     img.save(f'piccache/pjskinfo/{musicid}.png')
     if env != 'prod':
         img.show()
@@ -490,6 +496,46 @@ def vocalimg(musicid, alpha):
         cut[1] = height[row] + 65
         img = img.crop((0, 0, cut[0] + 10, cut[1] + 10))
     return img
+
+
+def get_random_character(music_id):
+    # 从 json 文件加载数据
+    with open('masterdata/musicVocals.json', 'r', encoding='utf-8') as f:
+        vocals_data = json.load(f)
+
+    # 根据 musicId 筛选 vocals
+    relevant_vocals = [vocal for vocal in vocals_data if vocal['musicId'] == music_id]
+
+    # 根据 musicVocalType 和 characterType 筛选 vocals，按照优先级进行筛选
+    vocals_by_type = {}
+    has_outside_character = False
+    for vocal in relevant_vocals:
+        music_vocal_type = vocal['musicVocalType']
+        if music_vocal_type not in vocals_by_type:
+            vocals_by_type[music_vocal_type] = []
+        for character in vocal['characters']:
+            if character['characterType'] == 'game_character':
+                vocals_by_type[music_vocal_type].append(character['characterId'])
+            elif character['characterType'] == 'outside_character':
+                has_outside_character = True
+
+    # 尝试从 sekai，然后 original_song，然后其他的获取角色
+    for vocal_type in ['sekai', 'original_song']:
+        if vocal_type in vocals_by_type and vocals_by_type[vocal_type]:
+            return random.choice(vocals_by_type[vocal_type])
+
+    # 如果没有 sekai 或 original_song 的角色，从其他的获取随机角色
+    other_character_ids = [character_id for vocal_type, characters in vocals_by_type.items() if vocal_type not in ['sekai', 'original_song'] for character_id in characters]
+    if other_character_ids:
+        return random.choice(other_character_ids)
+    
+    # 如果只有 outside_character，返回 1 和 26 之间的随机数
+    if has_outside_character:
+        return random.randint(1, 26)
+
+    # 如果根本没有角色，返回 None
+    return None
+
 
 def pjskset(newalias, oldalias, qqnum, username, qun):
     newalias = newalias.strip()
