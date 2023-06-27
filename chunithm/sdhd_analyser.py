@@ -95,8 +95,8 @@ def update_music_data(option_dir, output_dir, json_file):
     with open(json_file, 'w') as f:
         json.dump(music_data, f, indent=4)
 
-A000_dir = 'D:/chunithm_sun_hdd/App/data/A000/music/'
-option_dir = 'D:/chunithm_sun_hdd/App/bin/option'
+A000_dir = 'F:/SDHD2.12/App/data/A000/music/'
+option_dir = 'F:/SDHD2.12/App/bin/option'
 output_dir = 'chunithm'
 json_file = os.path.join(output_dir, "masterdata/musics.json")
 

@@ -23341,40 +23341,6 @@
         }
     },
     {
-        "releaseTagName": "v2 2.10.00",
-        "name": "青春コンプレックス",
-        "id": "2386",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "CHU_UI_Jacket_2386.dds",
-        "difficulties": {
-            "basic": 0,
-            "advanced": 0,
-            "expert": 0,
-            "master": 12.6,
-            "ultima": 0,
-            "world's end": 0
-        }
-    },
-    {
-        "releaseTagName": "v2 2.10.00",
-        "name": "ギターと孤独と蒼い惑星",
-        "id": "2387",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "CHU_UI_Jacket_2387.dds",
-        "difficulties": {
-            "basic": 0,
-            "advanced": 0,
-            "expert": 0,
-            "master": 12.4,
-            "ultima": 0,
-            "world's end": 0
-        }
-    },
-    {
         "releaseTagName": "v2 2.15.00",
         "name": "雷切-RAIKIRI-",
         "id": "2399",
@@ -23416,6 +23382,40 @@
             "VARIETY"
         ],
         "jaketFile": "CHU_UI_Jacket_2411.dds",
+        "difficulties": {
+            "basic": 0,
+            "advanced": 0,
+            "expert": 0,
+            "master": 13.8,
+            "ultima": 0,
+            "world's end": 0
+        }
+    },
+    {
+        "releaseTagName": "v2 2.15.00",
+        "name": "Hydra",
+        "id": "2422",
+        "genreNames": [
+            "官譜追加"
+        ],
+        "jaketFile": "CHU_UI_Jacket_2422.dds",
+        "difficulties": {
+            "basic": 0,
+            "advanced": 0,
+            "expert": 0,
+            "master": 14.4,
+            "ultima": 0,
+            "world's end": 0
+        }
+    },
+    {
+        "releaseTagName": "v2 2.15.00",
+        "name": "Survive",
+        "id": "2425",
+        "genreNames": [
+            "官譜追加"
+        ],
+        "jaketFile": "CHU_UI_Jacket_2425.dds",
         "difficulties": {
             "basic": 0,
             "advanced": 0,
@@ -23591,6 +23591,40 @@
             "advanced": 0,
             "expert": 0,
             "master": 13.9,
+            "ultima": 0,
+            "world's end": 0
+        }
+    },
+    {
+        "releaseTagName": "v2 2.10.00",
+        "name": "青春コンプレックス",
+        "id": "2386",
+        "genreNames": [
+            "官譜追加"
+        ],
+        "jaketFile": "CHU_UI_Jacket_2386.dds",
+        "difficulties": {
+            "basic": 0,
+            "advanced": 0,
+            "expert": 0,
+            "master": 12.6,
+            "ultima": 0,
+            "world's end": 0
+        }
+    },
+    {
+        "releaseTagName": "v2 2.10.00",
+        "name": "ギターと孤独と蒼い惑星",
+        "id": "2387",
+        "genreNames": [
+            "官譜追加"
+        ],
+        "jaketFile": "CHU_UI_Jacket_2387.dds",
+        "difficulties": {
+            "basic": 0,
+            "advanced": 0,
+            "expert": 0,
+            "master": 12.4,
             "ultima": 0,
             "world's end": 0
         }
