@@ -530,11 +530,8 @@ def get_random_character(music_id):
         return random.choice(other_character_ids)
     
     # 如果只有 outside_character，返回 1 和 26 之间的随机数
-    if has_outside_character:
-        return random.randint(1, 26)
+    return random.randint(1, 26)
 
-    # 如果根本没有角色，返回 None
-    return None
 
 
 def pjskset(newalias, oldalias, qqnum, username, qun):
