@@ -351,9 +351,10 @@ def drawpjskinfo(musicid):
     else:
         img.paste(vocals, (758, 670), mask)
 
-    qidong = Image.open(f'pics/qidong/{get_random_character(musicid)}.png')
-    qidong = qidong.resize((355, 307))
-    img.paste(qidong, (1510, 720), qidong.split()[3])
+    if not leak:
+        qidong = Image.open(f'pics/qidong/{get_random_character(musicid)}.png')
+        qidong = qidong.resize((355, 307))
+        img.paste(qidong, (1510, 720), qidong.split()[3])
 
     img.save(f'piccache/pjskinfo/{musicid}.png')
     if env != 'prod':
