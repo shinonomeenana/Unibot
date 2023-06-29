@@ -21,11 +21,22 @@ def get_custom_diff_list(music_id: int, custom_music_difficulties=None):
     if custom_music_difficulties is None:
         with open('masterdata/realtime/musicDifficulties.json', 'r', encoding='utf-8') as f:
             custom_music_difficulties = json.load(f)
+
     for i in range(len(custom_music_difficulties)):
         if custom_music_difficulties[i]['musicId'] == music_id:
             try:
-                return [[custom_music_difficulties[j]['fullComboAdjust'] + custom_music_difficulties[j]['playLevel'] for j in range(i + 3, i + 5)],
-                        [custom_music_difficulties[j]['fullPerfectAdjust'] + custom_music_difficulties[j]['playLevel'] for j in range(i + 3, i + 5)]]
+                fullComboAdjust_list = []
+                fullPerfectAdjust_list = []
+                for j in range(i + 3, i + 5):
+                    fullComboAdjust = custom_music_difficulties[j].get('fullComboAdjust', '')
+                    fullPerfectAdjust = custom_music_difficulties[j].get('fullPerfectAdjust', '')
+                    playLevel = custom_music_difficulties[j]['playLevel']
+
+                    # If either of fullComboAdjust or fullPerfectAdjust is not '', add it to playLevel
+                    fullComboAdjust_list.append(fullComboAdjust + playLevel if fullComboAdjust != '' else '')
+                    fullPerfectAdjust_list.append(fullPerfectAdjust + playLevel if fullPerfectAdjust != '' else '')
+
+                return [fullComboAdjust_list, fullPerfectAdjust_list]
             except (KeyError, TypeError):
                 return None
     return None
@@ -49,6 +60,7 @@ def generate_diff_csv():
         else:
             csvdata.append([music['title'], music['id'], release_time, raw_diff[3], '', '',
                                                         raw_diff[4], '', ''])
+    csvdata.sort(key=lambda x: x[2], reverse=True)
     with open("masterdata/realtime/musics.csv", "w", newline='', encoding='utf-8-sig') as csvfile: 
         writer = csv.writer(csvfile)
         writer.writerow(["曲名", "id", "time", 'EXPERT', "FC定数", "AP定数", 'MASTER', "FC定数", "AP定数"])
