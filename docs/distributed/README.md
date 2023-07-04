@@ -15,7 +15,7 @@
 
 Windows 电脑需要运行大于等于 Windows 8 或 Windows server 2012 版本的系统（更低版本实测无法运行）
 Linux 有 Ubuntu 20.04 (Python 3.8) 和 Ubuntu 22.04 (Python 3.10) 打包的两个版本，建议使用 Ubuntu 20 或以上系统，在较低版本 Ubuntu 和其他较低版本 linux 中可能提示缺少 GLIBC 对应版本，安装非常麻烦，不推荐使用。
-
+当然，你也可以通过Docker来绕过这一问题。
 
 ### 下载客户端和申请token
 请加群467602419在群文件下载客户端，按照群公告的步骤自助申请token
@@ -96,3 +96,33 @@ servers:
 在有机器人的群里发送命令，比如`sk`，如果一切正常，ta 应该会回复你。
 
 如果没有回复，请检查客户端运行是否报错、cqhttp 日志是否报错。如果都没有报错，则可能是机器人账号被腾讯风控，需要在同一环境中多登录一段时间。
+
+## Docker部署
+
+若不方便使用支持的操作系统，可尝试通过docker部署bot。
+
+首先，拉取ubuntu22.04镜像
+```bash
+docker pull ubuntu:22.04
+```
+
+将编辑好的配置文件、SSL证书（如需要）放在bot可执行文件的同级目录中，新建Dockerfile。若不需要SSL证书，删除`COPY _.unipjsk.com.crt`行及其后两个`RUN`指令。
+```dockerfile
+FROM ubuntu:22.04
+
+COPY bot-3.1.0-cpython-310-x86_64-linux-gnu /usr/local/bin/
+COPY token.yaml /
+COPY _.unipjsk.com.crt /usr/local/share/ca-certificates/
+RUN apt-get update && apt-get install -y ca-certificates
+RUN update-ca-certificates
+
+ENTRYPOINT ["/usr/local/bin/bot-3.1.0-cpython-310-x86_64-linux-gnu"]
+```
+
+生成镜像并启动服务
+```bash
+docker build -t unibot .
+docker run --network=host unibot
+```
+
+此时服务将在设定好的端口运行，若提示SSL出错，请在开发机浏览器访问并导出`unibot-api.unipjsk.com`证书信息，然后重复上述操作。
