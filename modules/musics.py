@@ -696,8 +696,7 @@ def updaterebase():
             failcount = 0
         except:
             failcount += 1
-            traceback.print_exc()
-            print('下载失败')
+            print('rebase下载失败')
             if failcount > 4:
                 break
     updatecharts(deletelist)
@@ -712,7 +711,8 @@ def download_rebase(file_name):
                 f.write(resp.content)
             return
         except:
-            traceback.print_exc()
+            pass
+
 
 def updatecharts(deletelist):
     for musicid in deletelist:

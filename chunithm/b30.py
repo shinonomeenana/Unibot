@@ -226,7 +226,7 @@ def chunib30(userid):
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(52 + (i % 5) * 290)), int(287 + int(i / 5) * 127)), mask)
         pic.paste(single, ((int(53+(i%5)*290)), int(289+int(i/5)*127)))
-        rating_sum += truncate_two_decimal_places(ratings[i]['rating'])
+        rating_sum += ratings[i]['rating']
     b30 = truncate_two_decimal_places(rating_sum / 30)
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
     draw.text((208, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")

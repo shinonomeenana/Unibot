@@ -1822,22 +1822,36 @@ async def handle_group_request(event: Event):
                 if music['publishedAt'] < now:
                     count += 1
             print(count)
-            if count - 5 < int(answer) < count + 5:
-                await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                approve=True)
-                await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n误差<5，已自动通过')
-            else:
+            try:
+                answer_int = int(answer)
+                if count - 5 < answer_int < count + 5:
+                    await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
+                                                    approve=True)
+                    await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
+                                            message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n误差<5，已自动通过')
+                else:
+                    try:
+                        groupaudit[event.user_id]
+                    except:
+                        groupaudit[event.user_id] = 0
+
+                    await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
+                                                    approve=False, reason=f'机器判定答案错误，请用纯数字认真回答')
+                    await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
+                                            message=f'自动拒绝\n{event.user_id}申请加群\n{event.comment}\n误差>5，已自动拒绝')
+                    groupaudit[event.user_id] += 1
+            except ValueError:
                 try:
                     groupaudit[event.user_id]
                 except:
                     groupaudit[event.user_id] = 0
 
                 await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                approve=False, reason=f'bot判断回答错误，请用纯数字认真回答')
+                                                approve=False, reason=f'无法识别答案，请使用纯数字')
                 await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'自动拒绝\n{event.user_id}申请加群\n{event.comment}\n误差>5，已自动拒绝')
+                                        message=f'自动拒绝\n{event.user_id}申请加群\n{event.comment}\n无法识别答案，已自动拒绝')
                 groupaudit[event.user_id] += 1
+
         elif event.group_id == 467602419:
             answer = event.comment[event.comment.find("答案：") + len("答案："):].strip()
             if 'Mrs4s/go-cqhttp' in answer:
