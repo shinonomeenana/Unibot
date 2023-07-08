@@ -988,7 +988,7 @@ def bindid(qqnum, userid, server):
     mydb.commit()
     mycursor.close()
     mydb.close()
-    return "绑定成功！\n请不要以任何目的绑定挂哥账号，这可能导致你的qq被bot拉黑（如果你在正常绑定自己的账号请忽略该提示）"
+    return "绑定成功！"
 
 def setprivate(qqnum, isprivate, server):
     if server == 'jp':

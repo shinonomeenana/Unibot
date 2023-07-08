@@ -429,6 +429,7 @@ def vocalimg(musicid, alpha):
                 vocalimg = Image.new('RGBA', (750, 85), color=(0, 0, 0, 0))
                 draw = ImageDraw.Draw(vocalimg)
                 innerpos = 0
+                count = 1
                 for chara in vocal['characters']:
                     if chara['characterType'] == 'game_character':
                         chara = Image.open(f'chara/chr_ts_{chara["characterId"]}.png').resize((70, 70))
@@ -444,8 +445,13 @@ def vocalimg(musicid, alpha):
                         except:
                             for i in outsideCharacters:
                                 if i['id'] == chara['characterId']:
-                                    draw.text((innerpos + 8, 20), i['name'], fill=(67, 70, 101), font=font_style)
-                                    innerpos += 8 + font_style.getsize(str(i['name']))[0]
+                                    if count == 1:
+                                        draw.text((innerpos + 8, 20), i['name'], fill=(67, 70, 101), font=font_style)
+                                        innerpos += 8 + font_style.getsize(str(i['name']))[0]
+                                    else:
+                                        draw.text((innerpos + 8, 20), ', ' + i['name'], fill=(67, 70, 101), font=font_style)
+                                        innerpos += 8 + font_style.getsize(str(', ' + i['name']))[0]
+                    count += 1
                 vocalimg = vocalimg.crop((0, 0, innerpos + 15, 150))
                 r, g, b, mask = vocalimg.split()
                 if vocal['musicVocalType'] == "original_song" or vocal['musicVocalType'] == "virtual_singer":
