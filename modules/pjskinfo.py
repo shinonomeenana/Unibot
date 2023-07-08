@@ -350,6 +350,8 @@ def drawpjskinfo(musicid):
     for type in info.categories:
         if type == 'mv':
             type = 'mv_3d'
+        if type == 'image':
+            continue
         type_pic = Image.open(f'pics/{type}.png')
         type_pic = type_pic.resize((75, 75))
         img.paste(type_pic, (pos, 592), type_pic.split()[3])
