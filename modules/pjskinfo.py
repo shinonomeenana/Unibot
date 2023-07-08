@@ -42,6 +42,7 @@ class musicinfo(object):
         self.fullComboAdjust = [0, 0, 0, 0, 0]
         self.fullPerfectAdjust = [0, 0, 0, 0, 0]
         self.fillerSec = 0
+        self.categories = []
 
 
 def isSingleEmoji(content):
@@ -248,8 +249,7 @@ def drawpjskinfo(musicid):
         info.arranger = music['arranger']
         info.publishedAt = music['publishedAt']
         info.fillerSec = music['fillerSec']
-
-
+        info.categories = music['categories']
     
     with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -343,6 +343,18 @@ def drawpjskinfo(musicid):
         text_width = font_style.getsize(str(info.noteCount[i]))
         text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(960 - text_width[1] / 2))
         draw.text(text_coordinate, str(info.noteCount[i]), fill=color, font=font_style)
+
+    # 1824 592
+    pos = 1834
+    count = 0
+    for type in info.categories:
+        if type == 'mv':
+            type = 'mv_3d'
+        type_pic = Image.open(f'pics/{type}.png')
+        type_pic = type_pic.resize((75, 75))
+        img.paste(type_pic, (pos, 592), type_pic.split()[3])
+        count += 1
+        pos -= 82
 
     vocals = vocalimg(musicid, alpha)
     r, g, b, mask = vocals.split()

@@ -1209,6 +1209,11 @@ def sync_handle_msg(event):
             writelog()
             sendmsg(event, '更新成功')
             return
+        if event.message == '33启动' or event.message == '33，启动！':
+            from modules.api import qidong33
+            if (msg := qidong33(event.user_id, event.group_id)) is not None:
+                sendmsg(event, msg)
+                return
         if event.message.startswith("aqua 绑定"):
             userid = event.message.replace("aqua 绑定", "").strip()
             try:

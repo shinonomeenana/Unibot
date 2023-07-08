@@ -241,7 +241,7 @@ def chunib30(userid):
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(1582 + (i % 2) * 290)), int(287 + int(i / 2) * 127)), mask)
         pic.paste(single, ((int(1582+(i%2)*290)), int(289+int(i/2)*127)))
-        rating_sum += truncate_two_decimal_places(ratings[i]['rating'])
+        rating_sum += ratings[i]['rating']
     r10 = truncate_two_decimal_places(rating_sum / 10)
     draw.text((1726, 205), str(r10), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
     
