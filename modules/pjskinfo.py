@@ -16,7 +16,7 @@ import pytz
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 import yaml
 from emoji2pic.main import Emoji2Pic
-
+import Levenshtein as lev
 from modules.config import loghtml, env
 from modules.ossupload import uploadLog
 
@@ -55,9 +55,15 @@ def isSingleEmoji(content):
     return False
 
 
+# def string_similar(s1, s2):
+#     return difflib.SequenceMatcher(None, s1, s2).quick_ratio()
 def string_similar(s1, s2):
-    return difflib.SequenceMatcher(None, s1, s2).quick_ratio()
-
+    # 使用Levenshtein库计算两个字符串之间的距离
+    distance = lev.distance(s1, s2)
+    # 计算最大可能的距离
+    max_len = max(len(s1), len(s2))
+    # 计算相似度，并返回。距离越小，相似度越高，所以我们用1减去它们的比值
+    return 1 - (distance / max_len)
 
 # from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
 def parse_bpm(music_id):
