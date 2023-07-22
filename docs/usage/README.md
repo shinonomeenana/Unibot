@@ -127,6 +127,7 @@ sk，pjsk进度，pjsk b30，rk，难度排行
 - pjsk非人类猜曲（截30*30）：`pjsk非人类猜曲`
 - pjsk猜谱面：`pjsk猜谱面` 或 `/pjsk猜曲 3`
 - pjsk猜卡面：`pjsk猜卡面` 或 `/pjsk猜曲 4`
+- pjsk歌词猜曲：`pjsk歌词猜曲` 或 `/pjsk猜曲 5`
 - pjsk听歌猜曲（频道不可用）：`pjsk听歌猜曲`
 - pjsk倒放猜曲（频道不可用）：`pjsk倒放猜曲`
 

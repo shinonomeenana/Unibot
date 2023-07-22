@@ -5,9 +5,6 @@
 - UniBot is a functional Discord bot that mainly provides query services related to "Project SEKAI Colorful Stage" Japanese server, international server, Traditional Chinese server and Korean Server.
 - By using this bot, you agree to the [Terms of Use](/en/licence/) and [Privacy Policy](/en/privacy/).
 
-::: warning Note
-The bot mainly serves users who use Simplified Chinese. Although most commands support English, the bot's response is in Chinese, and it is difficult to match the alias database in English
-:::
 
 ::: danger Note
 Due to modifications in the pjsk Japanese server API, only the top 100 rankings can be retrieved. The affected functions in the Japanese server are:
@@ -110,16 +107,15 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 - `findevent all`: Return a summary of all current events. This functionality cannot be used in channel bots due to large image size.
 
 ## Project Sekai Guessing
-::: warning About Channel Version Guessing
-Please answer within the specified time. The bot will not automatically end the guessing. If the answer exceeds the time limit, it will automatically end and prompt a timeout.
-:::
-
 - Guessing with cropped colored song illustrations: `pjskguess`
 - Guessing with cropped black and white song illustrations: `pjskguess2`
+- Guessing with lyrics (Japanese): `lyricsguess`
 - Guessing with very small cut (30*30): `pjsk非人类猜曲`
 - Guessing the song with chart: `chartguess`
 - Guessing the card's character with cropped card's image: `charaguess`
 
+- End song guessing: `endpjskguess`
+- End character guessing: `endcharaguess`
 
 ## Project Sekai Card Drawing (Gacha) Simulation
 > Ten consecutive card draws will generate an image.
