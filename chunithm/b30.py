@@ -279,7 +279,7 @@ def b30single(single_data):
     }
     musictitle = single_data['musicName']
     
-    pic = Image.new("RGB", (620, 240), (255, 255, 255))
+    pic = Image.new("RGB", (620, 240), (255, 250, 243))
     
     jacket = Image.open(f'chunithm/jackets/{single_data["jacketFile"]}')
     jacket = jacket.resize((186, 186))
