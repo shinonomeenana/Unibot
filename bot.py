@@ -1222,12 +1222,45 @@ def sync_handle_msg(event):
                 return
             except ValueError:
                 return
+        if event.message.startswith("Super 绑定") or event.message.startswith("super 绑定"):
+            userid = event.message.replace("Super 绑定", "").strip()
+            userid = event.message.replace("super 绑定", "").strip()
+            try:
+                int(userid)
+                sendmsg(event, bind_aimeid(event.user_id, userid, 'super'))
+                return
+            except ValueError:
+                return
+        if event.message.startswith("林先生 绑定"):
+            userid = event.message.replace("林先生 绑定", "").strip()
+            try:
+                int(userid)
+                sendmsg(event, bind_aimeid(event.user_id, userid, 'lin'))
+                return
+            except ValueError:
+                return
         if re.match('^aqua *b30$', event.message):
             bind = getchunibind(event.user_id)
             if bind is None:
                 sendmsg(event, '查不到捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
                 return
             chunib30(userid=bind)
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
+            return
+        if re.match('^[Ss]uper *b30$', event.message):
+            bind = getchunibind(event.user_id, "super")
+            if bind is None:
+                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：super 绑定xxxxx')
+                return
+            chunib30(userid=bind, server='super')
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
+            return
+        if re.match('^林先生 *b30$', event.message):
+            bind = getchunibind(event.user_id, "lin")
+            if bind is None:
+                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：林先生 绑定xxxxx')
+                return
+            chunib30(userid=bind, server='lin')
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
             return
         if event.message in ['aqua 中二签到', 'knd 中二签到']:

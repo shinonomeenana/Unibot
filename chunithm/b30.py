@@ -27,7 +27,7 @@ def truncate_two_decimal_places(number):
     return float(str_number)
 
 
-def get_all_music(userid):
+def get_all_music(userid, server):
     uuid_str = str(uuid.uuid4())
     next_index = "0"
     user_music_list = []
@@ -39,7 +39,7 @@ def get_all_music(userid):
             "maxCount": "300"
         }
 
-        response = call_chuniapi(uuid_str, 'GetUserMusicApi', params)
+        response = call_chuniapi(uuid_str, 'GetUserMusicApi', params, server)
         json_data = response.json()
 
         user_music_list += json_data["userMusicList"]
@@ -48,31 +48,31 @@ def get_all_music(userid):
     return process_user_music_list(user_music_list)
 
 
-def get_user_data(userid):
+def get_user_data(userid, server):
     params = {
         "userId": userid,
         "segaIdAuthKey": ""
     }
-    response = call_chuniapi(str(uuid.uuid4()), 'GetUserPreviewApi', params)
+    response = call_chuniapi(str(uuid.uuid4()), 'GetUserPreviewApi', params, server)
     return response.json()
     
 
-def get_user_team(userid):
+def get_user_team(userid, server):
     current_date = datetime.now()
     formatted_date = current_date.strftime("%Y-%m-%d")
     params = {
         "userId": userid,
         "playDate": formatted_date
     }
-    response = call_chuniapi(str(uuid.uuid4()), 'GetUserTeamApi', params)
+    response = call_chuniapi(str(uuid.uuid4()), 'GetUserTeamApi', params, server)
     return response.json()
 
 
-def get_user_recent(userid):
+def get_user_recent(userid, server):
     params = {
         "userId": userid
     }
-    response = call_chuniapi(str(uuid.uuid4()), 'GetUserRecentRatingApi', params)
+    response = call_chuniapi(str(uuid.uuid4()), 'GetUserRecentRatingApi', params, server)
     return response.json()
 
 
@@ -97,7 +97,7 @@ def calculate_rating(constant, score):
         return 0
 
 
-def process_r10(userid):
+def process_r10(userid, server):
     difficulty_mapping = {
         "0": "basic",
         "1": "advanced",
@@ -113,9 +113,11 @@ def process_r10(userid):
     music_info = {music['id']: music for music in musics}
 
     # 解析用户数据
-    user_data = get_user_recent(userid)  # assuming user_input is your provided user data
+    user_data = get_user_recent(userid, server)  # assuming user_input is your provided user data
     rating_list = []
 
+    if user_data["userRecentRatingList"] == []:
+        return rating_list
     # 遍历用户数据，计算rating，并构造需要的数据结构
     for record in user_data["userRecentRatingList"]:
         music_id = record["musicId"]
@@ -147,9 +149,9 @@ def process_r10(userid):
     return rating_list
 
 
-def process_b30(userid):
+def process_b30(userid, server):
     # 获取用户数据
-    user_data = get_all_music(userid)
+    user_data = get_all_music(userid, server)
     
     # 读取音乐数据
     with open('chunithm/masterdata/musics.json', 'r', encoding='utf-8') as f:
@@ -194,17 +196,17 @@ def process_b30(userid):
 
 
 
-def chunib30(userid):
+def chunib30(userid, server='aqua'):
     pic = Image.open('pics/chub30.png')
     draw = ImageDraw.Draw(pic)
 
-    user_data = get_user_data(userid)
+    user_data = get_user_data(userid, server)
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
     draw.text((215, 65), user_data['userName'], fill=(0, 0, 0), font=font_style)
     font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
     try:
-        draw.text((218, 118), get_user_team(userid)['teamName'], fill=(0, 0, 0), font=font_style)
+        draw.text((218, 118), get_user_team(userid, server)['teamName'], fill=(0, 0, 0), font=font_style)
     except KeyError:
         draw.text((218, 118), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
     font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
@@ -214,7 +216,7 @@ def chunib30(userid):
     shadow.paste(Image.new("RGBA", (280, 105), (0, 0, 0, 50)), (5, 5))
     shadow = shadow.filter(ImageFilter.GaussianBlur(3))
 
-    ratings = process_b30(userid)
+    ratings = process_b30(userid, server)
     # ratings = [{'musicName': 'SINister Evolution', 'jacketFile': 'CHU_UI_Jacket_2038.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1008040, 'rating': 16.854}, {'musicName': '月の光', 'jacketFile': 'CHU_UI_Jacket_2354.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1007929, 'rating': 16.8429}, {'musicName': '腐れ外道とチョコレゐト', 'jacketFile': 'CHU_UI_Jacket_0118.dds', 'playLevel': 14.7, 'musicDifficulty': 'ultima', 'score': 1008139, 'rating': 16.7639}, {'musicName': 'Last Celebration', 'jacketFile': 'CHU_UI_Jacket_0994.dds', 'playLevel': 14.7, 'musicDifficulty': 'master', 'score': 1007768, 'rating': 16.7268}, {'musicName': '[CRYSTAL_ACCESS]', 'jacketFile': 'CHU_UI_Jacket_1094.dds', 'playLevel': 14.6, 'musicDifficulty': 'master', 'score': 1008204, 'rating': 16.6704}, {'musicName': 'IMPACT', 'jacketFile': 'CHU_UI_Jacket_2135.dds', 'playLevel': 14.5, 'musicDifficulty': 'master', 'score': 1008261, 'rating': 16.5761}, {'musicName': 'AXION', 'jacketFile': 'CHU_UI_Jacket_0863.dds', 'playLevel': 14.6, 'musicDifficulty': 'master', 'score': 1006946, 'rating': 16.4892}, {'musicName': 'POTENTIAL', 'jacketFile': 'CHU_UI_Jacket_2161.dds', 'playLevel': 14.3, 'musicDifficulty': 'expert', 'score': 1009823, 'rating': 16.45}, {'musicName': 'X7124', 'jacketFile': 'CHU_UI_Jacket_1079.dds', 'playLevel': 14.4, 'musicDifficulty': 'expert', 'score': 1007994, 'rating': 16.449399999999997}, {'musicName': "DA'AT -The First Seeker of Souls-", 'jacketFile': 'CHU_UI_Jacket_2241.dds', 'playLevel': 14.6, 'musicDifficulty': 'expert', 'score': 1006734, 'rating': 16.446800000000003}, {'musicName': 'のぼれ！すすめ！高い塔', 'jacketFile': 'CHU_UI_Jacket_0448.dds', 'playLevel': 14.3, 'musicDifficulty': 'master', 'score': 1007988, 'rating': 16.3488}, {'musicName': 'サドマミホリック', 'jacketFile': 'CHU_UI_Jacket_0628.dds', 'playLevel': 14.2, 'musicDifficulty': 'master', 'score': 1008416, 'rating': 16.2916}, {'musicName': 'Jade Star', 'jacketFile': 'CHU_UI_Jacket_0966.dds', 'playLevel': 14.2, 'musicDifficulty': 'master', 'score': 1008359, 'rating': 16.285899999999998}, {'musicName': 'U&iVERSE -銀河鸞翔-', 'jacketFile': 'CHU_UI_Jacket_2326.dds', 'playLevel': 14.4, 'musicDifficulty': 'master', 'score': 1006782, 'rating': 16.2564}, {'musicName': 'グラ ウンドスライダー協奏曲第一番「風唄」', 'jacketFile': 'CHU_UI_Jacket_2279.dds', 'playLevel': 14.1, 'musicDifficulty': 'expert', 'score': 1009496, 'rating': 16.25}, {'musicName': 'レータイス パークEx', 'jacketFile': 'CHU_UI_Jacket_0980.dds', 'playLevel': 14.2, 'musicDifficulty': 'master', 'score': 1007745, 'rating': 16.2245}, {'musicName': 'Elemental Creation', 'jacketFile': 'CHU_UI_Jacket_0232.dds', 'playLevel': 14.5, 'musicDifficulty': 'master', 'score': 1006070, 'rating': 16.214}, {'musicName': 'Insane Gamemode', 'jacketFile': 'CHU_UI_Jacket_1015.dds', 'playLevel': 14.4, 'musicDifficulty': 'master', 'score': 1006556, 'rating': 16.2112}, {'musicName': 'Name of oath', 'jacketFile': 'CHU_UI_Jacket_0389.dds', 'playLevel': 14.5, 'musicDifficulty': 'master', 'score': 1006045, 'rating': 16.209}, {'musicName': '真千年女王', 'jacketFile': 'CHU_UI_Jacket_1092.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1004047, 'rating': 16.2047}, {'musicName': 'エンドマークに希望と涙を添えて', 'jacketFile': 'CHU_UI_Jacket_0103.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1003759, 'rating': 16.175900000000002}, {'musicName': 'ヒバナ', 'jacketFile': 'CHU_UI_Jacket_0818.dds', 'playLevel': 14.0, 'musicDifficulty': 'ultima', 'score': 1009809, 'rating': 16.15}, {'musicName': '宵闇の月に抱かれて', 'jacketFile': 'CHU_UI_Jacket_2158.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1008818, 'rating': 16.1318}, {'musicName': 'Athlete Killer "Meteor"', 'jacketFile': 'CHU_UI_Jacket_1065.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1008811, 'rating': 16.1311}, {'musicName': '二次元ドリームフィーバー', 'jacketFile': 'CHU_UI_Jacket_2037.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1008691, 'rating': 16.1191}, {'musicName': '天火明命', 'jacketFile': 'CHU_UI_Jacket_2144.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1008194, 'rating': 16.0694}, {'musicName': 'ENDYMION', 'jacketFile': 'CHU_UI_Jacket_2184.dds', 'playLevel': 14.4, 'musicDifficulty': 'expert', 'score': 1005841, 'rating': 16.0682}, {'musicName': 'Taiko Drum Monster', 'jacketFile': 'CHU_UI_Jacket_0671.dds', 'playLevel': 14.3, 'musicDifficulty': 'master', 'score': 1006288, 'rating': 16.0576}, {'musicName': 'Aleph-0', 'jacketFile': 'CHU_UI_Jacket_0428.dds', 'playLevel': 14.1, 'musicDifficulty': 'expert', 'score': 1007247, 'rating': 16.0494}, {'musicName': '再生不能', 'jacketFile': 'CHU_UI_Jacket_1105.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1007977, 'rating': 16.0477}, {'musicName': 'フューチャー・イヴ', 'jacketFile': 'CHU_UI_Jacket_2344.dds', 'playLevel': 13.9, 'musicDifficulty': 'master', 'score': 1008964, 'rating': 16.046400000000002}, {'musicName': 'こちら、幸福安心委員会です。', 'jacketFile': 'CHU_UI_Jacket_1068.dds', 'playLevel': 13.9, 'musicDifficulty': 'master', 'score': 1008927, 'rating': 16.0427}, {'musicName': 'Rule the World!!', 'jacketFile': 'CHU_UI_Jacket_2109.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1007899, 'rating': 16.0399}, {'musicName': 'FLUFFY FLASH', 'jacketFile': 'CHU_UI_Jacket_2346.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1002058, 'rating': 16.0058}, {'musicName': '電脳少女は歌姫の夢を見るか？', 'jacketFile': 'CHU_UI_Jacket_2019.dds', 'playLevel': 14.2, 'musicDifficulty': 'master', 'score': 1006509, 'rating': 16.0018}, {'musicName': '迷える音色は恋の唄', 'jacketFile': 'CHU_UI_Jacket_2350.dds', 'playLevel': 13.9, 'musicDifficulty': 'master', 'score': 1008486, 'rating': 15.9986}, {'musicName': 'トンデモワンダーズ', 'jacketFile': 'CHU_UI_Jacket_2264.dds', 'playLevel': 13.9, 'musicDifficulty': 'master', 'score': 1008285, 'rating': 15.9785}, {'musicName': 'SON OF SUN', 'jacketFile': 'CHU_UI_Jacket_0887.dds', 'playLevel': 13.8, 'musicDifficulty': 'expert', 'score': 1009937, 'rating': 15.950000000000001}, {'musicName': 'Ascension to Heaven', 'jacketFile': 'CHU_UI_Jacket_0978.dds', 'playLevel': 13.8, 'musicDifficulty': 'expert', 'score': 1009842, 'rating': 15.950000000000001}, {'musicName': 'Fracture Ray', 'jacketFile': 'CHU_UI_Jacket_0749.dds', 'playLevel': 14.7, 'musicDifficulty': 'master', 'score': 1002027, 'rating': 15.9027}]
     
     rating_sum = 0
@@ -231,7 +233,7 @@ def chunib30(userid):
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
     draw.text((208, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
 
-    ratings = process_r10(userid)
+    ratings = process_r10(userid, server)
     rating_sum = 0
     for i in range(0, 10):
         try:
@@ -315,11 +317,18 @@ def get_connection():
     )
 
 
-def getchunibind(qqnum):
+database_list = {
+        'aqua': 'chunibind',
+        'lin': 'linbind',
+        'super': 'superbind'
+    }
+# database_list硬编码防止注入。%s会导致表名被加入引号报错
+
+def getchunibind(qqnum, server='aqua'):
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
-            cursor.execute('SELECT * from chunibind where qqnum=%s', (qqnum,))
+            cursor.execute(f'SELECT * from {database_list[server]} where qqnum=%s', (qqnum, ))
             data = cursor.fetchone()
             return data[2] if data else None
     except Exception as e:
@@ -329,16 +338,17 @@ def getchunibind(qqnum):
         conn.close()
 
 
-def bind_aimeid(qqnum, aimeid):
-    userid = str(aime_to_userid(aimeid))
+def bind_aimeid(qqnum, aimeid, server='aqua'):
+    userid = str(aime_to_userid(aimeid, server))
     if userid is None:
         return '卡号不存在'
-    user_data = get_user_data(userid)
+    user_data = get_user_data(userid, server)
     print(user_data)
     conn = get_connection()
+
     try:
         with conn.cursor() as cursor:
-            sql = "INSERT INTO chunibind (qqnum, aimeid) VALUES (%s, %s) ON DUPLICATE KEY UPDATE aimeid=%s"
+            sql = f"INSERT INTO {database_list[server]} (qqnum, aimeid) VALUES (%s, %s) ON DUPLICATE KEY UPDATE aimeid=%s"
             val = (str(qqnum), str(userid), str(userid))
             cursor.execute(sql, val)
             conn.commit()
