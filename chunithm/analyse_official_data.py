@@ -9,7 +9,7 @@ import io
 # setup proxy
 PROXY = {'http': 'http://localhost:7890', 'https': 'http://localhost:7890'}
 
-# Your provided functions
+
 def parse_music_data(xml_file, musicid):
     tree = ET.parse(xml_file)
     root = tree.getroot()
@@ -27,18 +27,25 @@ def parse_music_data(xml_file, musicid):
             level += float(fumen.find("./levelDecimal").text) / 100
         difficulty_type = fumen.find("./type/str").text.lower()
         if difficulty_type in ['expert', 'master', 'ultima']:
-            difficulties[difficulty_type] = level
+            if difficulty_type in difficulties:
+                difficulties[difficulty_type] = max(difficulties[difficulty_type], level)
+            else:
+                difficulties[difficulty_type] = level
 
     return difficulties
 
-def find_music_data(musicid, A000_dir, option_dir):
+def cache_music_data(A000_dir, option_dir):
+    music_data_cache = {}
+    
     # Search in A000 directory
     music_dir = os.path.join(A000_dir, 'music')
-    music_id_dir = os.path.join(music_dir, f'music{musicid.zfill(4)}')
-    if os.path.isdir(music_id_dir):
+    for musicid in os.listdir(music_dir):
+        music_id_dir = os.path.join(music_dir, musicid)
         xml_file = os.path.join(music_id_dir, 'Music.xml')
         if os.path.isfile(xml_file):
-            return parse_music_data(xml_file, musicid)
+            difficulties = parse_music_data(xml_file, musicid.replace('music', '').lstrip('0'))
+            if difficulties is not None:
+                music_data_cache[musicid.replace('music', '').lstrip('0')] = difficulties
     
     # Search in option directory
     for root, dirs, _ in os.walk(option_dir):
@@ -47,14 +54,21 @@ def find_music_data(musicid, A000_dir, option_dir):
             if os.path.exists(music_dir):
                 for item in os.listdir(music_dir):
                     item_path = os.path.join(music_dir, item)
-                    if os.path.isdir(item_path):
-                        xml_file = os.path.join(item_path, 'Music.xml')
-                        if os.path.isfile(xml_file):
-                            difficulties = parse_music_data(xml_file, musicid)
-                            if difficulties is not None:
-                                return difficulties
+                    xml_file = os.path.join(item_path, 'Music.xml')
+                    if os.path.isfile(xml_file):
+                        musicid = item.replace('music', '').lstrip('0')
+                        difficulties = parse_music_data(xml_file, musicid)
+                        if difficulties is not None:
+                            if musicid in music_data_cache:
+                                for difficulty_type in difficulties:
+                                    if difficulty_type in music_data_cache[musicid]:
+                                        music_data_cache[musicid][difficulty_type] = max(music_data_cache[musicid][difficulty_type], difficulties[difficulty_type])
+                                    else:
+                                        music_data_cache[musicid][difficulty_type] = difficulties[difficulty_type]
+                            else:
+                                music_data_cache[musicid] = difficulties
+    return music_data_cache
 
-    return None
 
 def download_image(image_id):
     url = f'https://new.chunithm-net.com/chuni-mobile/html/mobile/img/{image_id}'
@@ -104,6 +118,7 @@ with open(csv_path, 'r', encoding='utf-8-sig') as file:
 A000_dir = 'D:/chunithm_sun_hdd/App/data/A000'
 option_dir = 'D:/chunithm_sun_hdd/App/bin/option'
 output_data = []
+music_data_cache = cache_music_data(A000_dir, option_dir)
 
 # Iterate musics
 for music in tqdm(musics):
@@ -111,7 +126,7 @@ for music in tqdm(musics):
     difficulties = csv_data.get(musicid, None)
 
     if difficulties is None:
-        difficulties = find_music_data(musicid, A000_dir, option_dir)
+        difficulties = difficulties = music_data_cache.get(musicid, None)
 
         if difficulties is None:
             csv_data[musicid] = {

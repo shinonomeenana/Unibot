@@ -45,6 +45,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from imageutils import text2image
 import hashlib
 from chunithm.b30 import chunib30, getchunibind, bind_aimeid
+from chunithm.info import search_song, song_details
 
 if os.path.basename(__file__) == 'bot.py':
     bot = CQHttp()
@@ -1214,85 +1215,58 @@ def sync_handle_msg(event):
             if (msg := qidong33(event.user_id, event.group_id)) is not None:
                 sendmsg(event, msg)
                 return
-        if event.message.startswith("aqua 绑定"):
-            userid = event.message.replace("aqua 绑定", "").strip()
+        
+        def handle_bind(event, command, server=None):
+            userid = event.message.replace(f"{command} 绑定", "").strip()
             try:
                 int(userid)
-                sendmsg(event, bind_aimeid(event.user_id, userid))
-                return
+                sendmsg(event, bind_aimeid(event.user_id, userid, server))
             except ValueError:
+                sendmsg(event, '卡号应为20位纯数字')
                 return
-        if event.message.startswith("Super 绑定") or event.message.startswith("super 绑定"):
-            userid = event.message.replace("Super 绑定", "").strip()
-            userid = event.message.replace("super 绑定", "").strip()
-            try:
-                int(userid)
-                sendmsg(event, bind_aimeid(event.user_id, userid, 'super'))
-                return
-            except ValueError:
-                return
-        if event.message.startswith("林先生 绑定"):
-            userid = event.message.replace("林先生 绑定", "").strip()
-            try:
-                int(userid)
-                sendmsg(event, bind_aimeid(event.user_id, userid, 'lin'))
-                return
-            except ValueError:
-                return
-        if re.match('^aqua *b30$', event.message):
-            bind = getchunibind(event.user_id)
+
+        def handle_b30(event, command, server=None, version=None):
+            bind = getchunibind(event.user_id, server)
             if bind is None:
-                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
+                sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：{command} 绑定xxxxx')
                 return
-            chunib30(userid=bind)
+            chunib30(userid=bind, server=server, version=version)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
-            return
-        if re.match('^[Ss]uper *b30$', event.message):
-            bind = getchunibind(event.user_id, "super")
-            if bind is None:
-                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：super 绑定xxxxx')
+
+        commands = [("aqua", None), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin')]
+
+        for command, server in commands:
+            if event.message.startswith(f"{command} 绑定"):
+                handle_bind(event, command, server)
                 return
-            chunib30(userid=bind, server='super')
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
-            return
-        if re.match('^林先生 *b30$', event.message):
-            bind = getchunibind(event.user_id, "lin")
-            if bind is None:
-                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：林先生 绑定xxxxx')
+            elif re.match(f'^{command} *b30$', event.message):
+                handle_b30(event, command, server)
                 return
-            chunib30(userid=bind, server='lin')
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
-            return
-        if re.match('^aqua *b30 sunp$', event.message):
-            bind = getchunibind(event.user_id)
-            if bind is None:
-                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
+            elif re.match(f'^{command} *b30 sunp$', event.message):
+                handle_b30(event, command, server, version='2.15')
                 return
-            chunib30(userid=bind, server='aqua', version='2.15')
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
-            return
-        if re.match('^[Ss]uper *b30 sunp$', event.message):
-            bind = getchunibind(event.user_id, "super")
-            if bind is None:
-                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：super 绑定xxxxx')
-                return
-            chunib30(userid=bind, server='super', version='2.15')
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
-            return
-        if re.match('^林先生 *b30 sunp$', event.message):
-            bind = getchunibind(event.user_id, "lin")
-            if bind is None:
-                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：林先生 绑定xxxxx')
-                return
-            chunib30(userid=bind, server='lin', version='2.15')
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
-            return
+    
         if event.message in ['aqua 中二签到', 'knd 中二签到']:
             bind = getchunibind(event.user_id)
             if bind is None:
                 sendmsg(event, '签到不了捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
                 return
             sendmsg(event, chuni_signin(str(event.user_id), str(bind)))
+            return
+        if msg := re.match('(?:chusearch)(.*)', event.message):
+            query = msg.group(1).strip()
+            # 使用查询字符串搜索歌曲
+            resp = search_song(query)
+            sendmsg(event, resp)
+            return
+        if msg := re.match('(?:chuinfo)(.*)', event.message):
+            song_id = msg.group(1).strip()
+            info, image_url = song_details(song_id)
+            if image_url is None:
+                sendmsg(event, '没有找到你要的歌曲哦')
+            else:
+                # 输出歌曲信息和图片
+                sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             return
         # 猜曲
         if event.message == 'pjsk猜谱面' or event.message == 'pjsk猜曲 3':
