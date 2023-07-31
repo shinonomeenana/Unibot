@@ -89,9 +89,9 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 6.0,
-            "expert": 0,
+            "expert": 9.0,
             "master": 12.6,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -105,9 +105,9 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 6.0,
-            "expert": 0,
+            "expert": 9.5,
             "master": 12.4,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -121,7 +121,7 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 6.0,
-            "expert": 0,
+            "expert": 8.5,
             "master": 13.0,
             "ultima": 0.0,
             "world's end": 0.0
@@ -201,9 +201,9 @@
         "difficulties": {
             "basic": 2.0,
             "advanced": 6.0,
-            "expert": 0,
+            "expert": 9.0,
             "master": 11.3,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -648,7 +648,7 @@
         "jaketFile": "e82cbadc478ecb05.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.6,
             "master": 14.0,
             "ultima": 0,
@@ -2123,7 +2123,7 @@
             "advanced": 5.0,
             "expert": 9.5,
             "master": 12.8,
-            "ultima": 0,
+            "ultima": 14.0,
             "world's end": 0.0
         }
     },
@@ -2297,7 +2297,7 @@
         "difficulties": {
             "basic": 2.0,
             "advanced": 5.0,
-            "expert": 0,
+            "expert": 10.1,
             "master": 13.5,
             "ultima": 0.0,
             "world's end": 0.0
@@ -2313,9 +2313,9 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 5.0,
-            "expert": 0,
+            "expert": 8.5,
             "master": 13.0,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -2329,7 +2329,7 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 5.0,
-            "expert": 0,
+            "expert": 9.0,
             "master": 12.3,
             "ultima": 0.0,
             "world's end": 0.0
@@ -2600,7 +2600,7 @@
         "jaketFile": "4f02270e03deb9c8.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 9.0,
             "master": 12.7,
             "ultima": 0,
@@ -4392,7 +4392,7 @@
         "jaketFile": "34427a09efd9c2c7.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.0,
             "master": 14.7,
             "ultima": 0,
@@ -5771,7 +5771,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 12.1,
-            "ultima": 0,
+            "ultima": 14.0,
             "world's end": 0.0
         }
     },
@@ -5867,7 +5867,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 12.5,
-            "ultima": 0,
+            "ultima": 14.1,
             "world's end": 0.0
         }
     },
@@ -6152,7 +6152,7 @@
         "jaketFile": "27f1526d34874f65.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.9,
             "master": 14.4,
             "ultima": 0,
@@ -6200,7 +6200,7 @@
         "jaketFile": "b206d80cda84b319.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.8,
             "master": 14.8,
             "ultima": 0,
@@ -7608,7 +7608,7 @@
         "jaketFile": "7f68ccfecfbf4fc6.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 11.5,
             "master": 14.7,
             "ultima": 0,
@@ -7912,7 +7912,7 @@
         "jaketFile": "8b145fe4cf0c01bb.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.5,
             "master": 14.6,
             "ultima": 0,
@@ -8359,8 +8359,8 @@
         ],
         "jaketFile": "6b34df2de18884b8.jpg",
         "difficulties": {
-            "basic": 7.0,
-            "advanced": 12.0,
+            "basic": 7.5,
+            "advanced": 12.5,
             "expert": 14.4,
             "master": 15.0,
             "ultima": 0,
@@ -8376,7 +8376,7 @@
         "jaketFile": "065d92b2a8bd1822.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.5,
             "master": 13.8,
             "ultima": 0,
@@ -8408,7 +8408,7 @@
         "jaketFile": "94e81ba6b24960b8.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.9,
             "master": 14.4,
             "ultima": 0,
@@ -8488,7 +8488,7 @@
         "jaketFile": "87634a6cb516d387.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.2,
             "master": 14.8,
             "ultima": 0,
@@ -8504,7 +8504,7 @@
         "jaketFile": "4746a1d1378b6e75.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.7,
             "master": 14.7,
             "ultima": 0,
@@ -8520,7 +8520,7 @@
         "jaketFile": "5fa1ff5f75321ca7.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.1,
             "master": 14.7,
             "ultima": 0,
@@ -8552,7 +8552,7 @@
         "jaketFile": "af10c3ae09ebd964.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.9,
             "master": 14.3,
             "ultima": 0,
@@ -8600,7 +8600,7 @@
         "jaketFile": "077db7439a965fc2.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.4,
             "master": 14.1,
             "ultima": 0,
@@ -8616,7 +8616,7 @@
         "jaketFile": "f511280d8e02f66f.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.5,
             "master": 14.9,
             "ultima": 0,
@@ -8664,7 +8664,7 @@
         "jaketFile": "36aaf370cfcd391d.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.3,
             "master": 15.0,
             "ultima": 0,
@@ -8681,9 +8681,9 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 8.0,
-            "expert": 0,
+            "expert": 11.3,
             "master": 13.8,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -8888,7 +8888,7 @@
         "jaketFile": "b07a9c13cb241521.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.7,
             "master": 14.1,
             "ultima": 0,
@@ -8984,7 +8984,7 @@
         "jaketFile": "bbc2091b356dd59a.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.0,
             "master": 14.7,
             "ultima": 0,
@@ -9032,7 +9032,7 @@
         "jaketFile": "a3aa886a109e2f30.jpg",
         "difficulties": {
             "basic": 2.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.2,
             "master": 13.8,
             "ultima": 0.0,
@@ -9112,7 +9112,7 @@
         "jaketFile": "21915351a2ea257c.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.8,
             "master": 14.4,
             "ultima": 0,
@@ -9144,7 +9144,7 @@
         "jaketFile": "8205ea9449f1b000.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.8,
             "master": 14.9,
             "ultima": 0,
@@ -9176,7 +9176,7 @@
         "jaketFile": "77bb3ca5929cb8f6.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 14.0,
             "master": 14.9,
             "ultima": 0,
@@ -9256,7 +9256,7 @@
         "jaketFile": "fe7fbde1b86af8de.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.2,
             "master": 14.8,
             "ultima": 0,
@@ -9288,7 +9288,7 @@
         "jaketFile": "7ca8b22d0500e4ea.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 12.3,
             "master": 14.8,
             "ultima": 0,
@@ -9352,7 +9352,7 @@
         "jaketFile": "c19a05229b9d8dd8.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.4,
             "master": 14.8,
             "ultima": 0,
@@ -9432,7 +9432,7 @@
         "jaketFile": "62134ad35e35ea72.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.1,
             "master": 14.6,
             "ultima": 0,
@@ -9848,10 +9848,10 @@
         "jaketFile": "282cb1cacd4c1bb4.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.9,
             "master": 14.5,
-            "ultima": 0,
+            "ultima": 14.7,
             "world's end": 0.0
         }
     },
@@ -9944,7 +9944,7 @@
         "jaketFile": "13446730e8b99f0e.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.0,
             "master": 14.4,
             "ultima": 0,
@@ -10040,7 +10040,7 @@
         "jaketFile": "de02f8c0217d9baa.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.5,
             "master": 14.9,
             "ultima": 0,
@@ -10088,7 +10088,7 @@
         "jaketFile": "acda9dc8dc61f6ba.jpg",
         "difficulties": {
             "basic": 6.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 12.5,
             "master": 14.8,
             "ultima": 0,
@@ -10104,7 +10104,7 @@
         "jaketFile": "9d68467c72426ff7.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.0,
             "master": 14.4,
             "ultima": 0,
@@ -10440,7 +10440,7 @@
         "jaketFile": "fe21c36826d9c00d.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.8,
             "master": 14.9,
             "ultima": 0,
@@ -10536,7 +10536,7 @@
         "jaketFile": "34649bf93ab60b8c.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.8,
             "master": 14.8,
             "ultima": 0,
@@ -10744,7 +10744,7 @@
         "jaketFile": "d1f4411fb1343d57.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.0,
             "master": 14.8,
             "ultima": 0,
@@ -10808,7 +10808,7 @@
         "jaketFile": "986a1c6047f3033e.jpg",
         "difficulties": {
             "basic": 6.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 14.1,
             "master": 14.7,
             "ultima": 15.0,
@@ -10824,7 +10824,7 @@
         "jaketFile": "ee0a35d04d6cc345.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.4,
             "master": 14.6,
             "ultima": 0,
@@ -11227,7 +11227,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 12.5,
-            "ultima": 0,
+            "ultima": 13.8,
             "world's end": 0.0
         }
     },
@@ -12248,7 +12248,7 @@
         "jaketFile": "9acb60d2a47908bb.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 9.0,
             "master": 12.6,
             "ultima": 0,
@@ -12440,7 +12440,7 @@
         "jaketFile": "6cecad705bbb549d.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.6,
             "master": 14.0,
             "ultima": 0,
@@ -12824,7 +12824,7 @@
         "jaketFile": "993b5cddb9d9badf.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.0,
             "master": 14.8,
             "ultima": 0,
@@ -12856,7 +12856,7 @@
         "jaketFile": "e03858fb5d391628.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.1,
             "master": 14.8,
             "ultima": 0,
@@ -12872,7 +12872,7 @@
         "jaketFile": "11e18cb195118151.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.0,
             "master": 14.7,
             "ultima": 0,
@@ -12968,7 +12968,7 @@
         "jaketFile": "904d39d44c92d311.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 11.9,
             "master": 14.6,
             "ultima": 0,
@@ -13192,7 +13192,7 @@
         "jaketFile": "712bccd3295a7ceb.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.4,
             "master": 14.8,
             "ultima": 0,
@@ -13208,7 +13208,7 @@
         "jaketFile": "1a8ae160a19317f9.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.6,
             "master": 14.2,
             "ultima": 0,
@@ -13256,7 +13256,7 @@
         "jaketFile": "fce3796e3311b5dc.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.5,
             "master": 14.5,
             "ultima": 0,
@@ -13304,7 +13304,7 @@
         "jaketFile": "c71082aba52b4888.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.4,
             "master": 14.2,
             "ultima": 0,
@@ -13352,7 +13352,7 @@
         "jaketFile": "442b00d0df737098.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 11.5,
             "master": 14.8,
             "ultima": 0,
@@ -13368,7 +13368,7 @@
         "jaketFile": "6607da4724d82681.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.7,
             "master": 14.9,
             "ultima": 0,
@@ -13432,7 +13432,7 @@
         "jaketFile": "4842b4dd857d44f0.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 12.0,
             "master": 14.3,
             "ultima": 0,
@@ -13449,8 +13449,8 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 5.0,
-            "expert": 0,
-            "master": 12.4,
+            "expert": 10.0,
+            "master": 12.0,
             "ultima": 0.0,
             "world's end": 0.0
         }
@@ -13464,10 +13464,10 @@
         "jaketFile": "6d678cac64826592.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
-            "expert": 0,
+            "advanced": 7.5,
+            "expert": 12.2,
             "master": 14.3,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -13481,9 +13481,9 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 9.0,
-            "expert": 0,
+            "expert": 11.9,
             "master": 14.2,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -14073,9 +14073,9 @@
         "difficulties": {
             "basic": 2.0,
             "advanced": 5.0,
-            "expert": 0,
+            "expert": 9.5,
             "master": 12.2,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -14089,9 +14089,9 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 7.0,
-            "expert": 0,
+            "expert": 10.9,
             "master": 13.9,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -14104,7 +14104,7 @@
         "jaketFile": "5d2fbf22e73a8a91.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.3,
             "master": 14.7,
             "ultima": 0,
@@ -14296,7 +14296,7 @@
         "jaketFile": "8d0d9d3b15885eb2.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.4,
             "master": 14.9,
             "ultima": 0,
@@ -14344,7 +14344,7 @@
         "jaketFile": "7c9c89c93e5836eb.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.0,
             "master": 14.8,
             "ultima": 0,
@@ -14360,7 +14360,7 @@
         "jaketFile": "7f12b9a09896686c.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.2,
             "master": 14.3,
             "ultima": 0,
@@ -14392,7 +14392,7 @@
         "jaketFile": "c65c211e8ffc2494.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.0,
             "master": 14.8,
             "ultima": 0,
@@ -14408,7 +14408,7 @@
         "jaketFile": "26ebab05776bfb69.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.8,
             "master": 14.7,
             "ultima": 0,
@@ -14473,9 +14473,9 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 8.0,
-            "expert": 0,
+            "expert": 13.5,
             "master": 14.5,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -14504,7 +14504,7 @@
         "jaketFile": "5fdaf1680f98506b.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.3,
             "master": 14.8,
             "ultima": 0.0,
@@ -14520,7 +14520,7 @@
         "jaketFile": "2fe21b75a9802f41.jpg",
         "difficulties": {
             "basic": 2.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.3,
             "master": 14.6,
             "ultima": 0.0,
@@ -14552,7 +14552,7 @@
         "jaketFile": "a251c24a3cc4dbf7.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 12.5,
             "master": 15.0,
             "ultima": 0,
@@ -14584,7 +14584,7 @@
         "jaketFile": "98f14a4886cbe7cf.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.4,
             "master": 15.0,
             "ultima": 0,
@@ -14616,7 +14616,7 @@
         "jaketFile": "2e2ddd64218f79be.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.7,
             "master": 14.8,
             "ultima": 0,
@@ -14664,7 +14664,7 @@
         "jaketFile": "8fc0fb6314dec27e.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.7,
             "master": 15.0,
             "ultima": 0,
@@ -14680,7 +14680,7 @@
         "jaketFile": "fce567147af44912.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.1,
             "master": 14.9,
             "ultima": 0,
@@ -14712,7 +14712,7 @@
         "jaketFile": "1e1baa0b18b9d286.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 11.4,
             "master": 14.7,
             "ultima": 0,
@@ -14728,7 +14728,7 @@
         "jaketFile": "6e46224559e92381.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 11.0,
+            "advanced": 11.5,
             "expert": 14.3,
             "master": 15.2,
             "ultima": 0,
@@ -14955,7 +14955,7 @@
             "advanced": 5.0,
             "expert": 9.0,
             "master": 11.5,
-            "ultima": 0,
+            "ultima": 13.1,
             "world's end": 0.0
         }
     },
@@ -15128,7 +15128,7 @@
         "jaketFile": "c2c4ece2034eb620.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 11.9,
             "master": 14.4,
             "ultima": 0,
@@ -15176,7 +15176,7 @@
         "jaketFile": "81e347d3b96b2ae1.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.2,
             "master": 14.4,
             "ultima": 0,
@@ -15208,7 +15208,7 @@
         "jaketFile": "a732d43fd2a11e8f.jpg",
         "difficulties": {
             "basic": 6.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.9,
             "master": 15.1,
             "ultima": 0,
@@ -15336,7 +15336,7 @@
         "jaketFile": "a62f975edc860e34.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.1,
             "master": 14.2,
             "ultima": 0,
@@ -15384,7 +15384,7 @@
         "jaketFile": "19d57f9a7652308a.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.4,
             "master": 14.7,
             "ultima": 0,
@@ -15416,7 +15416,7 @@
         "jaketFile": "8219519cc94d5524.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 12.6,
             "master": 14.8,
             "ultima": 0,
@@ -15656,7 +15656,7 @@
         "jaketFile": "676e59847912f5ca.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.8,
             "master": 14.4,
             "ultima": 0,
@@ -15720,7 +15720,7 @@
         "jaketFile": "bef9b79c637bf4c9.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.2,
             "master": 14.0,
             "ultima": 0,
@@ -15864,7 +15864,7 @@
         "jaketFile": "6905b5ce0d115340.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.6,
             "master": 14.4,
             "ultima": 0,
@@ -15912,7 +15912,7 @@
         "jaketFile": "ae93bd84b68781f6.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.2,
             "master": 14.2,
             "ultima": 0,
@@ -15976,7 +15976,7 @@
         "jaketFile": "f04c37ecd99f1d8c.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.7,
             "master": 15.0,
             "ultima": 0,
@@ -16136,7 +16136,7 @@
         "jaketFile": "1ab2b7720caa1c34.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.4,
             "master": 14.3,
             "ultima": 0,
@@ -16168,7 +16168,7 @@
         "jaketFile": "9d70c048e64fe761.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.6,
             "master": 14.9,
             "ultima": 0,
@@ -16216,7 +16216,7 @@
         "jaketFile": "6071c5b99b25daef.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.8,
             "master": 15.3,
             "ultima": 0,
@@ -16360,7 +16360,7 @@
         "jaketFile": "e18b6ede661b48e7.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.5,
             "master": 14.6,
             "ultima": 0,
@@ -16568,7 +16568,7 @@
         "jaketFile": "d587d2f18f560680.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.3,
             "master": 15.2,
             "ultima": 0,
@@ -16584,7 +16584,7 @@
         "jaketFile": "6c682b055a448ee8.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 14.2,
             "master": 15.4,
             "ultima": 0,
@@ -16984,7 +16984,7 @@
         "jaketFile": "953acc0204bb67fc.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.4,
             "master": 14.8,
             "ultima": 0,
@@ -17176,7 +17176,7 @@
         "jaketFile": "07c9d14609172cb8.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 14.3,
             "master": 15.0,
             "ultima": 0,
@@ -17400,7 +17400,7 @@
         "jaketFile": "cc48037101a9142a.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.5,
             "master": 14.3,
             "ultima": 0,
@@ -17576,7 +17576,7 @@
         "jaketFile": "4492c97fc01cf534.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.3,
             "master": 14.3,
             "ultima": 0,
@@ -17608,7 +17608,7 @@
         "jaketFile": "1195656064a159f0.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.4,
             "master": 15.1,
             "ultima": 0,
@@ -17672,7 +17672,7 @@
         "jaketFile": "f8e81d6d2e1ed8f1.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.7,
             "master": 14.9,
             "ultima": 0,
@@ -17832,7 +17832,7 @@
         "jaketFile": "7c297f051f947b9d.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.3,
             "master": 14.5,
             "ultima": 0,
@@ -17864,7 +17864,7 @@
         "jaketFile": "f716310b7b5bc5e4.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 13.8,
             "master": 15.2,
             "ultima": 0,
@@ -17992,7 +17992,7 @@
         "jaketFile": "054457065b8cee30.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 12.7,
             "master": 14.7,
             "ultima": 0,
@@ -18056,7 +18056,7 @@
         "jaketFile": "b7ea2d3d4f78323a.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.3,
             "master": 14.6,
             "ultima": 0,
@@ -18120,7 +18120,7 @@
         "jaketFile": "e3da3468a513b929.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.9,
             "master": 14.1,
             "ultima": 0,
@@ -18200,7 +18200,7 @@
         "jaketFile": "387ed9457f49f0cd.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.5,
             "master": 13.9,
             "ultima": 0,
@@ -18232,7 +18232,7 @@
         "jaketFile": "2418047a7e0715cc.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.8,
             "master": 14.0,
             "ultima": 0,
@@ -18248,7 +18248,7 @@
         "jaketFile": "e0ee22c868d5fd48.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.7,
             "master": 14.9,
             "ultima": 0,
@@ -18440,7 +18440,7 @@
         "jaketFile": "34ccfbcb3a73cdc7.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.6,
             "master": 14.7,
             "ultima": 0,
@@ -18648,7 +18648,7 @@
         "jaketFile": "c7cd88931b17f273.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 10.9,
             "master": 14.0,
             "ultima": 0,
@@ -18808,7 +18808,7 @@
         "jaketFile": "d02ca6b2a3934e2b.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.6,
             "master": 14.3,
             "ultima": 0,
@@ -18824,7 +18824,7 @@
         "jaketFile": "74af813bf302f1aa.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.7,
             "master": 15.0,
             "ultima": 0,
@@ -18920,7 +18920,7 @@
         "jaketFile": "82919be841cb0f53.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.3,
             "master": 14.4,
             "ultima": 0,
@@ -18936,7 +18936,7 @@
         "jaketFile": "4d621e787f0b9c34.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.0,
             "master": 15.1,
             "ultima": 0,
@@ -19160,7 +19160,7 @@
         "jaketFile": "ce1efc10468af1b8.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 12.4,
             "master": 14.7,
             "ultima": 0,
@@ -19208,7 +19208,7 @@
         "jaketFile": "b7b9f4908d6c128d.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 13.8,
             "master": 15.2,
             "ultima": 0,
@@ -19336,7 +19336,7 @@
         "jaketFile": "65e53b6c3223931e.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 11.5,
             "master": 14.5,
             "ultima": 0,
@@ -19448,7 +19448,7 @@
         "jaketFile": "bfdf7309a74edc40.jpg",
         "difficulties": {
             "basic": 3.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.6,
             "master": 14.6,
             "ultima": 0,
@@ -19496,7 +19496,7 @@
         "jaketFile": "3b99c9d907afad9a.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 12.0,
             "master": 14.9,
             "ultima": 0,
@@ -19512,7 +19512,7 @@
         "jaketFile": "ed1bcc99f2f8e3bb.jpg",
         "difficulties": {
             "basic": 2.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 11.5,
             "master": 13.9,
             "ultima": 0,
@@ -19544,7 +19544,7 @@
         "jaketFile": "f466786cc3deffca.jpg",
         "difficulties": {
             "basic": 5.0,
-            "advanced": 9.0,
+            "advanced": 9.5,
             "expert": 14.4,
             "master": 15.4,
             "ultima": 0,
@@ -19608,7 +19608,7 @@
         "jaketFile": "4d9e7c4b0cda2561.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 7.0,
+            "advanced": 7.5,
             "expert": 13.3,
             "master": 14.6,
             "ultima": 0.0,
@@ -19624,10 +19624,10 @@
         "jaketFile": "b81b4a1be87584e3.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 9.0,
-            "expert": 0,
+            "advanced": 9.5,
+            "expert": 13.9,
             "master": 15.3,
-            "ultima": 0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -19704,7 +19704,7 @@
         "jaketFile": "0bd4e83477178fc5.jpg",
         "difficulties": {
             "basic": 4.0,
-            "advanced": 8.0,
+            "advanced": 8.5,
             "expert": 12.8,
             "master": 14.6,
             "ultima": 0.0,

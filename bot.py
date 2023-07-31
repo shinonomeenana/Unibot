@@ -1263,6 +1263,30 @@ def sync_handle_msg(event):
             chunib30(userid=bind, server='lin')
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
             return
+        if re.match('^aqua *b30 sunp$', event.message):
+            bind = getchunibind(event.user_id)
+            if bind is None:
+                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
+                return
+            chunib30(userid=bind, server='aqua', version='2.15')
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
+            return
+        if re.match('^[Ss]uper *b30 sunp$', event.message):
+            bind = getchunibind(event.user_id, "super")
+            if bind is None:
+                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：super 绑定xxxxx')
+                return
+            chunib30(userid=bind, server='super', version='2.15')
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
+            return
+        if re.match('^林先生 *b30 sunp$', event.message):
+            bind = getchunibind(event.user_id, "lin")
+            if bind is None:
+                sendmsg(event, '查不到捏，可能是没绑定，绑定命令：林先生 绑定xxxxx')
+                return
+            chunib30(userid=bind, server='lin', version='2.15')
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
+            return
         if event.message in ['aqua 中二签到', 'knd 中二签到']:
             bind = getchunibind(event.user_id)
             if bind is None:

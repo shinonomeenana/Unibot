@@ -97,7 +97,31 @@ def calculate_rating(constant, score):
         return 0
 
 
-def process_r10(userid, server):
+# 仅14+
+sun_to_sunp = {
+    (2279, 2): 14.0,  # グラウンドスライダー協奏曲第一番「風唄」 14.1-14.0
+    (2161, 2): 14.0,  # POTENTIAL 14.3-14.0
+    (8263, 2): 13.7,  # Aleph-0 14.1-13.7
+    (2277, 3): 14.0,  # ガチ恋ラビリンス 14.1-14.0
+    (2221, 3): 14.1,  # Last Kingdom 14.2-14.1
+    (2285, 3): 14.2,  # Revived 14.4-14.2
+    (2232, 3): 14.2,  # Brightness 14.4-14.2
+    (2292, 3): 14.3,  # がんばれ！蜘蛛子さんのテーマ 14.4-14.3
+    (744, 3): 14.3,   # ゴールドビジョン 14.4-14.3
+    (2241, 2): 14.3,  # DA'AT -The First Seeker of Souls- 14.6-14.3
+    (2296, 3): 14.6,  # Desperado Waltz 14.8-14.6
+    (2384, 3): 14.8,  # Exitium 14.9-14.8
+    (2229, 3): 14.8,  # QZKago Requiem 14.9-14.8
+    (2121, 3): 14.1,  # Strange Love 15.2-15.1
+    (2273, 3): 14.1,  # インパアフェクシオン・ホワイトガアル 14.0-14.1
+    (2238, 3): 14.2,  # GODLINESS 14.1-14.2
+    (2288, 3): 14.9,  # Armageddon 14.8-14.9
+    (2218, 3): 14.9,  # Re：End of a Dream 14.8-14.9
+    (8263, 4): 15.1,  # Aleph-0 15.0-15.1
+}
+
+
+def process_r10(userid, server, version='2.12'):
     difficulty_mapping = {
         "0": "basic",
         "1": "advanced",
@@ -128,6 +152,8 @@ def process_r10(userid, server):
             difficulty_level = difficulty_mapping[difficult_id]
             if difficulty_level in music['difficulties']:
                 difficulty = music['difficulties'][difficulty_level]
+                if version == '2.15':
+                    difficulty = sun_to_sunp.get((int(music_id), int(difficult_id)), difficulty)
                 rating = calculate_rating(difficulty, score)
                 rating_list.append({
                     'musicName': music['name'],
@@ -141,18 +167,13 @@ def process_r10(userid, server):
     # 将rating_list按照rating降序排序
     rating_list.sort(key=lambda x: x['rating'], reverse=True)
 
-    # 计算最高的10个rating的平均值
-    top_10_avg_rating = np.mean([x['rating'] for x in rating_list[:10]])
-
-    # print("Sorted rating list: ", rating_list)
-    # print("Top 10 average rating: ", top_10_avg_rating)
     return rating_list
 
 
-def process_b30(userid, server):
+def process_b30(userid, server, version='2.12'):
     # 获取用户数据
     user_data = get_all_music(userid, server)
-    
+
     # 读取音乐数据
     with open('chunithm/masterdata/musics.json', 'r', encoding='utf-8') as f:
         music_data = json.load(f)
@@ -175,6 +196,8 @@ def process_b30(userid, server):
         jacket_file = music_info['jaketFile']
         try:
             difficulty = music_info['difficulties'][level_dict[level_index]]
+            if version == '2.15':
+                difficulty = sun_to_sunp.get((int(music_id), int(level_index)), difficulty)
         except KeyError:
             continue
         score = int(data['scoreMax'])
@@ -196,8 +219,11 @@ def process_b30(userid, server):
 
 
 
-def chunib30(userid, server='aqua'):
-    pic = Image.open('pics/chub30.png')
+def chunib30(userid, server='aqua', version='2.12'):
+    if version == '2.15':
+        pic = Image.open('pics/chub30sunp.png')
+    else:
+        pic = Image.open('pics/chub30.png')
     draw = ImageDraw.Draw(pic)
 
     user_data = get_user_data(userid, server)
@@ -216,13 +242,13 @@ def chunib30(userid, server='aqua'):
     shadow.paste(Image.new("RGBA", (280, 105), (0, 0, 0, 50)), (5, 5))
     shadow = shadow.filter(ImageFilter.GaussianBlur(3))
 
-    ratings = process_b30(userid, server)
+    ratings = process_b30(userid, server, version)
     # ratings = [{'musicName': 'SINister Evolution', 'jacketFile': 'CHU_UI_Jacket_2038.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1008040, 'rating': 16.854}, {'musicName': '月の光', 'jacketFile': 'CHU_UI_Jacket_2354.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1007929, 'rating': 16.8429}, {'musicName': '腐れ外道とチョコレゐト', 'jacketFile': 'CHU_UI_Jacket_0118.dds', 'playLevel': 14.7, 'musicDifficulty': 'ultima', 'score': 1008139, 'rating': 16.7639}, {'musicName': 'Last Celebration', 'jacketFile': 'CHU_UI_Jacket_0994.dds', 'playLevel': 14.7, 'musicDifficulty': 'master', 'score': 1007768, 'rating': 16.7268}, {'musicName': '[CRYSTAL_ACCESS]', 'jacketFile': 'CHU_UI_Jacket_1094.dds', 'playLevel': 14.6, 'musicDifficulty': 'master', 'score': 1008204, 'rating': 16.6704}, {'musicName': 'IMPACT', 'jacketFile': 'CHU_UI_Jacket_2135.dds', 'playLevel': 14.5, 'musicDifficulty': 'master', 'score': 1008261, 'rating': 16.5761}, {'musicName': 'AXION', 'jacketFile': 'CHU_UI_Jacket_0863.dds', 'playLevel': 14.6, 'musicDifficulty': 'master', 'score': 1006946, 'rating': 16.4892}, {'musicName': 'POTENTIAL', 'jacketFile': 'CHU_UI_Jacket_2161.dds', 'playLevel': 14.3, 'musicDifficulty': 'expert', 'score': 1009823, 'rating': 16.45}, {'musicName': 'X7124', 'jacketFile': 'CHU_UI_Jacket_1079.dds', 'playLevel': 14.4, 'musicDifficulty': 'expert', 'score': 1007994, 'rating': 16.449399999999997}, {'musicName': "DA'AT -The First Seeker of Souls-", 'jacketFile': 'CHU_UI_Jacket_2241.dds', 'playLevel': 14.6, 'musicDifficulty': 'expert', 'score': 1006734, 'rating': 16.446800000000003}, {'musicName': 'のぼれ！すすめ！高い塔', 'jacketFile': 'CHU_UI_Jacket_0448.dds', 'playLevel': 14.3, 'musicDifficulty': 'master', 'score': 1007988, 'rating': 16.3488}, {'musicName': 'サドマミホリック', 'jacketFile': 'CHU_UI_Jacket_0628.dds', 'playLevel': 14.2, 'musicDifficulty': 'master', 'score': 1008416, 'rating': 16.2916}, {'musicName': 'Jade Star', 'jacketFile': 'CHU_UI_Jacket_0966.dds', 'playLevel': 14.2, 'musicDifficulty': 'master', 'score': 1008359, 'rating': 16.285899999999998}, {'musicName': 'U&iVERSE -銀河鸞翔-', 'jacketFile': 'CHU_UI_Jacket_2326.dds', 'playLevel': 14.4, 'musicDifficulty': 'master', 'score': 1006782, 'rating': 16.2564}, {'musicName': 'グラ ウンドスライダー協奏曲第一番「風唄」', 'jacketFile': 'CHU_UI_Jacket_2279.dds', 'playLevel': 14.1, 'musicDifficulty': 'expert', 'score': 1009496, 'rating': 16.25}, {'musicName': 'レータイス パークEx', 'jacketFile': 'CHU_UI_Jacket_0980.dds', 'playLevel': 14.2, 'musicDifficulty': 'master', 'score': 1007745, 'rating': 16.2245}, {'musicName': 'Elemental Creation', 'jacketFile': 'CHU_UI_Jacket_0232.dds', 'playLevel': 14.5, 'musicDifficulty': 'master', 'score': 1006070, 'rating': 16.214}, {'musicName': 'Insane Gamemode', 'jacketFile': 'CHU_UI_Jacket_1015.dds', 'playLevel': 14.4, 'musicDifficulty': 'master', 'score': 1006556, 'rating': 16.2112}, {'musicName': 'Name of oath', 'jacketFile': 'CHU_UI_Jacket_0389.dds', 'playLevel': 14.5, 'musicDifficulty': 'master', 'score': 1006045, 'rating': 16.209}, {'musicName': '真千年女王', 'jacketFile': 'CHU_UI_Jacket_1092.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1004047, 'rating': 16.2047}, {'musicName': 'エンドマークに希望と涙を添えて', 'jacketFile': 'CHU_UI_Jacket_0103.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1003759, 'rating': 16.175900000000002}, {'musicName': 'ヒバナ', 'jacketFile': 'CHU_UI_Jacket_0818.dds', 'playLevel': 14.0, 'musicDifficulty': 'ultima', 'score': 1009809, 'rating': 16.15}, {'musicName': '宵闇の月に抱かれて', 'jacketFile': 'CHU_UI_Jacket_2158.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1008818, 'rating': 16.1318}, {'musicName': 'Athlete Killer "Meteor"', 'jacketFile': 'CHU_UI_Jacket_1065.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1008811, 'rating': 16.1311}, {'musicName': '二次元ドリームフィーバー', 'jacketFile': 'CHU_UI_Jacket_2037.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1008691, 'rating': 16.1191}, {'musicName': '天火明命', 'jacketFile': 'CHU_UI_Jacket_2144.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1008194, 'rating': 16.0694}, {'musicName': 'ENDYMION', 'jacketFile': 'CHU_UI_Jacket_2184.dds', 'playLevel': 14.4, 'musicDifficulty': 'expert', 'score': 1005841, 'rating': 16.0682}, {'musicName': 'Taiko Drum Monster', 'jacketFile': 'CHU_UI_Jacket_0671.dds', 'playLevel': 14.3, 'musicDifficulty': 'master', 'score': 1006288, 'rating': 16.0576}, {'musicName': 'Aleph-0', 'jacketFile': 'CHU_UI_Jacket_0428.dds', 'playLevel': 14.1, 'musicDifficulty': 'expert', 'score': 1007247, 'rating': 16.0494}, {'musicName': '再生不能', 'jacketFile': 'CHU_UI_Jacket_1105.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1007977, 'rating': 16.0477}, {'musicName': 'フューチャー・イヴ', 'jacketFile': 'CHU_UI_Jacket_2344.dds', 'playLevel': 13.9, 'musicDifficulty': 'master', 'score': 1008964, 'rating': 16.046400000000002}, {'musicName': 'こちら、幸福安心委員会です。', 'jacketFile': 'CHU_UI_Jacket_1068.dds', 'playLevel': 13.9, 'musicDifficulty': 'master', 'score': 1008927, 'rating': 16.0427}, {'musicName': 'Rule the World!!', 'jacketFile': 'CHU_UI_Jacket_2109.dds', 'playLevel': 14.0, 'musicDifficulty': 'master', 'score': 1007899, 'rating': 16.0399}, {'musicName': 'FLUFFY FLASH', 'jacketFile': 'CHU_UI_Jacket_2346.dds', 'playLevel': 14.8, 'musicDifficulty': 'master', 'score': 1002058, 'rating': 16.0058}, {'musicName': '電脳少女は歌姫の夢を見るか？', 'jacketFile': 'CHU_UI_Jacket_2019.dds', 'playLevel': 14.2, 'musicDifficulty': 'master', 'score': 1006509, 'rating': 16.0018}, {'musicName': '迷える音色は恋の唄', 'jacketFile': 'CHU_UI_Jacket_2350.dds', 'playLevel': 13.9, 'musicDifficulty': 'master', 'score': 1008486, 'rating': 15.9986}, {'musicName': 'トンデモワンダーズ', 'jacketFile': 'CHU_UI_Jacket_2264.dds', 'playLevel': 13.9, 'musicDifficulty': 'master', 'score': 1008285, 'rating': 15.9785}, {'musicName': 'SON OF SUN', 'jacketFile': 'CHU_UI_Jacket_0887.dds', 'playLevel': 13.8, 'musicDifficulty': 'expert', 'score': 1009937, 'rating': 15.950000000000001}, {'musicName': 'Ascension to Heaven', 'jacketFile': 'CHU_UI_Jacket_0978.dds', 'playLevel': 13.8, 'musicDifficulty': 'expert', 'score': 1009842, 'rating': 15.950000000000001}, {'musicName': 'Fracture Ray', 'jacketFile': 'CHU_UI_Jacket_0749.dds', 'playLevel': 14.7, 'musicDifficulty': 'master', 'score': 1002027, 'rating': 15.9027}]
     
     rating_sum = 0
     for i in range(0, 30):
         try:
-            single = b30single(ratings[i])
+            single = b30single(ratings[i], version)
         except IndexError:
             break
         r, g, b, mask = shadow.split()
@@ -233,11 +259,11 @@ def chunib30(userid, server='aqua'):
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
     draw.text((208, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
 
-    ratings = process_r10(userid, server)
+    ratings = process_r10(userid, server, version)
     rating_sum = 0
     for i in range(0, 10):
         try:
-            single = b30single(ratings[i])
+            single = b30single(ratings[i], version)
         except IndexError:
             break
         r, g, b, mask = shadow.split()
@@ -269,17 +295,20 @@ def chunib30(userid, server='aqua'):
     pic.save(f'piccache/{hashlib.sha256(userid.encode()).hexdigest()}b30.jpg')
     # pic.show()
 
-def b30single(single_data):
+def b30single(single_data, version):
     color = {
         'master': (187, 51, 238),
         'expert': (238, 67, 102),
-        'hard': (254, 170, 0),
+        'advanced': (254, 170, 0),
         'ultima': (0, 0, 0),
         'basic': (102, 221, 17),
     }
     musictitle = single_data['musicName']
     
-    pic = Image.new("RGB", (620, 240), (255, 250, 243))
+    if version == '2.15':
+        pic = Image.new("RGB", (620, 240), (255, 250, 243))
+    else:
+        pic = Image.new("RGB", (620, 240), (255, 255, 255))
     
     jacket = Image.open(f'chunithm/jackets/{single_data["jacketFile"]}')
     jacket = jacket.resize((186, 186))

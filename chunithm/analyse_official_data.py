@@ -76,7 +76,7 @@ def process_difficulty(value):
     if value == "":
         return 0.0
     else:
-        return float(value.replace("+", ""))
+        return float(value[:-1]) + 0.5 if value.endswith("+") else float(value)
 
 
 # Load json
@@ -101,38 +101,42 @@ with open(csv_path, 'r', encoding='utf-8-sig') as file:
             'ultima': float(row['ultima']) if row['ultima'] else 0,
         }
 
-A000_dir = 'F:/SDHD2.12/App/data/A000'
-option_dir = 'F:/SDHD2.12/App/bin/option'
+A000_dir = 'D:/chunithm_sun_hdd/App/data/A000'
+option_dir = 'D:/chunithm_sun_hdd/App/bin/option'
 output_data = []
 
 # Iterate musics
 for music in tqdm(musics):
     musicid = music['id']
-    difficulties = find_music_data(musicid, A000_dir, option_dir)
-
-    if difficulties is None and musicid in csv_data:
-        difficulties = csv_data[musicid]
+    difficulties = csv_data.get(musicid, None)
 
     if difficulties is None:
-        with open(csv_path, 'a', newline='', encoding='utf-8-sig') as file:
-            writer = csv.writer(file)
-            writer.writerow([musicid, music['title'], "", "", ""])
-    else:
-        output_data.append({
-            "name": music['title'],
-            "id": musicid,
-            "genreNames": [music['catname']],
-            "jaketFile": music['image'],
-            "difficulties": {
-                "basic": process_difficulty(music['lev_bas']),
-                "advanced": process_difficulty(music['lev_adv']),
-                "expert": difficulties.get('expert', 0),
-                "master": difficulties.get('master', 0),
-                "ultima": difficulties.get('ultima', 0),
-                "world's end": 0.0
-            }
-        })
+        difficulties = find_music_data(musicid, A000_dir, option_dir)
 
+        if difficulties is None:
+            csv_data[musicid] = {
+                'expert': '',
+                'master': '',
+                'ultima': '',
+            }
+            with open(csv_path, 'a', newline='', encoding='utf-8-sig') as f:
+                writer = csv.DictWriter(f, fieldnames=['musicid', 'title', 'expert', 'master', 'ultima'])
+                writer.writerow({'musicid': musicid, 'title': music['title'], 'expert': '', 'master': '', 'ultima': ''})
+
+    output_data.append({
+        "name": music['title'],
+        "id": musicid,
+        "genreNames": [music['catname']],
+        "jaketFile": music['image'],
+        "difficulties": {
+            "basic": process_difficulty(music['lev_bas']),
+            "advanced": process_difficulty(music['lev_adv']),
+            "expert": difficulties.get('expert', 0),
+            "master": difficulties.get('master', 0),
+            "ultima": difficulties.get('ultima', 0),
+            "world's end": 0.0
+        }
+    })
 
     download_image(music['image'])
 
