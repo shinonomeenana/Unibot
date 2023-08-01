@@ -884,8 +884,12 @@ def teamcount(server='jp'):
 
     event = currentevent(server)
     eventid = event['id']
-    data = callapi(f'/cheerful-carnival-team-count/{eventid}', server)
     
+    if server != 'jp':
+        data = callapi(f'/cheerful-carnival-team-count/{eventid}', server)
+    else:
+        data = {'cheerfulCarnivalTeamMemberCounts': []}
+
     try:
         with open(f'{masterdatadir}/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
             Teams = json.load(f)
@@ -897,7 +901,7 @@ def teamcount(server='jp'):
             trans = yaml.load(f, Loader=yaml.FullLoader)
     except FileNotFoundError:
         trans = {}
-    
+
     predictRates = {}
     timestamp_str = ''
     if server == 'jp':
@@ -909,20 +913,32 @@ def teamcount(server='jp'):
                 timestamp = datetime.datetime.fromtimestamp(predictData['timestamp']/1000, datetime.timezone(datetime.timedelta(hours=8)))
                 timestamp_str = timestamp.strftime("预测于%Y/%m/%d %H:%M\n预测来自3-3.dev")
         except FileNotFoundError:
-            pass
-    
+            timestamp_str = "暂时没有预测"
+
     text = ''
-    for Counts in data['cheerfulCarnivalTeamMemberCounts']:
-        TeamId = Counts['cheerfulCarnivalTeamId']
-        memberCount = Counts['memberCount']
-        translate = f"({trans['cheerfulCarnivalTeams'].get(TeamId, '')})" if TeamId in trans['cheerfulCarnivalTeams'] else ""
-        team = next((i for i in Teams if i['id'] == TeamId), None)
-        if team:
-            predictRate = f" (预测胜率: {predictRates.get(str(TeamId), ''):.2%})" if server == 'jp' and str(TeamId) in predictRates else ""
-            text += team['teamName'] + translate + " " + str(memberCount) + '人' + predictRate + '\n'
-    if predictRates:
+    if server != 'jp':
+        for Counts in data['cheerfulCarnivalTeamMemberCounts']:
+            TeamId = Counts['cheerfulCarnivalTeamId']
+            memberCount = Counts['memberCount']
+            translate = f"({trans['cheerfulCarnivalTeams'].get(TeamId, '')})" if TeamId in trans['cheerfulCarnivalTeams'] else ""
+            team = next((i for i in Teams if i['id'] == TeamId), None)
+            if team:
+                text += team['teamName'] + translate + " " + str(memberCount) + '人\n'
+    else:
+        for team in Teams:
+            TeamId = team['id']
+            translate = f"({trans['cheerfulCarnivalTeams'].get(TeamId, '')})" if TeamId in trans['cheerfulCarnivalTeams'] else ""
+            if str(TeamId) in predictRates:
+                predictRate = f" (预测胜率: {predictRates.get(str(TeamId), ''):.2%})"
+                text += team['teamName'] + translate + predictRate + '\n'
+
+    if predictRates and server == 'jp':
         text += timestamp_str
-    return text if text != '' else '没有5v5捏'
+    elif server == 'jp':
+        text += timestamp_str
+
+    return text if text != '' else '暂时没有预测'
+
 
 
 def getqqbind(qqnum, server):

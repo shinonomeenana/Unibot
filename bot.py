@@ -1233,7 +1233,7 @@ def sync_handle_msg(event):
             chunib30(userid=bind, server=server, version=version)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
 
-        commands = [("aqua", None), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin')]
+        commands = [("aqua", "aqua"), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin')]
 
         for command, server in commands:
             if event.message.startswith(f"{command} 绑定"):
