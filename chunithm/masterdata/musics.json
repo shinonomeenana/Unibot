@@ -12256,6 +12256,22 @@
         }
     },
     {
+        "name": "リハーサルタイム",
+        "id": "2443",
+        "genreNames": [
+            "イロドリミドリ"
+        ],
+        "jaketFile": "e1a8cae690951ed8.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 8.5,
+            "master": 12.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "Help me, あーりん！",
         "id": "245",
         "genreNames": [
@@ -14523,6 +14539,22 @@
             "advanced": 7.5,
             "expert": 12.3,
             "master": 14.6,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Cult future",
+        "id": "2444",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "2c24dda7a27f93fe.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 8.5,
+            "expert": 13.4,
+            "master": 14.8,
             "ultima": 0.0,
             "world's end": 0.0
         }
@@ -19707,6 +19739,70 @@
             "advanced": 8.5,
             "expert": 12.8,
             "master": 14.6,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "夢と幻想の終点にて",
+        "id": "2439",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "a30758a1e21cd6e8.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.0,
+            "expert": 11.4,
+            "master": 14.1,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Superbia",
+        "id": "2440",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "fc3dee38e77eb5f1.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 9.0,
+            "expert": 13.5,
+            "master": 14.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "空間創造理論",
+        "id": "2441",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "7d984a711ec22d1b.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.0,
+            "expert": 12.3,
+            "master": 14.5,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "βlαnoir",
+        "id": "2442",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "fd38d9c410c9ba31.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 9.0,
+            "expert": 13.8,
+            "master": 15.2,
             "ultima": 0.0,
             "world's end": 0.0
         }

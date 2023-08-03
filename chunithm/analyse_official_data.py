@@ -138,20 +138,23 @@ for music in tqdm(musics):
                 writer = csv.DictWriter(f, fieldnames=['musicid', 'title', 'expert', 'master', 'ultima'])
                 writer.writerow({'musicid': musicid, 'title': music['title'], 'expert': '', 'master': '', 'ultima': ''})
 
-    output_data.append({
-        "name": music['title'],
-        "id": musicid,
-        "genreNames": [music['catname']],
-        "jaketFile": music['image'],
-        "difficulties": {
-            "basic": process_difficulty(music['lev_bas']),
-            "advanced": process_difficulty(music['lev_adv']),
-            "expert": difficulties.get('expert', 0),
-            "master": difficulties.get('master', 0),
-            "ultima": difficulties.get('ultima', 0),
-            "world's end": 0.0
-        }
-    })
+    try:
+        output_data.append({
+            "name": music['title'],
+            "id": musicid,
+            "genreNames": [music['catname']],
+            "jaketFile": music['image'],
+            "difficulties": {
+                "basic": process_difficulty(music['lev_bas']),
+                "advanced": process_difficulty(music['lev_adv']),
+                "expert": difficulties.get('expert', 0),
+                "master": difficulties.get('master', 0),
+                "ultima": difficulties.get('ultima', 0),
+                "world's end": 0.0
+            }
+        })
+    except AttributeError:
+        pass
 
     download_image(music['image'])
 
