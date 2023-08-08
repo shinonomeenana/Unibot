@@ -26,9 +26,13 @@ class serverNotSupported(Exception):
 class QueryBanned(Exception):
     pass
 
+current_api_index = {'tw': 0}
+
+
 def callapi(url, server='jp', query_type='unknown', is_force_update=False):
     global twapiurls
     global krapiurls
+    global current_api_index
 
     if server == 'jp':
         urlroots = apiurls
@@ -81,6 +85,26 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
             elif query_type in ['b30', 'jindu', 'rank']:
                 raise QueryBanned
     
+    if server == 'tw':
+        urlroots = twapiurls
+        urlroot = urlroots[current_api_index['tw']]
+        try:
+            if 'https' in urlroot:
+                resp = requests.get(urlroot + url, timeout=10, proxies=proxies)
+            else:
+                resp = requests.get(urlroot + url, timeout=10)
+            data = json.loads(resp.content)
+            if data == {'status': 'maintenance_in'}:
+                raise maintenanceIn
+            elif data == {'status': 'user_id_ban'}:
+                raise userIdBan
+            
+            current_api_index['tw'] = (current_api_index['tw'] + 1) % len(urlroots)
+            return data
+        except (requests.exceptions.ConnectionError, JSONDecodeError, ReadTimeout):
+            print(urlroot, '请求失败')
+            current_api_index['tw'] = (current_api_index['tw'] + 1) % len(urlroots)
+            pass
 
     for urlroot in urlroots:
         try:
@@ -93,11 +117,6 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                 raise maintenanceIn
             elif data == {'status': 'user_id_ban'}:
                 raise userIdBan
-            if server in ['tw', 'kr'] and len(urlroots) > 1 and urlroot == urlroots[1]:
-                # 台服api不明原因容易卡死 卡死后切换到备用服务器
-                twapiurls[0], twapiurls[1] = twapiurls[1], twapiurls[0]
-                krapiurls[0], krapiurls[1] = krapiurls[1], krapiurls[0]
-                print('交换外服主从服务器次序，新地址:', twapiurls[0])
             return data
         except (requests.exceptions.ConnectionError, JSONDecodeError, ReadTimeout):
             print(urlroot, '请求失败')

@@ -237,7 +237,7 @@ def chunib30(userid, server='aqua', version='2.12'):
     except KeyError:
         draw.text((218, 118), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
     font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
-    draw.text((314, 150), str(user_data['level']), fill=(255, 255, 255), font=font_style)
+    draw.text((314, 150), str(int(user_data['level']) + int(user_data['reincarnationNum']) * 100), fill=(255, 255, 255), font=font_style)
     
     shadow = Image.new("RGBA", (320, 130), (0, 0, 0, 0))
     shadow.paste(Image.new("RGBA", (280, 105), (0, 0, 0, 50)), (5, 5))
