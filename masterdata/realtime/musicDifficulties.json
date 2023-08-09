@@ -12786,7 +12786,10 @@
         "musicDifficulty": "master",
         "playLevel": 27,
         "releaseConditionId": 40309,
-        "totalNoteCount": 844
+        "totalNoteCount": 844,
+        "fullComboAdjust": -0.1,
+        "fullPerfectAdjust": -0.2,
+        "playLevelAdjust": -0.133
     },
     {
         "id": 1546,
@@ -13228,7 +13231,10 @@
         "musicDifficulty": "master",
         "playLevel": 30,
         "releaseConditionId": 40319,
-        "totalNoteCount": 1057
+        "totalNoteCount": 1057,
+        "fullComboAdjust": 0.51,
+        "fullPerfectAdjust": 0.42,
+        "playLevelAdjust": 0.48
     },
     {
         "id": 1596,
@@ -13440,7 +13446,10 @@
         "musicDifficulty": "master",
         "playLevel": 27,
         "releaseConditionId": 40324,
-        "totalNoteCount": 981
+        "totalNoteCount": 981,
+        "fullComboAdjust": 0.12,
+        "fullPerfectAdjust": -0.03,
+        "playLevelAdjust": 0.07
     },
     {
         "id": 1626,
@@ -13664,7 +13673,10 @@
         "musicDifficulty": "master",
         "playLevel": 26,
         "releaseConditionId": 40330,
-        "totalNoteCount": 1097
+        "totalNoteCount": 1097,
+        "fullComboAdjust": 0.2,
+        "fullPerfectAdjust": -0.04,
+        "playLevelAdjust": 0.12
     },
     {
         "id": 1651,
@@ -13747,7 +13759,10 @@
         "musicDifficulty": "master",
         "playLevel": 26,
         "releaseConditionId": 40332,
-        "totalNoteCount": 625
+        "totalNoteCount": 625,
+        "fullComboAdjust": -0.08,
+        "fullPerfectAdjust": -0.1,
+        "playLevelAdjust": -0.087
     },
     {
         "id": 1661,
@@ -14002,7 +14017,10 @@
         "musicDifficulty": "master",
         "playLevel": 26,
         "releaseConditionId": 40338,
-        "totalNoteCount": 735
+        "totalNoteCount": 735,
+        "fullComboAdjust": -0.25,
+        "fullPerfectAdjust": -0.25,
+        "playLevelAdjust": -0.25
     },
     {
         "id": 1691,
@@ -14042,7 +14060,10 @@
         "musicDifficulty": "master",
         "playLevel": 27,
         "releaseConditionId": 40339,
-        "totalNoteCount": 987
+        "totalNoteCount": 987,
+        "fullComboAdjust": -0.4,
+        "fullPerfectAdjust": -0.5,
+        "playLevelAdjust": -0.433
     },
     {
         "id": 1696,
@@ -14082,7 +14103,10 @@
         "musicDifficulty": "master",
         "playLevel": 29,
         "releaseConditionId": 40340,
-        "totalNoteCount": 1491
+        "totalNoteCount": 1491,
+        "fullComboAdjust": -0.14,
+        "fullPerfectAdjust": -0.17,
+        "playLevelAdjust": -0.15
     },
     {
         "id": 1706,
@@ -14251,7 +14275,10 @@
         "musicDifficulty": "master",
         "playLevel": 28,
         "releaseConditionId": 40345,
-        "totalNoteCount": 984
+        "totalNoteCount": 984,
+        "fullComboAdjust": -0.38,
+        "fullPerfectAdjust": -0.6,
+        "playLevelAdjust": -0.453
     },
     {
         "id": 1726,
@@ -14463,7 +14490,10 @@
         "musicDifficulty": "master",
         "playLevel": 27,
         "releaseConditionId": 40350,
-        "totalNoteCount": 1003
+        "totalNoteCount": 1003,
+        "fullComboAdjust": -0.18,
+        "fullPerfectAdjust": -0.4,
+        "playLevelAdjust": -0.253
     },
     {
         "id": 1751,
@@ -14503,7 +14533,10 @@
         "musicDifficulty": "master",
         "playLevel": 27,
         "releaseConditionId": 40351,
-        "totalNoteCount": 1232
+        "totalNoteCount": 1232,
+        "fullComboAdjust": -0.18,
+        "fullPerfectAdjust": -0.5,
+        "playLevelAdjust": -0.287
     },
     {
         "id": 1756,
@@ -14635,6 +14668,46 @@
         "playLevelAdjust": 0.433
     },
     {
+        "id": 1776,
+        "musicId": 356,
+        "musicDifficulty": "easy",
+        "playLevel": 7,
+        "releaseConditionId": 1,
+        "totalNoteCount": 204
+    },
+    {
+        "id": 1777,
+        "musicId": 356,
+        "musicDifficulty": "normal",
+        "playLevel": 13,
+        "releaseConditionId": 1,
+        "totalNoteCount": 241
+    },
+    {
+        "id": 1778,
+        "musicId": 356,
+        "musicDifficulty": "hard",
+        "playLevel": 19,
+        "releaseConditionId": 1,
+        "totalNoteCount": 465
+    },
+    {
+        "id": 1779,
+        "musicId": 356,
+        "musicDifficulty": "expert",
+        "playLevel": 25,
+        "releaseConditionId": 1,
+        "totalNoteCount": 744
+    },
+    {
+        "id": 1780,
+        "musicId": 356,
+        "musicDifficulty": "master",
+        "playLevel": 29,
+        "releaseConditionId": 40356,
+        "totalNoteCount": 851
+    },
+    {
         "id": 1791,
         "musicId": 359,
         "musicDifficulty": "easy",
@@ -14715,7 +14788,10 @@
         "musicDifficulty": "master",
         "playLevel": 28,
         "releaseConditionId": 40360,
-        "totalNoteCount": 1188
+        "totalNoteCount": 1188,
+        "fullComboAdjust": 0.16,
+        "fullPerfectAdjust": 0.1,
+        "playLevelAdjust": 0.14
     },
     {
         "id": 1801,
@@ -14841,7 +14917,10 @@
         "musicDifficulty": "master",
         "playLevel": 29,
         "releaseConditionId": 40363,
-        "totalNoteCount": 1062
+        "totalNoteCount": 1062,
+        "fullComboAdjust": -0.14,
+        "fullPerfectAdjust": -0.09,
+        "playLevelAdjust": -0.123
     },
     {
         "id": 1816,
@@ -15056,7 +15135,10 @@
         "musicDifficulty": "master",
         "playLevel": 28,
         "releaseConditionId": 40375,
-        "totalNoteCount": 821
+        "totalNoteCount": 821,
+        "fullComboAdjust": 0.71,
+        "fullPerfectAdjust": 0.1,
+        "playLevelAdjust": 0.507
     },
     {
         "id": 1891,
@@ -15225,7 +15307,90 @@
         "musicDifficulty": "master",
         "playLevel": 28,
         "releaseConditionId": 40382,
-        "totalNoteCount": 696
+        "totalNoteCount": 696,
+        "fullComboAdjust": 0.3,
+        "fullPerfectAdjust": 0.25,
+        "playLevelAdjust": 0.283
+    },
+    {
+        "id": 1971,
+        "musicId": 395,
+        "musicDifficulty": "easy",
+        "playLevel": 9,
+        "releaseConditionId": 1,
+        "totalNoteCount": 337
+    },
+    {
+        "id": 1972,
+        "musicId": 395,
+        "musicDifficulty": "normal",
+        "playLevel": 13,
+        "releaseConditionId": 1,
+        "totalNoteCount": 528
+    },
+    {
+        "id": 1973,
+        "musicId": 395,
+        "musicDifficulty": "hard",
+        "playLevel": 19,
+        "releaseConditionId": 1,
+        "totalNoteCount": 815
+    },
+    {
+        "id": 1974,
+        "musicId": 395,
+        "musicDifficulty": "expert",
+        "playLevel": 24,
+        "releaseConditionId": 1,
+        "totalNoteCount": 1107
+    },
+    {
+        "id": 1975,
+        "musicId": 395,
+        "musicDifficulty": "master",
+        "playLevel": 28,
+        "releaseConditionId": 40395,
+        "totalNoteCount": 1404
+    },
+    {
+        "id": 1991,
+        "musicId": 399,
+        "musicDifficulty": "easy",
+        "playLevel": 6,
+        "releaseConditionId": 1,
+        "totalNoteCount": 292
+    },
+    {
+        "id": 1992,
+        "musicId": 399,
+        "musicDifficulty": "normal",
+        "playLevel": 13,
+        "releaseConditionId": 1,
+        "totalNoteCount": 465
+    },
+    {
+        "id": 1993,
+        "musicId": 399,
+        "musicDifficulty": "hard",
+        "playLevel": 19,
+        "releaseConditionId": 1,
+        "totalNoteCount": 739
+    },
+    {
+        "id": 1994,
+        "musicId": 399,
+        "musicDifficulty": "expert",
+        "playLevel": 26,
+        "releaseConditionId": 1,
+        "totalNoteCount": 950
+    },
+    {
+        "id": 1995,
+        "musicId": 399,
+        "musicDifficulty": "master",
+        "playLevel": 30,
+        "releaseConditionId": 40399,
+        "totalNoteCount": 1115
     },
     {
         "id": 1996,
@@ -15265,6 +15430,9 @@
         "musicDifficulty": "master",
         "playLevel": 28,
         "releaseConditionId": 40400,
-        "totalNoteCount": 810
+        "totalNoteCount": 810,
+        "fullComboAdjust": 0.4,
+        "fullPerfectAdjust": 0.48,
+        "playLevelAdjust": 0.427
     }
 ]
