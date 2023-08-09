@@ -46,6 +46,8 @@ from imageutils import text2image
 import hashlib
 from chunithm.b30 import chunib30, getchunibind, bind_aimeid
 from chunithm.info import search_song, song_details
+from chunithm.chart import get_chunithm_chart
+
 
 if os.path.basename(__file__) == 'bot.py':
     bot = CQHttp()
@@ -888,7 +890,7 @@ def sync_handle_msg(event):
             picdir = aliastochart(event.message.replace("谱面预览", ''), False, qun, getcharttheme(event.user_id))
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
-                    sendmsg(event, picdir[0] + fr"[CQ:image,file=file:///{botdir}\{picdir[1]},cache=0]")
+                    sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                 elif picdir == '':
                     sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
                     return
@@ -1268,6 +1270,28 @@ def sync_handle_msg(event):
                 # 输出歌曲信息和图片
                 sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             return
+        if event.message.startswith('chuchart'):
+            difficulty = "master"
+            if event.message.lower().endswith(("ma", "master")):
+                difficulty = "master"
+            elif event.message.lower().endswith(("expert", "ex")):
+                difficulty = "expert"
+
+            # 提取musicid
+            musicid = re.sub(r"chuchart|\s+", "", event.message, flags=re.I)
+            musicid = re.sub(r"ma|master|expert|ex$", "", musicid, flags=re.I)
+
+            # 获取图像并发送
+            result = get_chunithm_chart(musicid, difficulty)
+            if result is not None:
+                title, image_url = result
+                if event.self_id == guildbot:
+                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx点in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了"
+                else:
+                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx.in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了"
+                sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
+            else:
+                sendmsg(event, "抱歉，无法生成图像。")
         # 猜曲
         if event.message == 'pjsk猜谱面' or event.message == 'pjsk猜曲 3':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
