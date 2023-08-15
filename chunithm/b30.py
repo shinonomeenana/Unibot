@@ -350,7 +350,8 @@ def get_connection():
 database_list = {
         'aqua': 'chunibind',
         'lin': 'linbind',
-        'super': 'superbind'
+        'super': 'superbind',
+        'lee': 'leebind'
     }
 # database_list硬编码防止注入。%s会导致表名被加入引号报错
 
