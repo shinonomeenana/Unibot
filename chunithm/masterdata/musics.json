@@ -1,5 +1,37 @@
 [
     {
+        "name": "Night Spider",
+        "id": "2445",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "21de4bea8b55b69e.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 9.0,
+            "master": 12.9,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "#あくあ色ぱれっと",
+        "id": "2446",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "f2b186745ee88789.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 9.0,
+            "master": 11.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "Shine In The Sky☆",
         "id": "2420",
         "genreNames": [
@@ -2140,6 +2172,22 @@
             "expert": 8.5,
             "master": 14.5,
             "ultima": 14.9,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "いつかオトナになれるといいね。",
+        "id": "2447",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "6a434eacba5b55e5.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 9.5,
+            "master": 12.8,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },

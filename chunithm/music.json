@@ -1,5 +1,37 @@
 [
     {
+        "id": "2445",
+        "catname": "POPS & ANIME",
+        "newflag": "1",
+        "title": "Night Spider",
+        "reading": "NIGHTSPIDER",
+        "artist": "▽▲TRiNITY▲▽",
+        "lev_bas": "2",
+        "lev_adv": "5",
+        "lev_exp": "9",
+        "lev_mas": "12+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "21de4bea8b55b69e.jpg"
+    },
+    {
+        "id": "2446",
+        "catname": "POPS & ANIME",
+        "newflag": "1",
+        "title": "#あくあ色ぱれっと",
+        "reading": "アクアイロハレツト",
+        "artist": "湊あくあ（ホロライブ）",
+        "lev_bas": "2",
+        "lev_adv": "5",
+        "lev_exp": "9",
+        "lev_mas": "11+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "f2b186745ee88789.jpg"
+    },
+    {
         "id": "2420",
         "catname": "POPS & ANIME",
         "newflag": "0",
@@ -2142,6 +2174,22 @@
         "we_kanji": "",
         "we_star": "",
         "image": "d5a47266b4fe0bfe.jpg"
+    },
+    {
+        "id": "2447",
+        "catname": "niconico",
+        "newflag": "1",
+        "title": "いつかオトナになれるといいね。",
+        "reading": "イツカオトナニナレルトイイネ",
+        "artist": "ツユ",
+        "lev_bas": "3",
+        "lev_adv": "6",
+        "lev_exp": "9+",
+        "lev_mas": "12+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "6a434eacba5b55e5.jpg"
     },
     {
         "id": "2433",
@@ -12258,7 +12306,7 @@
     {
         "id": "2443",
         "catname": "イロドリミドリ",
-        "newflag": "1",
+        "newflag": "0",
         "title": "リハーサルタイム",
         "reading": "リハウサルタイム",
         "artist": "明坂 芹菜(CV:新田 恵海)＆萩原 七々瀬(CV:東城 日沙子)＆芒崎 奏(CV:立花 理香)",
@@ -14546,7 +14594,7 @@
     {
         "id": "2444",
         "catname": "ゲキマイ",
-        "newflag": "1",
+        "newflag": "0",
         "title": "Cult future",
         "reading": "CULTFUTURE",
         "artist": "LV.4",
@@ -19746,7 +19794,7 @@
     {
         "id": "2439",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "夢と幻想の終点にて",
         "reading": "ユメトケンソウノシユウテンニテ",
         "artist": "しーけー",
@@ -19762,7 +19810,7 @@
     {
         "id": "2440",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "Superbia",
         "reading": "SUPERBIA",
         "artist": "Team Grimoire",
@@ -19778,7 +19826,7 @@
     {
         "id": "2441",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "空間創造理論",
         "reading": "クウカンソウソウリロン",
         "artist": "Sound piercer",
@@ -19794,7 +19842,7 @@
     {
         "id": "2442",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "βlαnoir",
         "reading": "BLANOIR",
         "artist": "Aoi",
