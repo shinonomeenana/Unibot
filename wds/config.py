@@ -1,0 +1,1 @@
+PROXY = {'http': 'http://localhost:7890', 'https': 'http://localhost:7890'}

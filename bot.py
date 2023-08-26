@@ -47,6 +47,7 @@ import hashlib
 from chunithm.b30 import chunib30, getchunibind, bind_aimeid
 from chunithm.info import search_song, song_details
 from chunithm.chart import get_chunithm_chart
+from wds.musicinfo import wds_alias_to_music_id, wdsinfo, wdsset, wdsdel, wdsalias, wds_alias_to_chart
 
 
 if os.path.basename(__file__) == 'bot.py':
@@ -1292,6 +1293,88 @@ def sync_handle_msg(event):
                 sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             else:
                 sendmsg(event, "抱歉，无法生成图像。")
+
+        # wds
+        if msg := re.match('(?:wdsinfo|wdssong?)(.*)', event.message):
+            resp = wds_alias_to_music_id(msg.group(1).strip())
+            if resp['musicid'] == 0:
+                sendmsg(event, '没有找到你要的歌曲哦')
+                return
+            else:
+                data = wdsinfo(resp['musicid'])
+                if data[0]:
+                    sendmsg(event,
+                        data[1] + f'\n匹配度：{round(resp["match"], 4)}\n' + data[3] + fr"[CQ:image,file=file:///{botdir}/{data[2]},cache=0]")
+                else:
+                    sendmsg(event, data[1])
+            return
+        if event.message[:7] == 'wdsset' and 'to' in event.message:
+            if event.user_id in aliasblock:
+                sendmsg(event, '你因乱设置昵称已无法使用此功能')
+                return
+            event.message = event.message[7:]
+            para = event.message.split('to')
+            if event.sender['card'] == '':
+                username = event.sender['nickname']
+            else:
+                username = event.sender['card']
+            if event.self_id == guildbot:
+                resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
+                qun = resp.json()
+                resp = wdsset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内")
+                sendmsg(event, resp)
+            else:
+                qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
+                resp = wdsset(para[0], para[1], event.user_id, username, f"{qun['group_name']}({event.group_id})内")
+                sendmsg(event, resp)
+            return
+        if event.message[:7] == 'wdsdel':
+            if event.user_id in aliasblock:
+                sendmsg(event, '你因乱设置昵称已无法使用此功能')
+                return
+            event.message = event.message[7:]
+            if event.sender['card'] == '':
+                username = event.sender['nickname']
+            else:
+                username = event.sender['card']
+            if event.self_id == guildbot:
+                resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
+                qun = resp.json()
+                resp = wdsdel(event.message, event.user_id, username, f"{qun['name']}({event.guild_id})内")
+                sendmsg(event, resp)
+            else:
+                qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
+                resp = wdsdel(event.message, event.user_id, username, f"{qun['group_name']}({event.group_id})内")
+                sendmsg(event, resp)
+            return
+        if event.message[:8] == 'wdsalias':
+            event.message = event.message[9:]
+            resp = wdsalias(event.message)
+            sendmsg(event, resp)
+            return
+        if event.message.startswith("wdschart"):
+            qun = True
+            if event.self_id == guildbot:
+                qun = False
+            picdir = wds_alias_to_chart(event.message.replace("wdschart", ''), qun)
+            if picdir is False:
+                sendmsg(event, "谱面预览暂未更新")
+                return
+            if picdir is not None:  # 匹配到歌曲
+                if len(picdir) == 2:  # 有图片
+                    if event.self_id == guildbot:
+                        sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                    else:
+                        sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                elif picdir == '':
+                    sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
+                    return
+                else:
+                    sendmsg(event, picdir + "\n暂无谱面图片 请等待更新")
+            else:  # 匹配不到歌曲
+                sendmsg(event, "没有找到你说的歌曲哦")
+            return
+
         # 猜曲
         if event.message == 'pjsk猜谱面' or event.message == 'pjsk猜曲 3':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
