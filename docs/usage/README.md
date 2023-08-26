@@ -38,6 +38,7 @@ bot Discord版：[点击添加](https://discord.com/api/oauth2/authorize?client_
 
 - `pjskset昵称to歌名`
 - `pjskdel昵称` 删除对应昵称
+- `pjskalias昵称` 查看所有昵称
 - `charaset昵称to角色名(可以是现有昵称)` 设置角色所有群通用昵称,如`charasetkndto宵崎奏`
 - `charadel昵称` 删除角色所有群通用昵称
 - `grcharaset新昵称to已有昵称` 设置仅当前群可用角色昵称
@@ -148,6 +149,19 @@ sk，pjsk进度，pjsk b30，rk，难度排行
 ## 随机卡图
 - `看[角色昵称]` 或 `来点[角色昵称]`
 
+
+## 其他游戏
+### CHUNITHM
+- `chusearch 原曲名` 搜索匹配的曲名，给出对应歌曲id
+- `chuinfo 歌曲id` 查看歌曲信息
+- `chuchart 歌曲id` 查看谱面预览
+
+### WDS
+- `wdsinfo 曲名` 查看歌曲信息
+- `wdschart 曲名` 查看谱面预览
+- `wdsset昵称to歌名`
+- `wdsdel 昵称` 删除对应昵称
+- `wdsalias 昵称` 查看所有昵称
 
 ## 关于
 - 开发者: [綿菓子ウニ](https://space.bilibili.com/622551112)

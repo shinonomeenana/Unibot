@@ -26,7 +26,7 @@ roman_numerals = {
 
 
 def wds_to_unix_timestamp(wds_timestamp):
-    return wds_timestamp + 32400
+    return wds_timestamp - 32400
 
 
 def seconds_to_minutes(seconds):
@@ -70,7 +70,7 @@ def wdsinfo(musicid):
         return False, '没有找到你要的歌曲，可能是还没有实装，再等等？'
     if released_at_unix < 1690344000:
         released_at_unix = 1690344000
-    released_at_utc8 = datetime.fromtimestamp(released_at_unix, timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTF+8)')
+    released_at_utc8 = datetime.fromtimestamp(released_at_unix, timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)')
     music_time_second = seconds_to_minutes(music_info.get('musicTimeSecond', 0))
     vocalVersions = music_info.get('vocalVersions', [])
     if len(vocalVersions) == 1:

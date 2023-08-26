@@ -48,7 +48,7 @@ from chunithm.b30 import chunib30, getchunibind, bind_aimeid
 from chunithm.info import search_song, song_details
 from chunithm.chart import get_chunithm_chart
 from wds.musicinfo import wds_alias_to_music_id, wdsinfo, wdsset, wdsdel, wdsalias, wds_alias_to_chart
-
+from wds.event import wds_score_line
 
 if os.path.basename(__file__) == 'bot.py':
     bot = CQHttp()
@@ -1308,11 +1308,11 @@ def sync_handle_msg(event):
                 else:
                     sendmsg(event, data[1])
             return
-        if event.message[:7] == 'wdsset' and 'to' in event.message:
+        if event.message[:6] == 'wdsset' and 'to' in event.message:
             if event.user_id in aliasblock:
                 sendmsg(event, '你因乱设置昵称已无法使用此功能')
                 return
-            event.message = event.message[7:]
+            event.message = event.message[6:]
             para = event.message.split('to')
             if event.sender['card'] == '':
                 username = event.sender['nickname']
@@ -1328,11 +1328,11 @@ def sync_handle_msg(event):
                 resp = wdsset(para[0], para[1], event.user_id, username, f"{qun['group_name']}({event.group_id})内")
                 sendmsg(event, resp)
             return
-        if event.message[:7] == 'wdsdel':
+        if event.message[:6] == 'wdsdel':
             if event.user_id in aliasblock:
                 sendmsg(event, '你因乱设置昵称已无法使用此功能')
                 return
-            event.message = event.message[7:]
+            event.message = event.message[6:]
             if event.sender['card'] == '':
                 username = event.sender['nickname']
             else:
@@ -1374,7 +1374,10 @@ def sync_handle_msg(event):
             else:  # 匹配不到歌曲
                 sendmsg(event, "没有找到你说的歌曲哦")
             return
-
+        if event.message == "wds线":
+            texttoimg(wds_score_line(), 540, 'wds_score_line')
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\wds_score_line.png,cache=0]")
+            return
         # 猜曲
         if event.message == 'pjsk猜谱面' or event.message == 'pjsk猜曲 3':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
