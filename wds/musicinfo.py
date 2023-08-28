@@ -6,6 +6,7 @@ from selenium import webdriver
 import os
 import requests
 import Levenshtein as lev
+import yaml
 from modules.pjskinfo import isSingleEmoji, writelog
 from wds.api import get_asset
 from wds.config import PROXY
@@ -53,6 +54,8 @@ def wdsinfo(musicid):
         music_data = json.load(f)
     with open('wds/masterdata/live.json', 'r', encoding='utf-8') as f:
         live_data = json.load(f)
+    with open('wds/translate.yaml', encoding='utf-8') as f:
+        trans = yaml.load(f, Loader=yaml.FullLoader)
 
     # 寻找匹配的音乐信息
     music_info = next((item for item in music_data if item['id'] == musicid), None)
@@ -61,6 +64,8 @@ def wdsinfo(musicid):
 
     # 获取基础信息
     name = music_info.get('name', '未知')
+    if (translation := trans.get(int(musicid), '')) != '':
+        name += f'({translation})'
     lyric_writer = music_info.get('lyricWriter', '未知')
     composer = music_info.get('composer', '未知')
     arranger = music_info.get('arranger', '未知')
@@ -181,10 +186,8 @@ def wds_alias_to_music_id(alias):
             name = musics['name']
             break
 
-        # TODO: 曲名翻译
-        # with open('wds/translate.yaml', encoding='utf-8') as f:
-        #     trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
-        trans = {}
+        with open('wds/translate.yaml', encoding='utf-8') as f:
+            trans = yaml.load(f, Loader=yaml.FullLoader)
         try:
             translate = trans[raw[2]]
             if translate == name:
@@ -201,10 +204,8 @@ def wds_match_name(alias):
     with open('wds/masterdata/music.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    # TODO: 曲名翻译
-    # with open('wds/translate.yaml', encoding='utf-8') as f:
-    #     trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
-    trans = {}
+    with open('wds/translate.yaml', encoding='utf-8') as f:
+        trans = yaml.load(f, Loader=yaml.FullLoader)
 
     for musics in data:
         name = musics['name']

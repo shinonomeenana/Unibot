@@ -42,8 +42,11 @@ def wds_score_line():
 
     text = f'当前活动为：{title}\n当前时间：' + \
             datetime.fromtimestamp(time.time(), timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)') + \
-            '\n结活时间：' + datetime.fromtimestamp(end_date, timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)') + \
-            '\n活动还剩' + timeremain(end_date - time.time())
+            '\n结活时间：' + datetime.fromtimestamp(end_date, timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)')
+    if status == 'going':
+        text += '\n活动还剩' + timeremain(end_date - time.time())
+    else:
+        text += '\n活动已结束'
     # 提取排名数据
     raw_ranking = data['result']['rawRanking']
     for record in raw_ranking:
