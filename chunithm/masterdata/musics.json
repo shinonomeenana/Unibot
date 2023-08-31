@@ -1,5 +1,21 @@
 [
     {
+        "name": "story",
+        "id": "2448",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "2e29d64f85ba97a0.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.0,
+            "expert": 10.3,
+            "master": 13.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "Night Spider",
         "id": "2445",
         "genreNames": [
@@ -11136,6 +11152,22 @@
         }
     },
     {
+        "name": "ばかみたい【Taxi Driver Edition】",
+        "id": "2449",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "d12468c864e5a991.jpg",
+        "difficulties": {
+            "basic": 1.0,
+            "advanced": 5.0,
+            "expert": 8.0,
+            "master": 12.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "御旗のもとに",
         "id": "858",
         "genreNames": [
@@ -11212,6 +11244,22 @@
             "expert": 10.0,
             "master": 13.8,
             "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "セガサターン起動音[H.][Remix]",
+        "id": "2450",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "b0c7521527fdc38e.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 10.2,
+            "master": 13.8,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -13739,6 +13787,22 @@
             "advanced": 4.0,
             "expert": 8.5,
             "master": 11.3,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "スン(マイル)フラワー～Sun(Mile)Flower",
+        "id": "2451",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "ac24c5f9f1368731.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 9.0,
+            "master": 12.0,
             "ultima": 0.0,
             "world's end": 0.0
         }

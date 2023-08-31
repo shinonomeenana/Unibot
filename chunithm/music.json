@@ -1,8 +1,24 @@
 [
     {
-        "id": "2445",
+        "id": "2448",
         "catname": "POPS & ANIME",
         "newflag": "1",
+        "title": "story",
+        "reading": "STORY",
+        "artist": "前島麻由「異世界おじさん」",
+        "lev_bas": "3",
+        "lev_adv": "7",
+        "lev_exp": "10",
+        "lev_mas": "13+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "2e29d64f85ba97a0.jpg"
+    },
+    {
+        "id": "2445",
+        "catname": "POPS & ANIME",
+        "newflag": "0",
         "title": "Night Spider",
         "reading": "NIGHTSPIDER",
         "artist": "▽▲TRiNITY▲▽",
@@ -18,7 +34,7 @@
     {
         "id": "2446",
         "catname": "POPS & ANIME",
-        "newflag": "1",
+        "newflag": "0",
         "title": "#あくあ色ぱれっと",
         "reading": "アクアイロハレツト",
         "artist": "湊あくあ（ホロライブ）",
@@ -2178,7 +2194,7 @@
     {
         "id": "2447",
         "catname": "niconico",
-        "newflag": "1",
+        "newflag": "0",
         "title": "いつかオトナになれるといいね。",
         "reading": "イツカオトナニナレルトイイネ",
         "artist": "ツユ",
@@ -11136,6 +11152,22 @@
         "image": "087e7d8afc5f6db6.jpg"
     },
     {
+        "id": "2449",
+        "catname": "VARIETY",
+        "newflag": "1",
+        "title": "ばかみたい【Taxi Driver Edition】",
+        "reading": "ハカミタイTAXIDRIVEREDITION",
+        "artist": "桐生一馬(黒田崇矢)",
+        "lev_bas": "1",
+        "lev_adv": "5",
+        "lev_exp": "8",
+        "lev_mas": "12+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "d12468c864e5a991.jpg"
+    },
+    {
         "id": "858",
         "catname": "VARIETY",
         "newflag": "0",
@@ -11214,6 +11246,22 @@
         "we_kanji": "",
         "we_star": "",
         "image": "f6f013544d65ce4e.jpg"
+    },
+    {
+        "id": "2450",
+        "catname": "VARIETY",
+        "newflag": "1",
+        "title": "セガサターン起動音[H.][Remix]",
+        "reading": "セカサタウンキトウオンHREMIX",
+        "artist": "Hiro",
+        "lev_bas": "2",
+        "lev_adv": "5",
+        "lev_exp": "10",
+        "lev_mas": "13+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "b0c7521527fdc38e.jpg"
     },
     {
         "id": "145",
@@ -13742,6 +13790,22 @@
         "we_kanji": "",
         "we_star": "",
         "image": "5f4ba36489773099.jpg"
+    },
+    {
+        "id": "2451",
+        "catname": "ゲキマイ",
+        "newflag": "1",
+        "title": "スン(マイル)フラワー～Sun(Mile)Flower",
+        "reading": "スンマイルフラワウSUNMILEFLOWER",
+        "artist": "曲：Funta7／歌：星咲 あかり(CV：赤尾 ひかる)、日向 千夏(CV：岡咲 美保)",
+        "lev_bas": "3",
+        "lev_adv": "6",
+        "lev_exp": "9",
+        "lev_mas": "12",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "ac24c5f9f1368731.jpg"
     },
     {
         "id": "2235",
