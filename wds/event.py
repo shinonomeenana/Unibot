@@ -8,30 +8,22 @@ from wds.musicinfo import wds_to_unix_timestamp
 from wds.config import apiroot
 
 def wds_current_event():
-    file_path = 'wds/masterdata/storyEvent.json'
-    current_unix_time = time.time()
-
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open('wds/masterdata/storyEvent.json', 'r', encoding='utf-8') as f:
         events = json.load(f)
-    
-    for i, event in enumerate(events):
-        start_unix_time = wds_to_unix_timestamp(event['startDate'])
-        end_unix_time = wds_to_unix_timestamp(event['endDate'])
-        
-        if start_unix_time <= current_unix_time <= end_unix_time:
-            return event['id'], event['title'], "going", wds_to_unix_timestamp(event['endDate'])
-        
-        elif current_unix_time < start_unix_time:
-            # 如果当前时间小于下一个活动的开始时间，则表示前一个活动已结束
-            if i > 0:
-                return events[i - 1]['id'], events[i - 1]['title'], "end", wds_to_unix_timestamp(event[i - 1]['endDate'])
-            else:
-                # 如果是第一个活动还未开始
-                return event['id'], event['title'], "pending", wds_to_unix_timestamp(event['endDate'])
-        
-    # 所有活动已结束
-    return events[-1]['id'], events[-1]['title'], "end", wds_to_unix_timestamp(event[-1]['endDate'])
 
+    current_unix_time = int(time.time())
+    
+    for event in events:
+        start_unix_time = wds_to_unix_timestamp(event["startDate"])
+        end_unix_time = wds_to_unix_timestamp(event["endDate"])
+        force_end_unix_time = wds_to_unix_timestamp(event["forceEndDate"])
+
+        if start_unix_time <= current_unix_time < end_unix_time:
+            return event["id"], event["title"], "going", end_unix_time
+        elif end_unix_time <= current_unix_time < force_end_unix_time:
+            return event["id"], event["title"], "end", force_end_unix_time
+
+    return None, None, None, None
 
 def wds_score_line():
     event_id, title, status, end_date = wds_current_event()
