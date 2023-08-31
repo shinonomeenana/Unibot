@@ -55,6 +55,10 @@ def generate_diff_csv():
         custom_diff = get_custom_diff_list(music['id'], custom_diff_data)
         release_time = time.strftime("%Y%m%d", time.localtime(music['publishedAt'] / 1000))
         if custom_diff is not None:
+            if raw_diff[3] < 26:
+                custom_diff[0][0], custom_diff[1][0] = '', ''
+            if raw_diff[4] < 26:
+                custom_diff[0][1], custom_diff[1][1] = '', ''
             csvdata.append([music['title'], music['id'], release_time, raw_diff[3], custom_diff[0][0], custom_diff[1][0],
                                                         raw_diff[4], custom_diff[0][1], custom_diff[1][1]])
         else:
