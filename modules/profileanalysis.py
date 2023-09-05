@@ -1303,11 +1303,15 @@ def b30single(diff, musics):
                 draw.text((259, 24), str(round(diff['fclevel+'], 1)), (255, 255, 255), font)
                 draw.text((370, 24), '→ ' + str(round(fcrank(diff['playLevel'], diff["fclevel+"]), 1)), (0, 0, 0), font)
         else:
-            if diff['result'] == 2:
+            if diff["aplevel+"] < 26:
+                resultpic = Image.open('pics/AllPerfect.png')
+                draw.text((259, 24), f'  {diff["aplevel+"]}', (255, 255, 255), font)
+                draw.text((370, 24), f'→ {round(diff["aplevel+"], 1)}.0', (0, 0, 0), font)
+            elif diff['result'] == 2:
                 resultpic = Image.open('pics/AllPerfect.png')
                 draw.text((259, 24), f'{round(diff["aplevel+"], 1)}.?', (255, 255, 255), font)
                 draw.text((370, 24), f'→ {round(diff["aplevel+"], 1)}.0', (0, 0, 0), font)
-            if diff['result'] == 1:
+            elif diff['result'] == 1:
                 resultpic = Image.open('pics/FullCombo.png')
                 draw.text((259, 24), f'{round(diff["fclevel+"], 1)}.?', (255, 255, 255), font)
                 draw.text((370, 24), f'→ {round(fcrank(diff["playLevel"], diff["fclevel+"]), 1)}', (0, 0, 0), font)

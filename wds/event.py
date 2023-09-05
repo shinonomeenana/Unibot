@@ -21,7 +21,7 @@ def wds_current_event():
         if start_unix_time <= current_unix_time < end_unix_time:
             return event["id"], event["title"], "going", end_unix_time
         elif end_unix_time <= current_unix_time < force_end_unix_time:
-            return event["id"], event["title"], "end", force_end_unix_time
+            return event["id"], event["title"], "end", end_unix_time
 
     return None, None, None, None
 

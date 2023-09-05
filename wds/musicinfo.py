@@ -326,6 +326,7 @@ def wdsalias(alias, musicid=None):
     
 
 def wds_alias_to_chart(full, qun=False):
+    full = full.lower()
     if full[-2:] == 'ex':
         alias = full[:-2]
         diff = 3
@@ -341,6 +342,9 @@ def wds_alias_to_chart(full, qun=False):
     elif full[-2:] == "ol":
         alias = full[:-2]
         diff = 5
+    elif full[-2:] == "ov":
+        alias = full[:-2]
+        diff = 5
     elif full[-6:] == 'extra':
         alias = full[:-6]
         diff = 3
@@ -351,9 +355,12 @@ def wds_alias_to_chart(full, qun=False):
         alias = full[:-6]
         diff = 1
     elif full[-6:] == 'stella':
-        alias = full[:-4]
+        alias = full[:-6]
         diff = 4
     elif full[-7:] == 'olivier':
+        alias = full[:-7]
+        diff = 5
+    elif full[-6:] == 'oliver':
         alias = full[:-6]
         diff = 5
     else:
