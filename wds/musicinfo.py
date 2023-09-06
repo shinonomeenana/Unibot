@@ -135,7 +135,7 @@ def get_wds_chart(music_id, difficulty):
     options.add_argument('--disable-gpu')
     
     # Initialize the Chrome webdriver and open the SVG file
-    driver = webdriver.Chrome('wds/chrome/chromedriver-win64/chromedriver.exe', options=options)
+    driver = webdriver.Chrome('chromedriver-win64/chromedriver.exe', options=options)
     svg_path_absolute = os.path.abspath(svg_path)
     svg_path_windows = svg_path_absolute.replace("/", "\\")
     driver.get(f'file:///{svg_path_windows}')

@@ -2,11 +2,7 @@ import ujson as json
 import os
 import re
 import sys
-import time
-import traceback
-
-import cairosvg
-import argparse
+from selenium import webdriver
 
 from moesus import chart
 
@@ -141,9 +137,38 @@ def parse(music_id, difficulty, theme, savepng=True, jacketdir=None, title=None,
         sus.export(file_name + '.svg', style_sheet=style_sheet, themehint=themehint)
     if savepng:
         if withSkill and (music_meta is None):
-            cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '_nometa.png', scale=1.3)
+            svg_to_130_png(url=file_name + '.svg', write_to=file_name + '_nometa.png')
         else:
-            cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '.png', scale=1.3)
+            svg_to_130_png(url=file_name + '.svg', write_to=file_name + '.png')
+
+
+
+def svg_to_130_png(url, write_to):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+
+    # Initialize the Chrome webdriver and open the SVG file
+    driver = webdriver.Chrome('chromedriver-win64/chromedriver.exe', options=options)
+    svg_path_absolute = os.path.abspath(url)
+    svg_path_windows = svg_path_absolute.replace("/", "\\")
+    driver.get(f'file:///{svg_path_windows}')
+
+
+    driver.execute_script("document.getElementsByTagName('svg')[0].setAttribute('style', 'transform: scale(1.3); transform-origin: 0 0;')")
+
+    # Get the SVG element dimensions
+    width = int(driver.execute_script('return document.documentElement.scrollWidth') * 1.3) + 1
+    height = int(driver.execute_script('return document.documentElement.scrollHeight') * 1.3) + 1
+
+    print(width, height)
+    # Set window size
+    driver.set_window_size(width, height)
+
+    # Take screenshot
+    driver.save_screenshot(write_to)
+
+    driver.quit()
 
 
 # from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
@@ -272,7 +297,7 @@ def genGuessChart(music_id):
         style_sheet += '\n' + f.read()
 
     sus.export(file_name + '.svg', style_sheet=style_sheet, themehint=False)
-    cairosvg.svg2png(url=file_name + '.svg', write_to=file_name + '.png', scale=1.3)
+    svg_to_130_png(url=file_name + '.svg', write_to=file_name + '.png')
 
 
 if __name__ == '__main__':

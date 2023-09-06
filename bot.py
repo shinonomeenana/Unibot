@@ -1351,7 +1351,7 @@ def sync_handle_msg(event):
                 sendmsg(event, resp)
             return
         if event.message[:8] == 'wdsalias':
-            event.message = event.message[9:]
+            event.message = event.message[8:]
             resp = wdsalias(event.message)
             sendmsg(event, resp)
             return

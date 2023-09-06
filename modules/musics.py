@@ -405,7 +405,7 @@ def getchart(musicid, difficulty, theme='white'):
         except FileNotFoundError:
             im = Image.open(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.png')
             path = f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
-        # im = im.convert('RGB')
+        im = im.convert('RGB')
         im.save(path, quality=60)
         return path
 
