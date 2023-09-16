@@ -8,6 +8,8 @@ from chunithm.chuniapi import aime_to_userid, call_chuniapi
 import ujson as json
 import traceback
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
+from modules.config import env
+
 
 def process_user_music_list(user_music_list):
     processed_list = []
@@ -122,7 +124,7 @@ sun_to_sunp = {
 }
 
 
-def process_r10(userid, server, version='2.12'):
+def process_r10(userid, server, version='2.12', sort=True):
     difficulty_mapping = {
         "0": "basic",
         "1": "advanced",
@@ -166,8 +168,8 @@ def process_r10(userid, server, version='2.12'):
                 })
 
     # 将rating_list按照rating降序排序
-    rating_list.sort(key=lambda x: x['rating'], reverse=True)
-
+    if sort:
+        rating_list.sort(key=lambda x: x['rating'], reverse=True)
     return rating_list
 
 
@@ -204,14 +206,15 @@ def process_b30(userid, server, version='2.12'):
         score = int(data['scoreMax'])
         rating = calculate_rating(difficulty, score)
 
-
         ratings.append({
             'musicName': music_name,
             'jacketFile': jacket_file,
             'playLevel': difficulty,
             'musicDifficulty': level_dict[level_index],
             'score': score,
-            'rating': rating
+            'rating': rating,
+            'isFullCombo': data['isFullCombo'],
+            'isAllJustice': data['isAllJustice']
         })
 
     ratings.sort(key=lambda x: x['rating'], reverse=True)
@@ -294,7 +297,8 @@ def chunib30(userid, server='aqua', version='2.12'):
 
     pic = pic.convert("RGB")
     pic.save(f'piccache/{hashlib.sha256(userid.encode()).hexdigest()}b30.jpg')
-    # pic.show()
+    if env != 'prod':
+        pic.show()
 
 def b30single(single_data, version):
     color = {
@@ -332,8 +336,91 @@ def b30single(single_data, version):
     draw.text((259, 157), str(single_data['playLevel']), (255, 255, 255), font)
     draw.text((370, 157), '→ ' + str(truncate_two_decimal_places(single_data['rating'])), (0, 0, 0), font)
 
+    if 'isAllJustice' in single_data:
+        font = ImageFont.truetype('fonts/FOT-RodinNTLGPro-DB.ttf', 35)
+        if single_data['isAllJustice'] == 'true':
+            draw.text((530, 105), "AJ", '#000000', font)
+        elif single_data['isFullCombo'] == 'true':
+            draw.text((530, 105), "FC", '#000000', font)
     pic = pic.resize((280, 105))
     return pic
+
+
+def chuni_r30(userid, server='aqua', version='2.12'):
+    # TODO: r30施工中
+    if version == '2.15':
+        pic = Image.open('pics/chub30sunp.png')
+    else:
+        pic = Image.open('pics/chub30.png')
+    draw = ImageDraw.Draw(pic)
+
+    user_data = get_user_data(userid, server)
+
+    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+    draw.text((215, 65), user_data['userName'], fill=(0, 0, 0), font=font_style)
+    font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
+    try:
+        draw.text((218, 118), get_user_team(userid, server)['teamName'], fill=(0, 0, 0), font=font_style)
+    except KeyError:
+        draw.text((218, 118), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
+    font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
+    draw.text((314, 150), str(int(user_data['level']) + int(user_data['reincarnationNum']) * 100), fill=(255, 255, 255), font=font_style)
+    
+    shadow = Image.new("RGBA", (320, 130), (0, 0, 0, 0))
+    shadow.paste(Image.new("RGBA", (280, 105), (0, 0, 0, 50)), (5, 5))
+    shadow = shadow.filter(ImageFilter.GaussianBlur(3))
+
+    # ratings = process_b30(userid, server, version)
+    
+    # rating_sum = 0
+    # for i in range(0, 30):
+    #     try:
+    #         single = b30single(ratings[i], version)
+    #     except IndexError:
+    #         break
+    #     r, g, b, mask = shadow.split()
+    #     pic.paste(shadow, ((int(52 + (i % 5) * 290)), int(287 + int(i / 5) * 127)), mask)
+    #     pic.paste(single, ((int(53+(i%5)*290)), int(289+int(i/5)*127)))
+    #     rating_sum += ratings[i]['rating']
+    # b30 = truncate_two_decimal_places(rating_sum / 30)
+    # font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
+    # draw.text((208, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
+
+    ratings = process_r10(userid, server, version, sort=False)
+    rating_sum = 0
+    for i in range(0, 30):
+        try:
+            single = b30single(ratings[i], version)
+        except IndexError:
+            break
+        r, g, b, mask = shadow.split()
+        pic.paste(shadow, ((int(52 + (i % 5) * 290)), int(287 + int(i / 5) * 127)), mask)
+        pic.paste(single, ((int(53+(i%5)*290)), int(289+int(i/5)*127)))
+        rating_sum += ratings[i]['rating']
+    r10 = truncate_two_decimal_places(rating_sum / 10)
+    draw.text((1726, 205), str(r10), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
+    
+    # rank = truncate_two_decimal_places((b30 * 3 + r10) / 4)
+
+    # font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
+    
+    
+    # # 创建一个单独的图层用于绘制rank阴影
+    # rankimg = Image.new("RGBA", (120, 55), (100, 110, 180, 0))
+    # draw = ImageDraw.Draw(rankimg)
+    # font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+    # text_width = font_style.getsize(str(rank))
+    # draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(61, 74, 162, 210),
+    #           font=font_style, stroke_width=2, stroke_fill=(61, 74, 162, 210))
+    # rankimg = rankimg.filter(ImageFilter.GaussianBlur(1.2))
+    # draw = ImageDraw.Draw(rankimg)
+    # draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(255, 255, 255), font=font_style)
+    # r, g, b, mask = rankimg.split()
+    # pic.paste(rankimg, (492, 110), mask)
+
+    pic = pic.convert("RGB")
+    pic.save(f'piccache/{hashlib.sha256(userid.encode()).hexdigest()}r30.jpg')
+    
 
 
 def get_connection():

@@ -2192,6 +2192,54 @@
         }
     },
     {
+        "name": "あなたは世界の終わりにずんだを食べるのだ",
+        "id": "2452",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "684f346fa5fc3246.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 7.5,
+            "master": 12.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ちょっとあざとい",
+        "id": "2453",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "9848bbc25167975e.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 6.0,
+            "expert": 8.5,
+            "master": 12.3,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "snooze",
+        "id": "2454",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "cb623ba07e748770.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 7.5,
+            "expert": 10.1,
+            "master": 13.9,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "いつかオトナになれるといいね。",
         "id": "2447",
         "genreNames": [
@@ -12368,6 +12416,22 @@
         }
     },
     {
+        "name": "ONE SAME GOAL",
+        "id": "2455",
+        "genreNames": [
+            "イロドリミドリ"
+        ],
+        "jaketFile": "e3db885455fb0f73.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 6.0,
+            "expert": 10.0,
+            "master": 13.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "Help me, あーりん！",
         "id": "245",
         "genreNames": [
@@ -14667,6 +14731,22 @@
             "advanced": 8.5,
             "expert": 13.4,
             "master": 14.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Vibes 2k20",
+        "id": "2456",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "49a6b17013b5f418.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 7.5,
+            "expert": 12.0,
+            "master": 14.5,
             "ultima": 0.0,
             "world's end": 0.0
         }
@@ -19915,6 +19995,54 @@
             "advanced": 9.0,
             "expert": 13.8,
             "master": 15.2,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ETERNAL DRAIN",
+        "id": "8267",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "c3cdb935843332aa.jpg",
+        "difficulties": {
+            "basic": 0.0,
+            "advanced": 0.0,
+            "expert": 0.0,
+            "master": 0.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "M.S.S.Planet",
+        "id": "8268",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "3ee12e1b51a98dc8.jpg",
+        "difficulties": {
+            "basic": 0.0,
+            "advanced": 0.0,
+            "expert": 0.0,
+            "master": 0.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "月の光",
+        "id": "8269",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "941147dafda82216.jpg",
+        "difficulties": {
+            "basic": 0.0,
+            "advanced": 0.0,
+            "expert": 0.0,
+            "master": 0.0,
             "ultima": 0.0,
             "world's end": 0.0
         }
