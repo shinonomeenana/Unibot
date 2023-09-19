@@ -1846,7 +1846,7 @@ def sync_handle_msg(event):
     except userIdBan:
         sendmsg(event, '该玩家因违反bot使用条款（包括但不限于开挂）已被bot拉黑')
     except QueryBanned:
-        sendmsg(event, '由于日服api限制，数据已无法抓取，该功能已停用')
+        sendmsg(event, '由于日服/台服api限制，数据已无法抓取，该功能已停用')
     except cheaterFound as a:
         text = repr(a)[14:-2].replace('、', '\n')
         infopic = text2image(text=text, max_width=1000)

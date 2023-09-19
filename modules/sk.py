@@ -138,7 +138,11 @@ def eventtrack():
         try:
             conn = sqlite3.connect('data/events.db')
             c = conn.cursor()
-            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=1&lowerLimit=99', 'tw')
+            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?rankingViewType=top100', 'tw')
+            
+            with open('data/twptop100.json', 'w', encoding='utf-8') as f:
+                f.write(json.dumps(ranking, sort_keys=True, indent=4))
+            
             for rank in ranking['rankings']:
                 targetid = rank['userId']
                 score = rank['score']
@@ -157,18 +161,6 @@ def eventtrack():
                     c.execute(f'insert into names (userid, name) values(?, ?)', (str(targetid), name))
                 except sqlite3.IntegrityError:
                     c.execute(f'update names set name=? where userid=?', (name, str(targetid)))
-
-            ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank=101&lowerLimit=99', 'tw')
-            for rank in ranking['rankings']:
-                targetid = rank['userId']
-                score = rank['score']
-                name = rank['name']
-                c.execute(f'insert into "tw{eventid}" (time, score, userid) values(?, ?, ?)', (now, score, str(targetid)))
-                try:
-                    c.execute(f'insert into names (userid, name) values(?, ?)', (str(targetid), name))
-                except sqlite3.IntegrityError:
-                    c.execute(f'update names set name=? where userid=?', (name, str(targetid)))
-
             conn.commit()
             conn.close()
             time_printer('抓取完成')
@@ -754,7 +746,7 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
             name = ''
     except IndexError:
         if server in rank_query_ban_servers:
-            return '由于日服限制了查分api，只有排名前100可以使用该功能'
+            return '由于日服/台服限制了查分api，只有排名前100可以使用该功能'
         else:
             return '查不到数据捏，可能这期活动没打'
     try:

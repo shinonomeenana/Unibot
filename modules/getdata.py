@@ -46,44 +46,76 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
         raise serverNotSupported
     
     if server in rank_query_ban_servers:
-        if '/ranking?targetRank' in url:
-            targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
-            with open('data/jptop100.json', 'r', encoding='utf-8') as f:
-                jptop100 = json.load(f)
-            updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
-            for single in jptop100["rankings"]:
-                if single["rank"] == targetRank:
+        if server == 'jp':
+            if '/ranking?targetRank' in url:
+                targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
+                with open('data/jptop100.json', 'r', encoding='utf-8') as f:
+                    jptop100 = json.load(f)
+                updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                for single in jptop100["rankings"]:
+                    if single["rank"] == targetRank:
+                        return {
+                            "rankings": [single],
+                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                        }
+                else:
                     return {
-                        "rankings": [single],
-                        'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
-                    }
-            else:
-                return {
-                        "rankings": []
-                    }
-        if '/ranking?targetUserId=' in url:
-            targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])
-            with open('data/jptop100.json', 'r', encoding='utf-8') as f:
-                jptop100 = json.load(f)
-            updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
-            for single in jptop100["rankings"]:
-                if single["userId"] == targetUserId:
+                            "rankings": []
+                        }
+            if '/ranking?targetUserId=' in url:
+                targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])
+                with open('data/jptop100.json', 'r', encoding='utf-8') as f:
+                    jptop100 = json.load(f)
+                updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                for single in jptop100["rankings"]:
+                    if single["userId"] == targetUserId:
+                        return {
+                            "rankings": [single],
+                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                        }
+                else:
                     return {
-                        "rankings": [single],
-                        'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
-                    }
-            else:
-                return {
-                        "rankings": []
-                    }
-        if '/profile' in url and query_type != 'daibu' and not is_force_update:
-            userid = url[url.find('user/') + 5:url.find('/profile')]
-            if os.path.exists(f'{suite_uploader_path}{userid}.json'):
-                with open(f'{suite_uploader_path}{userid}.json', 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                return data
-            elif query_type in ['b30', 'jindu', 'rank']:
-                raise QueryBanned
+                            "rankings": []
+                        }
+            if '/profile' in url and query_type != 'daibu' and not is_force_update:
+                userid = url[url.find('user/') + 5:url.find('/profile')]
+                if os.path.exists(f'{suite_uploader_path}{userid}.json'):
+                    with open(f'{suite_uploader_path}{userid}.json', 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    return data
+                elif query_type in ['b30', 'jindu', 'rank']:
+                    raise QueryBanned
+        elif server == 'tw':
+            if '/ranking?targetRank' in url:
+                targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
+                with open('data/twtop100.json', 'r', encoding='utf-8') as f:
+                    jptop100 = json.load(f)
+                updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                for single in jptop100["rankings"]:
+                    if single["rank"] == targetRank:
+                        return {
+                            "rankings": [single],
+                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                        }
+                else:
+                    return {
+                            "rankings": []
+                        }
+            if '/ranking?targetUserId=' in url:
+                targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])
+                with open('data/twtop100.json', 'r', encoding='utf-8') as f:
+                    jptop100 = json.load(f)
+                updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                for single in jptop100["rankings"]:
+                    if single["userId"] == targetUserId:
+                        return {
+                            "rankings": [single],
+                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                        }
+                else:
+                    return {
+                            "rankings": []
+                        }
     
     if server == 'tw':
         urlroots = twapiurls
