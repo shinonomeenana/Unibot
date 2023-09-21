@@ -116,6 +116,9 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                     return {
                             "rankings": []
                         }
+            if '/profile' in url and query_type != 'daibu' and not is_force_update:
+                if query_type in ['b30', 'jindu', 'rank']:
+                    raise QueryBanned
     
     if server == 'tw':
         urlroots = twapiurls
