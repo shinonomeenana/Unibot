@@ -579,6 +579,12 @@ def aliastochart(full, sdvx=False, qun=False, theme='white'):
     elif full[-6:] == 'master':
         alias = full[:-6]
         diff = 'master'
+    elif full[-6:] == 'append':
+        alias = full[:-6]
+        diff = 'append'
+    elif full[-2:] == 'ap':
+        alias = full[:-2]
+        diff = 'append'
     else:
         alias = full
         diff = 'master'

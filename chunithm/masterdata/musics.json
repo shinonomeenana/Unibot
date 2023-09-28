@@ -13872,6 +13872,22 @@
         }
     },
     {
+        "name": "反撃! 突撃! Back To Back!",
+        "id": "2463",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "df0a80d04ffebe5a.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 8.5,
+            "master": 13.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "ポケットからぬりつぶせ！",
         "id": "2235",
         "genreNames": [
@@ -19995,6 +20011,86 @@
             "advanced": 9.0,
             "expert": 13.8,
             "master": 15.2,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "《真紅》 ～ Pavane Pour La Flamme",
+        "id": "2457",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "92b2bb3de62c170e.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 11.0,
+            "master": 13.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "《楽土》 ～ One and Only One",
+        "id": "2458",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "666f325fc46af95b.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 5.0,
+            "expert": 11.1,
+            "master": 13.6,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "《散華》 ～ EMBARK",
+        "id": "2459",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "3fc8c573915d54fd.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 10.9,
+            "master": 13.4,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "《慈雨》 ～ La Symphonie de Salacia: Agony Movement",
+        "id": "2460",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "fa2d74a49b86d8c8.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 6.0,
+            "expert": 11.7,
+            "master": 14.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "《創造》 ～ Cries, beyond The End",
+        "id": "2461",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "065fe80a5c742ce7.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 9.5,
+            "expert": 13.7,
+            "master": 14.9,
             "ultima": 0.0,
             "world's end": 0.0
         }

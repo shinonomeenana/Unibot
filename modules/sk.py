@@ -9,7 +9,7 @@ import time
 import traceback
 from os import path
 import pymysql
-
+from locale import format_string
 from modules.config import env, rank_query_ban_servers
 from modules.getdata import QueryBanned, callapi
 from modules.mysql_config import *
@@ -38,19 +38,28 @@ def idtoname(musicid):
     return ''
 
 
-def timeremain(time, second=True):
+def timeremain(time, second=True, server='jp'):
+    translations = {
+        'jp': {'second': '秒', 'minute': '分', 'hour': '小时', 'day': '天'},
+        'tw': {'second': '秒', 'minute': '分', 'hour': '小時', 'day': '天'},
+        'en': {'second': 's', 'minute': 'm', 'hour': 'h', 'day': 'd'},
+        'kr': {'second': '초', 'minute': '분', 'hour': '시간', 'day': '일'}
+    }
+
+    t = translations.get(server, translations['jp'])  # Default to 'jp'
+
     if time < 60:
-        return f'{int(time)}秒' if second else '0分'
-    elif time < 60*60:
-        return f'{int(time / 60)}分{int(time % 60)}秒' if second else f'{int(time / 60)}分'
-    elif time < 60*60*24:
+        return f"{int(time)}{t['second']}" if second else f"0{t['minute']}"
+    elif time < 60 * 60:
+        return f"{int(time / 60)}{t['minute']}{int(time % 60)}{t['second']}" if second else f"{int(time / 60)}{t['minute']}"
+    elif time < 60 * 60 * 24:
         hours = int(time / 60 / 60)
         remain = time - 3600 * hours
-        return f'{int(time / 60 / 60)}小时{int(remain / 60)}分{int(remain % 60)}秒' if second else f'{int(time / 60 / 60)}小时{int(remain / 60)}分'
+        return f"{hours}{t['hour']}{int(remain / 60)}{t['minute']}{int(remain % 60)}{t['second']}" if second else f"{hours}{t['hour']}{int(remain / 60)}{t['minute']}"
     else:
         days = int(time / 3600 / 24)
         remain = time - 3600 * 24 * days
-        return f'{int(days)}天{timeremain(remain)}' if second else f'{int(days)}天{timeremain(remain, False)}'
+        return f"{days}{t['day']}{timeremain(remain, True, server)}" if second else f"{days}{t['day']}{timeremain(remain, False, server)}"
 
 
 def currentevent(server):
@@ -76,7 +85,7 @@ def currentevent(server):
             continue
         if data[i]['startAt'] < now < data[i]['aggregateAt']:
             status = 'going'
-            remain = timeremain((data[i]['aggregateAt'] - now) / 1000)
+            remain = timeremain(time=(data[i]['aggregateAt'] - now) / 1000, server=server)
         elif data[i]['aggregateAt'] < now < data[i]['aggregateAt'] + 600000:
             status = 'counting'
         else:
@@ -140,7 +149,7 @@ def eventtrack():
             c = conn.cursor()
             ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?rankingViewType=top100', 'tw')
             
-            with open('data/twptop100.json', 'w', encoding='utf-8') as f:
+            with open('data/twtop100.json', 'w', encoding='utf-8') as f:
                 f.write(json.dumps(ranking, sort_keys=True, indent=4))
             
             for rank in ranking['rankings']:
@@ -168,6 +177,17 @@ def eventtrack():
             traceback.print_exc()
     else:
         time_printer('台服无正在进行的活动')
+
+    time_printer('开始抓取韩服冲榜查询id')
+    event = currentevent('kr')
+    if event['status'] == 'going':
+        eventid = event['id']
+        ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?rankingViewType=top100', 'kr')
+        
+        with open('data/krtop100.json', 'w', encoding='utf-8') as f:
+            f.write(json.dumps(ranking, sort_keys=True, indent=4))
+    else:
+        time_printer('韩服无正在进行的活动')
 
 
 class Error(Exception):
@@ -707,13 +727,69 @@ def skyc():
     else:
         return '预测暂时不可用'
 
+def format_score(score, server):
+    if server == 'en':
+        return "{:,}".format(score)
+    else:
+        return f"{score / 10000}"
+
 
 def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, qqnum='未知', ismain=True):
     # ismain是用来适配旧版分布式的 现在已停用没必要了 但很多代码懒得改就留着了
+    translation_dict = {
+        'jp': {
+            'msg': '{name}{userId}\n{teamname}分数{score}W，排名{rank}',
+            'score_rank': '分数{score}W，排名{rank}',
+            'upper_score': '{upper}名分数 {linescore}W  ↑{deviation}W',
+            'lower_score': '{lower}名分数 {linescore}W  ↓{deviation}W',
+            'update_time': '你的排名更新于{updateTime}',
+            'event_remain': '活动还剩{remain}',
+            'counting': '活动分数统计中，不要着急哦！',
+            'no_bind': '查不到捏',
+            'private': '查不到捏，可能是不给看',
+            'query_ban': '由于日服限制了查分api，只有排名前100可以使用该功能'
+        },
+        'tw': {
+            'msg': '{name}{userId}\n{teamname}分數{score}萬，排名{rank}',
+            'score_rank': '分數{score}萬，排名{rank}',
+            'upper_score': '{upper}名分數 {linescore}萬  ↑{deviation}萬',
+            'lower_score': '{lower}名分數 {linescore}萬  ↓{deviation}萬',
+            'update_time': '你的排名更新於{updateTime}',
+            'event_remain': '活動還剩{remain}',
+            'counting': '活動分數統計中，不用著急喔！',
+            'no_bind': '查不到唷',
+            'private': '查不到唷，可能是不想讓你看',
+            'query_ban': '由於台服限制了查分api，只有排名前100可以使用該功能'
+        },
+        'en': {
+            'msg': '{name}{userId}\n{teamname} Score {score}, Rank {rank}',
+            'score_rank': 'Score {score}, Rank {rank}',
+            'upper_score': 'Score of Rank {upper}: {linescore}  ↑{deviation}',
+            'lower_score': 'Score of Rank {lower}: {linescore}  ↓{deviation}',
+            'update_time': 'Your rank was updated at {updateTime}',
+            'event_remain': 'Event remaining: {remain}',
+            'counting': "Calculating event scores",
+            'no_bind': 'Can not find',
+            'private': 'Can not find it, might be set to private',
+            'query_ban': ''
+        },
+        'kr': {
+            'msg': '{name}{userId}\n{teamname} 점수 {score}만, 순위 {rank}',
+            'score_rank': '점수 {score}만, 순위 {rank}',
+            'upper_score': '{upper}위 점수 {linescore}만  ↑{deviation}만',
+            'lower_score': '{lower}위 점수 {linescore}만  ↓{deviation}만',
+            'update_time': '당신의 순위는 {updateTime}에 업데이트되었습니다',
+            'event_remain': '남은 시간: {remain}',
+            'counting': '이벤트 점수 계산 중이에요, 기다려 주세요',
+            'no_bind': '찾을 수 없어요',
+            'private': '찾을 수 없어요, 아마도 비공개일 것이에요',
+            'query_ban': '한국 서버에서 점수 확인 API에 제한이 있어서, 상위 100위만 이 기능을 사용할 수 있습니다.'
+        },
+    }
     event = currentevent(server)
     eventid = event['id']
     if server not in rank_query_ban_servers and event['status'] == 'counting':
-        return '活动分数统计中，不要着急哦！'
+        return translation_dict[server]['counting']
     if server == 'jp':
         masterdatadir = 'masterdata'
     elif server == 'en':
@@ -726,9 +802,9 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         if not verifyid(targetid, server):
             bind = getqqbind(targetid, server)
             if bind is None:
-                return '查不到捏'
+                return translation_dict[server]['no_bind']
             elif bind[2]:
-                return '查不到捏，可能是不给看'
+                return translation_dict[server]['private']
             else:
                 targetid = bind[1]
         ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetUserId={targetid}', server)
@@ -746,9 +822,9 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
             name = ''
     except IndexError:
         if server in rank_query_ban_servers:
-            return '由于日服/台服限制了查分api，只有排名前100可以使用该功能'
+            return translation_dict[server]['query_ban']
         else:
-            return '查不到数据捏，可能这期活动没打'
+            return "Can't find any data, you might not have participated in this event"
     try:
         TeamId = ranking['rankings'][0]['userCheerfulCarnival']['cheerfulCarnivalTeamId']
         with open(f'{masterdatadir}/cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
@@ -790,14 +866,23 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
             r, g, b ,mask = team.split()
             img.paste(team, (20, 63), mask)
             draw.text((70, 65), teamname, '#000000', font)
+            font2 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 38)
         else:  # 韩服添加了5v5队伍，使得编号与日服不一致
             draw.text((20, 65), teamname, '#000000', font)
-            font = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 25)
+            font2 = ImageFont.truetype('fonts/SourceHanSansKR-Medium.otf', 38)
         pos += 50
-    msg = f'{name}{userId}\n{teamname}分数{score / 10000}W，排名{rank}'
-    font2 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 38)
-    draw.text((20, pos), f'分数{score / 10000}W，排名{rank}', '#000000', font2)
+
+    if server != 'kr':
+        font2 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 38)
+    else:
+        font2 = ImageFont.truetype('fonts/SourceHanSansKR-Medium.otf', 38)
+    server_translation = translation_dict.get(server, translation_dict['jp'])
+
+    msg = f"{name}{userId}\n{teamname}{server_translation['score_rank'].format(score=format_score(score, server), rank=rank)}"
+    
+    draw.text((20, pos), server_translation['score_rank'].format(score=format_score(score, server), rank=rank), '#000000', font2)
     pos += 60
+
     if simple:
         return msg
     for i in range(0, 31):
@@ -814,8 +899,8 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
             linescore = ranking['rankings'][0]['score']
         except IndexError:
             linescore = 0
-        deviation = (linescore - score) / 10000
-        draw.text((20, pos), f'{upper}名分数 {linescore/10000}W  ↑{deviation}W', '#000000', font)
+        deviation = linescore - score
+        draw.text((20, pos), server_translation['upper_score'].format(upper=upper, linescore=format_score(linescore, server), deviation=format_score(deviation, server)), '#000000', font)
         pos += 38
     if rank < 100000:
         if rank == rankline[i]:
@@ -827,38 +912,18 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
             linescore = ranking['rankings'][0]['score']
         except IndexError:
             linescore = 0
-        deviation = (score - linescore) / 10000
-        draw.text((20, pos), f'{lower}名分数 {linescore / 10000}W  ↓{deviation}W', '#000000', font)
+        deviation = score - linescore
+        draw.text((20, pos), server_translation['lower_score'].format(lower=lower, linescore=format_score(linescore, server), deviation=format_score(deviation, server)), '#000000', font)
         pos += 38
     pos += 10
-    if event['status'] == 'going' and ispredict and server == 'jp':
-        for i in range(0, 17):
-            if rank < predictline[i]:
-                break
-        linescore = 0
-        if rank > 100:
-            upper = predictline[i - 1]
-            linescore = ssyc(upper, eventid)
-            if linescore != 0:
-                draw.text((20, pos), f'{upper}名 预测{linescore/10000}W', '#000000', font)
-                pos += 38
-        if rank < 100000:
-            if rank == predictline[i]:
-                lower = predictline[i + 1]
-            else:
-                lower = predictline[i]
-            linescore = ssyc(lower, eventid)
-            if linescore != 0:
-                draw.text((20, pos), f'{lower}名 预测{linescore/10000}W', '#000000', font)
-                pos += 38
-        pos += 10
+    if server != 'kr':
         font3 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 16)
-        draw.text((400, pos - 5), '预测线来自33（3-3.dev）\n     Generated by Unibot', (150, 150, 150), font3)
+    else:
+        font3 = ImageFont.truetype('fonts/SourceHanSansKR-Medium.otf', 16)
     if server in rank_query_ban_servers:
-        font3 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', 16)
-        draw.text((350, pos - 5), f'你的排名更新于{updateTime}\nGenerated by Unibot', (150, 150, 150), font3, align='right')
+        draw.text((350, pos - 5), server_translation['update_time'].format(updateTime=updateTime) + '\nGenerated by Unibot', (150, 150, 150), font3, align='right')
     if event['status'] == 'going':
-        draw.text((20, pos), '活动还剩' + event['remain'], '#000000', font)
+        draw.text((20, pos), server_translation['event_remain'].format(remain=event['remain']), '#000000', font)
         pos += 38
     img = img.crop((0, 0, 600, pos + 20))
     img.save(f"piccache/{targetid}sk.png")

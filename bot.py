@@ -891,7 +891,11 @@ def sync_handle_msg(event):
             qun = True
             if event.self_id == guildbot:
                 qun = False
-            picdir = aliastochart(event.message.replace("谱面预览", ''), False, qun, getcharttheme(event.user_id))
+            try:
+                picdir = aliastochart(event.message.replace("谱面预览", ''), False, qun, getcharttheme(event.user_id))
+            except FileNotFoundError:
+                sendmsg(event, '没有找到你要的难度')
+                return
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
                     sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")

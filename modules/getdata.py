@@ -90,7 +90,7 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                 targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
                 with open('data/twtop100.json', 'r', encoding='utf-8') as f:
                     jptop100 = json.load(f)
-                updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                updatetime = time.localtime(os.path.getmtime('data/twtop100.json'))
                 for single in jptop100["rankings"]:
                     if single["rank"] == targetRank:
                         return {
@@ -105,7 +105,38 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                 targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])
                 with open('data/twtop100.json', 'r', encoding='utf-8') as f:
                     jptop100 = json.load(f)
-                updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                updatetime = time.localtime(os.path.getmtime('data/twtop100.json'))
+                for single in jptop100["rankings"]:
+                    if single["userId"] == targetUserId:
+                        return {
+                            "rankings": [single],
+                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                        }
+                else:
+                    return {
+                            "rankings": []
+                        }
+        elif server == 'kr':
+            if '/ranking?targetRank' in url:
+                targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
+                with open('data/krtop100.json', 'r', encoding='utf-8') as f:
+                    jptop100 = json.load(f)
+                updatetime = time.localtime(os.path.getmtime('data/krtop100.json'))
+                for single in jptop100["rankings"]:
+                    if single["rank"] == targetRank:
+                        return {
+                            "rankings": [single],
+                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                        }
+                else:
+                    return {
+                            "rankings": []
+                        }
+            if '/ranking?targetUserId=' in url:
+                targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])
+                with open('data/krtop100.json', 'r', encoding='utf-8') as f:
+                    jptop100 = json.load(f)
+                updatetime = time.localtime(os.path.getmtime('data/krtop100.json'))
                 for single in jptop100["rankings"]:
                     if single["userId"] == targetUserId:
                         return {
