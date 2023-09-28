@@ -3,7 +3,8 @@ import time
 import ujson as json
 import traceback
 from ujson import JSONDecodeError
-
+from datetime import datetime
+import pytz
 import requests
 from requests import ReadTimeout
 
@@ -23,8 +24,11 @@ class apiCallError(Exception):
 class serverNotSupported(Exception):
     pass
 
+
 class QueryBanned(Exception):
-    pass
+    def __init__(self, server="jp"):
+        self.server = server
+
 
 current_api_index = {'tw': 0}
 
@@ -84,7 +88,7 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                         data = json.load(f)
                     return data
                 elif query_type in ['b30', 'jindu', 'rank']:
-                    raise QueryBanned
+                    raise QueryBanned(server)
         elif server == 'tw':
             if '/ranking?targetRank' in url:
                 targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
@@ -116,6 +120,9 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                     return {
                             "rankings": []
                         }
+            if '/profile' in url and query_type != 'daibu' and not is_force_update:
+                if query_type in ['b30', 'jindu', 'rank']:
+                    raise QueryBanned(server)
         elif server == 'kr':
             if '/ranking?targetRank' in url:
                 targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
@@ -126,7 +133,7 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                     if single["rank"] == targetRank:
                         return {
                             "rankings": [single],
-                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                            'updateTime': datetime.fromtimestamp(time.mktime(updatetime), pytz.timezone('UTC')).astimezone(pytz.timezone('Asia/Tokyo')).strftime('%m-%d %H:%M:%S')
                         }
                 else:
                     return {
@@ -149,7 +156,7 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                         }
             if '/profile' in url and query_type != 'daibu' and not is_force_update:
                 if query_type in ['b30', 'jindu', 'rank']:
-                    raise QueryBanned
+                    raise QueryBanned(server)
     
     if server == 'tw':
         urlroots = twapiurls

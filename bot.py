@@ -1849,8 +1849,16 @@ def sync_handle_msg(event):
         sendmsg(event, '查不到捏，可能啤酒烧烤在维护')
     except userIdBan:
         sendmsg(event, '该玩家因违反bot使用条款（包括但不限于开挂）已被bot拉黑')
-    except QueryBanned:
-        sendmsg(event, '由于日服/台服api限制，数据已无法抓取，该功能已停用')
+    except QueryBanned as e:
+        if e.server == 'jp':
+            sendmsg(event, '由于日服限制，数据已无法抓取，该功能已停用')
+        elif e.server == 'en':  # 之后会用上的
+            sendmsg(event, 'Due to limitations on the international server API, data can no longer be retrieved. This feature has been disabled.')
+        elif e.server == 'tw':
+            sendmsg(event, '由於台服API限制，資料已無法抓取，該功能已停用。')
+        elif e.server == 'kr':
+            sendmsg(event, '한국 서버 API 제한으로 인해 데이터를 더 이상 가져올 수 없습니다. 이 기능은 사용 중지되었습니다.')
+        
     except cheaterFound as a:
         text = repr(a)[14:-2].replace('、', '\n')
         infopic = text2image(text=text, max_width=1000)

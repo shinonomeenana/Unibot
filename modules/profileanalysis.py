@@ -341,7 +341,7 @@ def daibu(targetid=None, secret=False, server='jp', qqnum='未知'):
 
 def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未知", server='jp'):
     if server in rank_query_ban_servers:
-        raise QueryBanned
+        raise QueryBanned(server)
     rankmatchid = currentrankmatch(server)
     print(rankmatchid)
     if rankmatchid is None:
@@ -449,6 +449,8 @@ def jinduChart(score):
 
 
 def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知'):
+    if server in ['tw', 'kr']:
+        raise QueryBanned(server)
     profile = userprofile()
     profile.getprofile(userid, server, qqnum, query_type='jindu')
     if private:
@@ -1085,6 +1087,8 @@ def fcrank(playlevel, rank):
 
 
 def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知'):
+    if server in ['tw', 'kr']:
+        raise QueryBanned(server)
     data = callapi(f'/user/{userid}/profile', server, query_type='b30')
 
     profile = userprofile()
