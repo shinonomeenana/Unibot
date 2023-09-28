@@ -33,16 +33,11 @@ class musicinfo(object):
         self.hot = 0
         self.hotAdjust = 0
         self.length = 0
-        self.fullPerfectRate = [0, 0, 0, 0, 0]
-        self.fullComboRate = [0, 0, 0, 0, 0]
-        self.clearRate = [0, 0, 0, 0, 0]
-        self.playLevel = [0, 0, 0, 0, 0]
-        self.noteCount = [0, 0, 0, 0, 0]
-        self.playLevelAdjust = [0, 0, 0, 0, 0]
-        self.fullComboAdjust = [0, 0, 0, 0, 0]
-        self.fullPerfectAdjust = [0, 0, 0, 0, 0]
+        self.playLevel = [0, 0, 0, 0, 0, 0]
+        self.noteCount = [0, 0, 0, 0, 0, 0]
         self.fillerSec = 0
         self.categories = []
+        self.assetbundleName = ''
 
 
 def isSingleEmoji(content):
@@ -72,7 +67,12 @@ def parse_bpm(music_id):
                   '/startapp/music/music_score/%04d_01/expert' % music_id, encoding='utf-8') as f:
             r = f.read()
     except FileNotFoundError:
-        return 0, [{'time': 0.0, 'bpm': '无数据'}], 0, None
+        try:
+            with open('data/assets/sekai/assetbundle/resources'
+                      '/startapp/music/music_score/%04d_01/append' % music_id, encoding='utf-8') as f:
+                r = f.read()
+        except FileNotFoundError:
+            return 0, [{'time': 0.0, 'bpm': '无数据'}], 0, None
 
     score = {}
     bar_count = 0
@@ -242,6 +242,7 @@ def pjskinfo(musicid):
     else:
         return drawpjskinfo(musicid)
 
+
 def drawpjskinfo(musicid):
     info = musicinfo()
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
@@ -256,21 +257,23 @@ def drawpjskinfo(musicid):
         info.publishedAt = music['publishedAt']
         info.fillerSec = music['fillerSec']
         info.categories = music['categories']
+        info.assetbundleName = music['assetbundleName']
     
     with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
-    for i in range(0, len(data)):
-        if data[i]['musicId'] != musicid:
-            continue
-        info.playLevel = [data[i]['playLevel'], data[i + 1]['playLevel'],
-                            data[i + 2]['playLevel'], data[i + 3]['playLevel'], data[i + 4]['playLevel']]
-        try:
-            info.noteCount = [data[i]['noteCount'], data[i + 1]['noteCount'],
-                            data[i + 2]['noteCount'], data[i + 3]['noteCount'], data[i + 4]['noteCount']]
-        except KeyError:
-            info.noteCount = [data[i]['totalNoteCount'], data[i + 1]['totalNoteCount'],
-                            data[i + 2]['totalNoteCount'], data[i + 3]['totalNoteCount'], data[i + 4]['totalNoteCount']]
-        break
+
+    difficulties = ['easy', 'normal', 'hard', 'expert', 'master', 'append']
+    found_difficulties = set()
+    for entry in data:
+        if entry['musicId'] == musicid:
+            difficulty = entry['musicDifficulty']
+            if difficulty in difficulties:
+                index = difficulties.index(difficulty)
+                info.playLevel[index] = entry['playLevel']
+                info.noteCount[index] = entry['totalNoteCount']
+                found_difficulties.add(difficulty)
+        if found_difficulties == set(difficulties):
+            break
     now = int(time.time() * 1000)
     leak = False
 
@@ -296,7 +299,7 @@ def drawpjskinfo(musicid):
             img = Image.open('pics/pjskinfo.png')
     try:
         jacket = Image.open('data/assets/sekai/assetbundle/resources'
-                            f'/startapp/music/jacket/jacket_s_{str(musicid).zfill(3)}/jacket_s_{str(musicid).zfill(3)}.png')
+                            f'/startapp/music/jacket/{info.assetbundleName}/{info.assetbundleName}.png')
         jacket = jacket.resize((650, 650))
         img.paste(jacket, (80, 47))
     except FileNotFoundError:
@@ -338,17 +341,45 @@ def drawpjskinfo(musicid):
                                            pytz.timezone('Asia/Shanghai')).strftime('%Y/%m/%d %H:%M:%S (UTC+8)')
     draw.text((930, 593), Time, fill=(255, 255, 255), font=font_style)
 
-    # 难度
-    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 60)
-    for i in range(0, 5):
-        text_width = font_style.getsize(str(info.playLevel[i]))
-        text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(873 - text_width[1] / 2))
-        draw.text(text_coordinate, str(info.playLevel[i]), fill=(1, 255, 221), font=font_style)
-    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 45)
-    for i in range(0, 5):
-        text_width = font_style.getsize(str(info.noteCount[i]))
-        text_coordinate = (int((132 + 138 * i) - text_width[0] / 2), int(960 - text_width[1] / 2))
-        draw.text(text_coordinate, str(info.noteCount[i]), fill=color, font=font_style)
+    if all(x == 0 for x in info.playLevel[:5]):  # 只有append难度
+        diff_img = Image.open('pics/pjskinfo_diff3.png')
+        img.paste(diff_img, (80, 700), diff_img.split()[3])
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 60)
+        text_width = font_style.getsize(str(info.playLevel[5]))
+        text_coordinate = (int(545 - text_width[0] / 2), int(823 - text_width[1] / 2))
+        draw.text(text_coordinate, str(info.playLevel[5]), fill=(1, 255, 221), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 45)
+        text_width = font_style.getsize(str(info.noteCount[5]))
+        text_coordinate = (int(543 - text_width[0] / 2), int(910 - text_width[1] / 2))
+        draw.text(text_coordinate, str(info.noteCount[5]), fill=color, font=font_style)
+    else:
+        if info.playLevel[5] == 0:
+            x_add = 60
+            diff_img = Image.open('pics/pjskinfo_diff1.png')
+            img.paste(diff_img, (80, 700), diff_img.split()[3])
+        else:
+            x_add = 0
+            diff_img = Image.open('pics/pjskinfo_diff2.png')
+            img.paste(diff_img, (20, 700), diff_img.split()[3])
+            font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 60)
+            text_width = font_style.getsize(str(info.playLevel[5]))
+            text_coordinate = (int(707 - text_width[0] / 2), int(873 - text_width[1] / 2))
+            draw.text(text_coordinate, str(info.playLevel[5]), fill=(1, 255, 221), font=font_style)
+            font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 45)
+            text_width = font_style.getsize(str(info.noteCount[5]))
+            text_coordinate = (int(705 - text_width[0] / 2), int(960 - text_width[1] / 2))
+            draw.text(text_coordinate, str(info.noteCount[5]), fill=color, font=font_style)
+
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 60)
+        for i in range(0, 5):
+            text_width = font_style.getsize(str(info.playLevel[i]))
+            text_coordinate = (int((105 + x_add + 118 * i) - text_width[0] / 2), int(873 - text_width[1] / 2))
+            draw.text(text_coordinate, str(info.playLevel[i]), fill=(1, 255, 221), font=font_style)
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 45)
+        for i in range(0, 5):
+            text_width = font_style.getsize(str(info.noteCount[i]))
+            text_coordinate = (int((103 + x_add + 118 * i) - text_width[0] / 2), int(960 - text_width[1] / 2))
+            draw.text(text_coordinate, str(info.noteCount[i]), fill=color, font=font_style)
 
     # 1824 592
     pos = 1834
