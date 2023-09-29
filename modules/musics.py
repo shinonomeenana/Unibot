@@ -431,7 +431,7 @@ def gensvg():
         musics = json.load(f)
     
     for music in musics:
-        for diff in ['master', 'expert', 'hard', 'normal', 'easy']:
+        for diff in ['master', 'expert', 'hard', 'normal', 'easy', 'append']:
             if not os.path.exists(f'charts/moe/svg/{music["id"]}/{diff}.svg'):
                 try:
                     parse(music['id'], diff, 'svg', False, 'https://assets.unipjsk.com/startapp/music/jacket/%s/%s.png')
@@ -445,7 +445,10 @@ def autoGenGuess():
         musics = json.load(f)
     for music in musics:
         if not os.path.exists(f'charts/moe/guess/{music["id"]}/master.svg'):
-            genGuessChart(music['id'])
+            try:
+                genGuessChart(music['id'])
+            except FileNotFoundError:
+                pass
 
 
 def setcharttheme(qqnum, theme):

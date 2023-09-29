@@ -898,7 +898,7 @@ def sync_handle_msg(event):
                 return
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
-                    sendmsg(event, picdir[0] + f"\n该预览不支持新键形TRACE，会显示错误！[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                    sendmsg(event, picdir[0] + f"\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                 elif picdir == '':
                     sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
                     return
@@ -1294,9 +1294,9 @@ def sync_handle_msg(event):
             if result is not None:
                 title, image_url = result
                 if event.self_id == guildbot:
-                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx点in\n该预览不支持新键形TRACE，会显示错误！"
+                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx点in\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n"
                 else:
-                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx.in\n该预览不支持新键形TRACE，会显示错误！"
+                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx.in\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n"
                 sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             else:
                 sendmsg(event, "抱歉，无法生成图像。")
@@ -1370,9 +1370,9 @@ def sync_handle_msg(event):
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
                     if event.self_id == guildbot:
-                        sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\n该预览不支持新键形TRACE，会显示错误！[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                        sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                     else:
-                        sendmsg(event, picdir[0] + f"\n该预览不支持新键形TRACE，会显示错误！[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                        sendmsg(event, picdir[0] + f"\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n该预览不支持新键形TRACE，会显示错误！别截图到处发了\n[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                 elif picdir == '':
                     sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
                     return
