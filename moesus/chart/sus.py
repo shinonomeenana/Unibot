@@ -860,7 +860,7 @@ class SUS:
         ))
 
         drawing.add(svgwrite.text.Text(
-            f'{str(self.meta.difficulty).upper()} {self.meta.playlevel} 譜面確認 by profile.pjsekai.moe',
+            f'{str(self.meta.difficulty).upper()} {self.meta.playlevel} 譜面確認 （暂不支持新键形TRACE 会显示错误！）',
             insert=(
                 self.meta_size + self.padding * 3,
                 height + self.padding * 4,

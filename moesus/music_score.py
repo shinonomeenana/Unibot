@@ -12,6 +12,7 @@ note_sizes = {
     'hard': 1.25,
     'expert': 1.0,
     'master': 0.875,
+    'append': 0.875
 }
 
 
