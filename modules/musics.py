@@ -410,7 +410,7 @@ def svg_to_png(url, write_to):
     driver.quit()
 
 
-def prase_chart_new(music_id, difficulty, theme, savepng=True, jacketdir=None):
+def parse_chart_new(music_id, difficulty, theme, savepng=True, jacketdir=None):
     jacketdir = jacketdir or '../../../../data/assets/sekai/assetbundle/resources/startapp/music/jacket/%s/%s.png'
     style_path = 'charts/white.css' if theme in ['svg', 'guess'] else f'charts/{theme}.css'
     
@@ -517,10 +517,7 @@ def getchart(musicid, difficulty, theme='white'):
                 # 如果music_meta还是没有则返回之前的缓存
                 return f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
         if not os.path.exists(path[:-3] + 'png'):
-            if theme == 'skill':
-                parse(musicid, difficulty, theme, withSkill=True)
-            else:
-                prase_chart_new(musicid, difficulty, theme)  # 生成moe
+            parse_chart_new(musicid, difficulty, theme)  # 生成moe
         if theme != 'guess':
             try:
                 im = Image.open(path[:-3] + 'png')
@@ -551,7 +548,7 @@ def gensvg():
         for diff in ['master', 'expert', 'hard', 'normal', 'easy', 'append']:
             if not os.path.exists(f'charts/moe/svg/{music["id"]}/{diff}.svg'):
                 try:
-                    prase_chart_new(music['id'], diff, 'svg', False, 'https://assets.unipjsk.com/startapp/music/jacket/%s/%s.png')
+                    parse_chart_new(music['id'], diff, 'svg', False, 'https://assets.unipjsk.com/startapp/music/jacket/%s/%s.png')
                     print('已生成谱面', music['id'], diff)
                 except FileNotFoundError:
                     pass
@@ -565,7 +562,7 @@ def autoGenGuess():
     for music in musics:
         if not os.path.exists(f'charts/moe/guess/{music["id"]}/master.svg'):
             try:
-                prase_chart_new(music['id'], 'master', 'guess')
+                parse_chart_new(music['id'], 'master', 'guess')
             except FileNotFoundError:
                 pass
 
@@ -820,7 +817,7 @@ def updaterebase():
     failcount = 0
     while True:
         try:
-            resp = requests.get(f'https://gitlab.com/pjsekai/musics/-/refs/main/logs_tree/rebases?format=json&offset={offset}', proxies=proxies)
+            resp = requests.get(f'https://gitlab.com/pjsekai/rebases/-/refs/main/logs_tree/?format=json&offset={offset}', proxies=proxies)
             offset += 25
             data = resp.json()
             if not data:
@@ -851,7 +848,7 @@ def download_rebase(file_name):
     print('更新' + file_name)
     for i in range(0, 4):
         try:
-            resp = requests.get(f'https://gitlab.com/pjsekai/musics/-/raw/main/rebases/{file_name}?inline=false', proxies=proxies)
+            resp = requests.get(f'https://gitlab.com/pjsekai/rebases/-/raw/main/{file_name}?inline=false', proxies=proxies)
             with open('moesus/rebases/' + file_name, 'wb') as f:
                 f.write(resp.content)
             return
@@ -862,17 +859,13 @@ def download_rebase(file_name):
 def updatecharts(deletelist):
     for musicid in deletelist:
         for theme in ['black', 'white', 'color', 'svg']:
-            for diff in ['easy', 'normal', 'hard', 'expert', 'master']:
-                for fileformat in ['png', 'svg']:
+            for diff in ['easy', 'normal', 'hard', 'expert', 'master', 'append']:
+                for fileformat in ['jpg', 'png', 'svg']:
                     path = f'charts/moe/{theme}/{musicid}/{diff}.{fileformat}'
                     if os.path.exists(path):
                         os.remove(path)
-                        if theme != 'svg' and diff == 'master' and fileformat == 'svg':
-                            print('更新' + path)
-                            parse(musicid, diff, theme)
-                            im = Image.open(path[:-3] + 'png')
-                            # im = im.convert('RGB')
-                            im.save(path[:-3] + 'jpg', quality=60)
+                        print('删除缓存' + path)
+                            
 
     gensvg()
 
