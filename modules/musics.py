@@ -10,9 +10,10 @@ import pymysql
 from modules.mysql_config import *
 import aiofiles
 import requests
+import pjsekai.scores
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from dateutil.tz import tzlocal
-
+from selenium import webdriver
 from modules.config import proxies, rank_query_ban_servers, env, suite_uploader_path
 from modules.pjskinfo import aliastomusicid
 from modules.profileanalysis import userprofile, generatehonor
@@ -387,6 +388,118 @@ def getPlayLevel(musicid, difficulty):
             return diff['playLevel']
 
 
+def svg_to_png(url, write_to):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+
+    # Initialize the Chrome webdriver and open the SVG file
+    driver = webdriver.Chrome('chromedriver-win64/chromedriver.exe', options=options)
+    svg_path_absolute = os.path.abspath(url)
+    svg_path_windows = svg_path_absolute.replace("/", "\\")
+    driver.get(f'file:///{svg_path_windows}')
+
+    # Get the SVG element dimensions
+    width = driver.execute_script('return document.documentElement.scrollWidth')
+    height = driver.execute_script('return document.documentElement.scrollHeight')
+    # Set window size
+    driver.set_window_size(width, height)
+
+    # Take screenshot
+    driver.save_screenshot(write_to)
+
+    driver.quit()
+
+
+def prase_chart_new(music_id, difficulty, theme, savepng=True, jacketdir=None):
+    jacketdir = jacketdir or '../../../../data/assets/sekai/assetbundle/resources/startapp/music/jacket/%s/%s.png'
+    style_path = 'charts/white.css' if theme in ['svg', 'guess'] else f'charts/{theme}.css'
+    
+    with open(style_path, encoding='UTF-8') as f:
+        style = f.read()
+
+    score = pjsekai.scores.Score.open(
+        f'data/assets/sekai/assetbundle/resources/startapp/music/music_score/{music_id:04d}_01/{difficulty}',
+        encoding='UTF-8'
+    )
+    score.meta.difficulty = difficulty
+
+    if theme == 'guess':
+        rebase = pjsekai.scores.Rebase.load_from_dict(
+                {
+                "musicId": 0,
+                "events": [
+                    {
+                        "bar": 0,
+                        "bpm": score.events[1].bpm,
+                    }
+                ]
+            }
+        )
+        score = rebase.rebase(score)
+    else:
+        try:
+            with open(f'moesus/rebases/{music_id}.json', encoding='UTF-8') as f:
+                rebase = pjsekai.scores.Rebase.load(f)
+            score = rebase.rebase(score)
+        except FileNotFoundError:
+            pass
+    
+
+    try:
+        with open(f'moesus/rebases/{music_id}.lyric', encoding='UTF-8') as f:
+            lyric = pjsekai.scores.Lyric.load(f)
+    except FileNotFoundError:
+        lyric = None
+
+    with open('masterdata/musics.json', 'r', encoding='UTF-8') as f:
+        music_data = json.load(f)
+
+    with open('masterdata/musicArtists.json', 'r', encoding='UTF-8') as f:
+        music_artist_data = json.load(f)
+
+    with open('masterdata/musicDifficulties.json', 'r', encoding='UTF-8') as f:
+        music_difficulty_data = json.load(f)
+
+    for i in music_data:
+        if i['id'] == music_id:
+            artist_id = i['creatorArtistId']
+            score.meta.artist = next(j['name'] for j in music_artist_data if j['id'] == artist_id)
+            score.meta.jacket = jacketdir % (i['assetbundleName'], i['assetbundleName'])
+            score.meta.title = i['title']
+            break
+
+    for i in music_difficulty_data:
+        if i['musicId'] == music_id and i['musicDifficulty'] == difficulty:
+            score.meta.playlevel = str(i["playLevel"])
+    
+    drawing = pjsekai.scores.Drawing(score=score, lyric=lyric, style_sheet=style, note_host="../../notes_new/custom01")
+    
+    note_sizes = {
+        'easy': 30,
+        'normal': 25,
+        'hard': 22,
+        'expert': 19,
+        'master': 18,
+        'append': 18
+    }
+    drawing.note_size = note_sizes[difficulty]
+    drawing.time_height = 240
+
+    if score.meta.playlevel:
+        if 30 < int(score.meta.playlevel) <= 33:
+            drawing.time_height += (int(score.meta.playlevel) - 30) * 25
+        elif int(score.meta.playlevel) > 33:
+            drawing.time_height = 340
+
+    file_name = f'charts/moe/{theme}/{music_id}/{difficulty}'
+    os.makedirs(os.path.dirname(file_name), exist_ok=True)
+    drawing.svg().saveas(f'{file_name}.svg')
+
+    if savepng:
+        svg_to_png(url=f'{file_name}.svg', write_to=f'{file_name}.png')
+
+
 def getchart(musicid, difficulty, theme='white'):
     path = f'charts/moe/{theme}/{musicid}/{difficulty}.jpg'
     if os.path.exists(path):  # 本地有缓存
@@ -403,15 +516,18 @@ def getchart(musicid, difficulty, theme='white'):
                 # 如果music_meta还是没有则返回之前的缓存
                 return f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
         if not os.path.exists(path[:-3] + 'png'):
-            withSkill = False if theme != 'skill' else True
-            parse(musicid, difficulty, theme, withSkill=withSkill)  # 生成moe
-        try:
-            im = Image.open(path[:-3] + 'png')
-        except FileNotFoundError:
-            im = Image.open(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.png')
-            path = f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
-        im = im.convert('RGB')
-        im.save(path, quality=60)
+            if theme == 'skill':
+                parse(musicid, difficulty, theme, withSkill=True)
+            else:
+                prase_chart_new(musicid, difficulty, theme)  # 生成moe
+        if theme != 'guess':
+            try:
+                im = Image.open(path[:-3] + 'png')
+            except FileNotFoundError:
+                im = Image.open(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.png')
+                path = f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
+            im = im.convert('RGB')
+            im.save(path, quality=60)
         return path
 
 def getcharttheme(qqnum):
@@ -434,10 +550,12 @@ def gensvg():
         for diff in ['master', 'expert', 'hard', 'normal', 'easy', 'append']:
             if not os.path.exists(f'charts/moe/svg/{music["id"]}/{diff}.svg'):
                 try:
-                    parse(music['id'], diff, 'svg', False, 'https://assets.unipjsk.com/startapp/music/jacket/%s/%s.png')
+                    prase_chart_new(music['id'], diff, 'svg', False, 'https://assets.unipjsk.com/startapp/music/jacket/%s/%s.png')
                     print('已生成谱面', music['id'], diff)
                 except FileNotFoundError:
                     pass
+                except:
+                    print('生成失败', music['id'], diff)
     
 
 def autoGenGuess():
@@ -446,7 +564,7 @@ def autoGenGuess():
     for music in musics:
         if not os.path.exists(f'charts/moe/guess/{music["id"]}/master.svg'):
             try:
-                genGuessChart(music['id'])
+                prase_chart_new(music['id'], 'master', 'guess')
             except FileNotFoundError:
                 pass
 

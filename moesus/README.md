@@ -1,3 +1,5 @@
-# Project Sekai Musics
+# 注意
 
-修改自 https://gitlab.com/pjsekai/musics 的谱面预览生成模块
+该模块为旧版，已弃用
+
+新版谱面生成使用 `pip install pjsekai.scores` 安装

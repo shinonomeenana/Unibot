@@ -1,0 +1,130 @@
+.bar-line {
+    stroke: #eeeeee;
+    stroke-width: 2;
+}
+
+.bar-count-flag {
+    stroke: #606060;
+    stroke-width: 4;
+}
+
+.bar-count-text {
+    font-size: 12px;
+    font-weight: 900;
+    font-family: Avenir;
+    fill: #606060;
+    text-anchor: start;
+}
+
+.beat-line {
+    stroke: #eeeeee;
+    stroke-width: 1;
+}
+
+.lane-line {
+    stroke: #ffffff;
+    stroke-width: 1;
+}
+
+.event-flag {
+    stroke: #7f0000;
+    stroke-width: 4;
+}
+
+.event-text {
+    font-size: 12px;
+    font-weight: 900;
+    font-family: Avenir;
+    fill: #808080;
+    text-anchor: start;
+}
+
+.speed-line {
+    stroke: #ff33ff;
+    stroke-width: 1;
+}
+
+.speed-text {
+    font-size: 12px;
+    font-family: Avenir;
+    fill: #ff33ff;
+    text-anchor: end;
+}
+
+.lyric-text {
+    font-size: 12px;
+    font-family: FOT-RodinNTLG Pro DB;
+    fill: #606060;
+    text-anchor: start;
+}
+
+.slide {
+    fill: #d9fbeecc
+}
+
+.slide-critical {
+    fill: #fcfacdcc
+}
+
+.decoration {
+    fill: url(#decoration-gradient);
+}
+
+#decoration-gradient {
+    --color-start: #c9fce299;
+    --color-stop: #c9fce233;
+}
+
+.decoration-critical {
+    fill: url(#decoration-critical-gradient);
+}
+
+#decoration-critical-gradient {
+    --color-start: #fcf1c399;
+    --color-stop: #fcf1c333;
+}
+
+.tick-text {
+    font-size: 12px;
+    font-family: Avenir;
+    fill: #000000;
+    text-anchor: end;
+}
+
+.tick-line {
+    stroke: #808080;
+    stroke-width: 1;
+}
+
+.meta-line {
+    stroke: #e2e2e2;
+    stroke-width: 2;
+}
+
+.title {
+    font-size: 96px;
+    font-weight: 900;
+    font-family: FOT-RodinNTLG Pro DB;
+    fill: #000000;
+    text-anchor: start;
+}
+
+.subtitle {
+    font-size: 48px;
+    font-weight: 700;
+    font-family: FOT-RodinNTLG Pro DB;
+    fill: #000000;
+    text-anchor: start;
+}
+
+.lane {
+    fill: #cfd8db;
+}
+
+.background {
+    fill: #FFFFFF;
+}
+
+.meta {
+    fill: #FFFFFF;
+}

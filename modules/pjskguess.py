@@ -132,15 +132,17 @@ def getrandomchart():
 
 def cutchartimg(musicid, qunnum):
     img = Image.open(f'charts/moe/guess/{musicid}/master.png')
-    row = round((img.size[0] - 93.254) / 280.8)
+    
+    row = round((img.size[0] - 80) / 272)
+    print(row)
     rannum = random.randint(2, row - 1)
-    img = img.crop((int(94 + 280.8 * (rannum - 1)), 48, int(94 + 280.8 * (rannum - 1) + 190), img.size[1] - 295))
+    img = img.crop((int(80 + 272 * (rannum - 1)), 32, int(80 + 272 * (rannum - 1) + 190), img.size[1] - 287))
     img1 = img.crop((0, 0, 190, int(img.size[1] / 2) + 20))
     img2 = img.crop((0, int(img.size[1] / 2) - 20, 190, img.size[1]))
     final = Image.new('RGB', (410, int(img.size[1] / 2) - 10), (255, 255, 255))
-    final.paste(img2, (10, 0))
-    final.paste(img1, (210, -26))
-    #final.show()
+    final.paste(img2, (10, -7))
+    final.paste(img1, (210, -20))
+    # final.show()
     final.save(f'piccache/{qunnum}.png')
 
 

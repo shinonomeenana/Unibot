@@ -169,7 +169,8 @@ class SUS:
                 y_next,
             )]
 
-            slide_paths.append(svgwrite.path.Path(
+            slide_paths.append(
+                svgwrite.path.Path(
                 d=[
                     ('M', list(map(round, [*l[0]]))),
                     ('C', list(map(round, [*l[1], *l[2], *l[3]]))),
