@@ -500,6 +500,8 @@ def prase_chart_new(music_id, difficulty, theme, savepng=True, jacketdir=None):
 
 
 def getchart(musicid, difficulty, theme='white'):
+    if musicid == 131 and difficulty == 'append':
+        musicid = 388  # 激唱append
     path = f'charts/moe/{theme}/{musicid}/{difficulty}.jpg'
     if os.path.exists(path):  # 本地有缓存
         return path
@@ -679,6 +681,7 @@ def downloadviewerchart(musicid, difficulty):
 
 
 def aliastochart(full, sdvx=False, qun=False, theme='white'):
+    full = full.strip()
     if full[-2:] == 'ex':
         alias = full[:-2]
         diff = 'expert'
@@ -714,6 +717,9 @@ def aliastochart(full, sdvx=False, qun=False, theme='white'):
         diff = 'append'
     elif full[-2:] == 'ap':
         alias = full[:-2]
+        diff = 'append'
+    elif full[-3:] == 'apd':
+        alias = full[:-3]
         diff = 'append'
     else:
         alias = full
