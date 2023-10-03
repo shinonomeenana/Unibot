@@ -592,13 +592,16 @@ def setcharttheme(qqnum, theme):
 
 def getsdvxchart(musicid, difficulty):
     try:
-        if difficulty == 'master' or difficulty == 'expert':
+        if difficulty == 'master' or difficulty == 'expert' or difficulty == 'append':
             if os.path.exists(f'charts/sdvxInCharts/{musicid}/{difficulty}.png'):  # sdvx.in本地有缓存
                 return f'charts/sdvxInCharts/{musicid}/{difficulty}.png'
             else:  # 无缓存，尝试下载
                 timeid = idtotime(musicid)
                 if difficulty == 'master':
                     data = requests.get(f'https://sdvx.in/prsk/obj/data{str(timeid).zfill(3)}mst.png',
+                                        proxies=proxies)
+                elif difficulty == 'append':
+                    data = requests.get(f'https://sdvx.in/prsk/obj/data{str(timeid).zfill(3)}apd.png',
                                         proxies=proxies)
                 else:
                     data = requests.get(f'https://sdvx.in/prsk/obj/data{str(timeid).zfill(3)}exp.png',
@@ -639,47 +642,6 @@ def idtotime(musicid):
         if musics[i]['id'] == musicid:
             return i + 1
     return 0
-
-
-def downloadviewerchart(musicid, difficulty):
-    try:
-        try:
-            re = requests.get(f'https://storage.sekai.best/sekai-music-charts/{str(musicid).zfill(4)}/{difficulty}.png',
-                              proxies=proxies)
-        except:
-            re = requests.get(f'https://storage.sekai.best/sekai-music-charts/{str(musicid).zfill(4)}/{difficulty}.png',
-                              proxies=None)
-        if re.status_code == 200:
-            dirs = rf'charts/SekaiViewer/{musicid}'
-            if not os.path.exists(dirs):
-                os.makedirs(dirs)
-            if difficulty == 'master':
-                svg = requests.get(f'https://storage.sekai.best/sekai-music-charts/{str(musicid).zfill(4)}/{difficulty}.svg',
-                                   proxies=proxies)
-                i = 0
-                while True:
-                    i = i + 1
-                    if svg.text.count(f'{str(i).zfill(3)}</text>') == 0:
-                        break
-                row = int((i - 2) / 4)
-                print(row)
-                pic = Image.open(io.BytesIO(re.content))
-                r, g, b, mask = pic.split()
-                final = Image.new('RGB', pic.size, (255, 255, 255))
-                final.paste(pic, (0, 0), mask)
-                final = final.resize((160 * row + 32, 1300))
-                final.save(f'charts/SekaiViewer/{musicid}/{difficulty}.png')
-            else:
-                pic = Image.open(io.BytesIO(re.content))
-                r, g, b, mask = pic.split()
-                final = Image.new('RGB', pic.size, (255, 255, 255))
-                final.paste(pic, (0, 0), mask)
-                final.save(f'charts/SekaiViewer/{musicid}/{difficulty}.png')
-            return True
-        else:
-            return False
-    except:
-        return False
 
 
 def aliastochart(full, sdvx=False, qun=False, theme='white'):
@@ -747,7 +709,6 @@ def aliastochart(full, sdvx=False, qun=False, theme='white'):
         elif 'moe' in dir:
             text = text + '\nBPM: ' + bpmtext[3:] + '\n'
         return text, dir
-
 
 
 def notecount(count):
@@ -870,8 +831,6 @@ def updatecharts(deletelist):
                     if os.path.exists(path):
                         os.remove(path)
                         print('删除缓存' + path)
-                            
-
     gensvg()
 
 
