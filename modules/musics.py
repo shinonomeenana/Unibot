@@ -17,7 +17,6 @@ from selenium import webdriver
 from modules.config import proxies, rank_query_ban_servers, env, suite_uploader_path
 from modules.pjskinfo import aliastomusicid
 from modules.profileanalysis import userprofile, generatehonor
-from moesus.music_score import parse, genGuessChart
 
 
 assetpath = 'data/assets/sekai/assetbundle/resources'
