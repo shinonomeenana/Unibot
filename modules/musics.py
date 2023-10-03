@@ -387,7 +387,7 @@ def getPlayLevel(musicid, difficulty):
             return diff['playLevel']
 
 
-def svg_to_png(url, write_to):
+def svg_to_png(url, write_to, scale=1):
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
@@ -398,9 +398,13 @@ def svg_to_png(url, write_to):
     svg_path_windows = svg_path_absolute.replace("/", "\\")
     driver.get(f'file:///{svg_path_windows}')
 
-    # Get the SVG element dimensions
-    width = driver.execute_script('return document.documentElement.scrollWidth')
-    height = driver.execute_script('return document.documentElement.scrollHeight')
+    if scale == 1:
+        width = driver.execute_script('return document.documentElement.scrollWidth')
+        height = driver.execute_script('return document.documentElement.scrollHeight')
+    else:
+        driver.execute_script(f"document.getElementsByTagName('svg')[0].setAttribute('style', 'transform: scale({scale}); transform-origin: 0 0;')")
+        width = int(driver.execute_script('return document.documentElement.scrollWidth') * scale) + 1
+        height = int(driver.execute_script('return document.documentElement.scrollHeight') * scale) + 1
     # Set window size
     driver.set_window_size(width, height)
 
@@ -410,7 +414,7 @@ def svg_to_png(url, write_to):
     driver.quit()
 
 
-def parse_chart_new(music_id, difficulty, theme, savepng=True, jacketdir=None):
+def parse_chart_new(music_id, difficulty, theme, savepng=True, jacketdir=None, scale=1):
     jacketdir = jacketdir or '../../../../data/assets/sekai/assetbundle/resources/startapp/music/jacket/%s/%s.png'
     style_path = 'charts/white.css' if theme in ['svg', 'guess'] else f'charts/{theme}.css'
     
@@ -496,7 +500,7 @@ def parse_chart_new(music_id, difficulty, theme, savepng=True, jacketdir=None):
     drawing.svg().saveas(f'{file_name}.svg')
 
     if savepng:
-        svg_to_png(url=f'{file_name}.svg', write_to=f'{file_name}.png')
+        svg_to_png(url=f'{file_name}.svg', write_to=f'{file_name}.png', scale=scale)
 
 
 def getchart(musicid, difficulty, theme='white'):
@@ -507,23 +511,24 @@ def getchart(musicid, difficulty, theme='white'):
         return path
     else:  # 本地无缓存
         # 可能生成过没有music_meta的版本
-        if theme == 'skill' and os.path.exists(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'):
-            with open('masterdata/realtime/music_metas.json', 'r', encoding='utf-8') as f:
-                music_metas = json.load(f)
-            for mm in music_metas:
-                if mm['music_id'] == musicid and mm['difficulty'] == difficulty:
-                    break
-            else:
-                # 如果music_meta还是没有则返回之前的缓存
-                return f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
+        # if theme == 'skill' and os.path.exists(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'):
+        #     with open('masterdata/realtime/music_metas.json', 'r', encoding='utf-8') as f:
+        #         music_metas = json.load(f)
+        #     for mm in music_metas:
+        #         if mm['music_id'] == musicid and mm['difficulty'] == difficulty:
+        #             break
+        #     else:
+        #         # 如果music_meta还是没有则返回之前的缓存
+        #         return f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
         if not os.path.exists(path[:-3] + 'png'):
-            parse_chart_new(musicid, difficulty, theme)  # 生成moe
+            parse_chart_new(musicid, difficulty, theme, scale=1.15 if theme != 'guess' else None)
         if theme != 'guess':
-            try:
-                im = Image.open(path[:-3] + 'png')
-            except FileNotFoundError:
-                im = Image.open(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.png')
-                path = f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
+            # try:
+            #     im = Image.open(path[:-3] + 'png')
+            # except FileNotFoundError:
+            #     im = Image.open(f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.png')
+            #     path = f'charts/moe/{theme}/{musicid}/{difficulty}_nometa.jpg'
+            im = Image.open(path[:-3] + 'png')
             im = im.convert('RGB')
             im.save(path, quality=60)
         return path
