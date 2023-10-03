@@ -678,7 +678,7 @@ def downloadviewerchart(musicid, difficulty):
 
 
 def aliastochart(full, sdvx=False, qun=False, theme='white'):
-    full = full.strip()
+    full = full.strip().lower()
     if full[-2:] == 'ex':
         alias = full[:-2]
         diff = 'expert'
