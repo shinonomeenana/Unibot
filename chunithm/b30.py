@@ -438,7 +438,7 @@ database_list = {
         'aqua': 'chunibind',
         'lin': 'linbind',
         'super': 'superbind',
-        'lee': 'leebind'
+        'na': 'leebind'
     }
 # database_list硬编码防止注入。%s会导致表名被加入引号报错
 
