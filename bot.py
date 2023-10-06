@@ -898,7 +898,7 @@ def sync_handle_msg(event):
                 return
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
-                    sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                    sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                 elif picdir == '':
                     sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
                     return
@@ -1278,9 +1278,9 @@ def sync_handle_msg(event):
             if result is not None:
                 title, image_url = result
                 if event.self_id == guildbot:
-                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx点in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了"
+                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx点in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图"
                 else:
-                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx.in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了"
+                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx.in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图"
                 sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             else:
                 sendmsg(event, "抱歉，无法生成图像。")
@@ -1354,9 +1354,9 @@ def sync_handle_msg(event):
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
                     if event.self_id == guildbot:
-                        sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                        sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                     else:
-                        sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片就好了[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                        sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                 elif picdir == '':
                     sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
                     return

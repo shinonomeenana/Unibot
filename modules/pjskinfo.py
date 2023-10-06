@@ -18,7 +18,7 @@ import yaml
 from emoji2pic.main import Emoji2Pic
 import Levenshtein as lev
 from modules.config import loghtml, env
-from modules.ossupload import uploadLog
+from modules.r2upload import uploadLogR2
 
 
 class musicinfo(object):
@@ -734,7 +734,7 @@ def logtohtml(dir):
     today = datetime.datetime.today()
     with open(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", 'w', encoding='utf-8') as f:
         f.write(txt2html(log))
-    uploadLog(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", f"logs/{today.year}{str(today.month).zfill(2)}.html")
+    uploadLogR2(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", f"logs/{today.year}{str(today.month).zfill(2)}.html")
 
 
 def musiclength(musicid, fillerSec=0):
