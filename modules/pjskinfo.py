@@ -702,23 +702,36 @@ def pjskalias2(alias, musicid=None):
         data.append({'id': count, 'alias': raw[1]})
     return data
 
+
 def txt2html(txt):
-    # 来自https://www.it610.com/article/1502111.htm
     def escape(txt):
-        txt = txt.replace('&', '&#38;')
-        txt = txt.replace(' ', '&#160;')
-        txt = txt.replace('<', '&#60;')
-        txt = txt.replace('>', '&#62;')
-        txt = txt.replace('"', '&#34;')
+        txt = txt.replace('&', '&amp;')
+        txt = txt.replace('<', '&lt;')
+        txt = txt.replace('>', '&gt;')
+        txt = txt.replace('"', '&quot;')
         txt = txt.replace('\'', '&#39;')
         return txt
-    txt = escape(txt)
+
+    def format_line(line):
+        line = escape(line)
+
+        # 高亮时间戳
+        line = re.sub(r'(\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\])', r'<span style="color:blue;">\1</span>', line)
+
+        # 箭头两端的文字加粗下划线
+        line = re.sub(r': (.+?)-&gt;(.+)', r': <b><u>\1</u></b>-><b><u>\2</u></b>', line)
+
+        # 删除了xxx的昵称：xxxx，把xxx内容下划线
+        line = re.sub(r'删除了(.+?)的昵称：(.+)', r'删除了<u>\1</u>的昵称：<u>\2</u>', line)
+
+        return line
+
     lines = txt.split('\n')
     for i, line in enumerate(lines):
-        lines[i] = line + '</br>'
+        lines[i] = format_line(line) + '<br/>'
     txt = ''.join(lines)
-    return r'<!doctype html><html><head><meta charset="utf-8"><title>日志</title></head><body>' + txt + '</body></html>'
 
+    return r'<!doctype html><html><head><meta charset="utf-8"><title>日志</title></head><body>' + txt + '</body></html>'
 
 def writelog(text=None):
     today = datetime.datetime.today()
@@ -734,7 +747,8 @@ def logtohtml(dir):
     today = datetime.datetime.today()
     with open(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", 'w', encoding='utf-8') as f:
         f.write(txt2html(log))
-    uploadLogR2(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", f"logs/{today.year}{str(today.month).zfill(2)}.html")
+    if env == 'prod':
+        uploadLogR2(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", f"logs/{today.year}{str(today.month).zfill(2)}.html")
 
 
 def musiclength(musicid, fillerSec=0):

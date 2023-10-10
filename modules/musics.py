@@ -77,7 +77,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
     musicData = {}
     for music in target:
         if music[playLevelKey] is None:
-            if music['playLevel'] < 26:
+            if music['playLevel'] < 26 or music['playLevel'] > 33:
                 levelRound = f"  {music['playLevel']}"
             else:
                 levelRound = str(music['playLevel']) + '.?'

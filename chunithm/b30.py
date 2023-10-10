@@ -34,7 +34,7 @@ def get_all_music(userid, server):
     next_index = "0"
     user_music_list = []
 
-    while next_index != "-1":
+    while int(next_index) != -1:
         params = {
             "userId": userid,
             "nextIndex": next_index,
@@ -176,7 +176,6 @@ def process_r10(userid, server, version='2.12', sort=True):
 def process_b30(userid, server, version='2.12'):
     # 获取用户数据
     user_data = get_all_music(userid, server)
-
     # 读取音乐数据
     with open('chunithm/masterdata/musics.json', 'r', encoding='utf-8') as f:
         music_data = json.load(f)
@@ -188,7 +187,7 @@ def process_b30(userid, server, version='2.12'):
     ratings = []
 
     for data in user_data:
-        music_id = data['musicId']
+        music_id = str(data['musicId'])
         level_index = int(data['level'])
         level_dict = {0: "basic", 1: "advanced", 2: "expert", 3: "master", 4: "ultima", 5: "world's end"}
         try:
