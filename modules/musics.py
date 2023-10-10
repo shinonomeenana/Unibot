@@ -272,7 +272,7 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
         i = 0
         for musicId in musicData[rank]:
             jacket = Image.open(
-                f'{assetpath}/startapp/thumbnail/music_jacket/jacket_s_{str(musicId).zfill(3)}.png')
+                '%s/startapp/music/jacket/jacket_s_%03d/jacket_s_%03d.png' % (assetpath, musicId, musicId))
             jacket = jacket.resize((120, 120))
             singleRank.paste(jacket, (70 + 130 * i, 72 + 130 * row))
             if musicResult is not None:

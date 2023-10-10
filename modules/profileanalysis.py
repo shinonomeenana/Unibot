@@ -1105,15 +1105,18 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         for i in cards:
             if i['id'] == profile.userDecks[0]:
                 assetbundleName = i['assetbundleName']
-        if profile.special_training[0]:
-            cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_after_training.png')
-            cutoutimg = Image.open(f'{assetpath}/startapp/character/member_cutout_trm/{assetbundleName}/after_training.png')
-        else:
-            cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_normal.png')
-            cutoutimg = Image.open(f'{assetpath}/startapp/character/member_cutout_trm/{assetbundleName}/normal.png')
-        cutoutimg = cutoutimg.resize((int(cutoutimg.size[0]*0.47), int(cutoutimg.size[1]*0.47)))
-        r, g, b, mask = cutoutimg.split()
-        pic.paste(cutoutimg, (770, 15), mask)
+        try:
+            if profile.special_training[0]:
+                cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_after_training.png')
+                cutoutimg = Image.open(f'{assetpath}/startapp/character/member_cutout_trm/{assetbundleName}/after_training.png')
+            else:
+                cardimg = Image.open(f'{assetpath}/startapp/thumbnail/chara/{assetbundleName}_normal.png')
+                cutoutimg = Image.open(f'{assetpath}/startapp/character/member_cutout_trm/{assetbundleName}/normal.png')
+            cutoutimg = cutoutimg.resize((int(cutoutimg.size[0]*0.47), int(cutoutimg.size[1]*0.47)))
+            r, g, b, mask = cutoutimg.split()
+            pic.paste(cutoutimg, (770, 15), mask)
+        except FileNotFoundError:
+            pass
 
         cardimg = cardimg.resize((116, 116))
         r, g, b, mask = cardimg.split()
