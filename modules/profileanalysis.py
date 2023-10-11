@@ -1271,6 +1271,7 @@ def b30single(diff, musics):
         'hard': (254, 170, 0),
         'normal': (51, 187, 238),
         'easy': (102, 221, 17),
+        'append': (0, 0, 0)
     }
     musictitle = ''
     for j in musics:
@@ -1285,7 +1286,7 @@ def b30single(diff, musics):
             musictitle = musictitle[:int(len(musictitle)*(345/size[0]))] + '...'
         draw.text((238, 84), musictitle, '#000000', font)
         # print(musictitle, font.getsize(musictitle))
-        jacket = Image.open(f'{assetpath}/startapp/thumbnail/music_jacket/jacket_s_{str(diff["musicId"]).zfill(3)}.png')
+        jacket = Image.open('%s/startapp/music/jacket/jacket_s_%03d/jacket_s_%03d.png' % (assetpath, diff['musicId'], diff['musicId']))
         jacket = jacket.resize((186, 186))
         pic.paste(jacket, (32, 28))
 
