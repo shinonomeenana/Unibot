@@ -345,9 +345,9 @@ def sync_handle_msg(event):
                     text = text + f"匹配度:{round(resp['match'], 4)}\n⚠该内容为剧透内容"
                 else:
                     if resp['translate'] == '':
-                        text = text + f"{resp['name']}\n{msg.group(1).strip()}→{resp['name']}\n匹配度:{round(resp['match'], 4)}"
+                        text = text + f"{resp['name']}\n匹配度:{round(resp['match'], 4)}"
                     else:
-                        text = text + f"{resp['name']} ({resp['translate']})\n{msg.group(1).strip()}→{resp['name']}\n匹配度:{round(resp['match'], 4)}"
+                        text = text + f"{resp['name']} ({resp['translate']})\n匹配度:{round(resp['match'], 4)}"
                 sendmsg(event,
                         text + fr"[CQ:image,file=file:///{botdir}\piccache\pjskinfo\{resp['musicid']}.png,cache=0]")
             return
