@@ -327,6 +327,9 @@ def sync_handle_msg(event):
             else:
                 sendmsg(event, 'bot帮助文档：https://docs.unipjsk.com/')
             return
+        if event.message.startswith('songinfo'):
+            sendmsg(event, '从来没有过songinfo命令，请使用pjskinfo或song（频道用）')
+            return
         if msg := re.match('(?:pjskinfo|song|查歌曲?)(.*)', event.message):
             resp = aliastomusicid(msg.group(1).strip())
             if resp['musicid'] == 0:
@@ -342,9 +345,9 @@ def sync_handle_msg(event):
                     text = text + f"匹配度:{round(resp['match'], 4)}\n⚠该内容为剧透内容"
                 else:
                     if resp['translate'] == '':
-                        text = text + f"{resp['name']}\n匹配度:{round(resp['match'], 4)}"
+                        text = text + f"{resp['name']}\n{msg.group(1).strip()}→{resp['name']}\n匹配度:{round(resp['match'], 4)}"
                     else:
-                        text = text + f"{resp['name']} ({resp['translate']})\n匹配度:{round(resp['match'], 4)}"
+                        text = text + f"{resp['name']} ({resp['translate']})\n{msg.group(1).strip()}→{resp['name']}\n匹配度:{round(resp['match'], 4)}"
                 sendmsg(event,
                         text + fr"[CQ:image,file=file:///{botdir}\piccache\pjskinfo\{resp['musicid']}.png,cache=0]")
             return
@@ -1227,7 +1230,7 @@ def sync_handle_msg(event):
             chunib30(userid=bind, server=server, version=version)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
 
-        commands = [("aqua", "aqua"), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin'), ("na", 'na'), ("lee", 'na')]
+        commands = [("aqua", "aqua"), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin'), ("na", 'na'), ("lee", 'na'), ("lin", 'lin')]
 
         for command, server in commands:
             if event.message.startswith(f"{command} 绑定"):
