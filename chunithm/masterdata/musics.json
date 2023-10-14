@@ -1,5 +1,37 @@
 [
     {
+        "name": "Sad Creature",
+        "id": "2464",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "67cf721fd4ca5d57.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 9.5,
+            "master": 12.9,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Goodbye Innocence",
+        "id": "2465",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "eaca4d5aae760e5b.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 10.0,
+            "master": 12.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "story",
         "id": "2448",
         "genreNames": [
@@ -6172,6 +6204,38 @@
             "expert": 9.0,
             "master": 13.0,
             "ultima": 14.2,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "カリスマ煉獄天神",
+        "id": "2468",
+        "genreNames": [
+            "東方Project"
+        ],
+        "jaketFile": "ca5dc18d7ff3662a.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 6.0,
+            "expert": 9.0,
+            "master": 12.6,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "シアワセうさぎ",
+        "id": "2469",
+        "genreNames": [
+            "東方Project"
+        ],
+        "jaketFile": "db4961c2c7ad4acd.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 5.0,
+            "expert": 9.0,
+            "master": 12.4,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -12432,6 +12496,22 @@
         }
     },
     {
+        "name": "Λlteration",
+        "id": "2466",
+        "genreNames": [
+            "イロドリミドリ"
+        ],
+        "jaketFile": "acc05aed8920ec8f.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 10.0,
+            "master": 14.2,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "Help me, あーりん！",
         "id": "245",
         "genreNames": [
@@ -13691,6 +13771,22 @@
             "advanced": 9.0,
             "expert": 13.6,
             "master": 14.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Regulus",
+        "id": "2467",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "d00b9ed5f655cf33.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 9.5,
+            "expert": 12.0,
+            "master": 14.4,
             "ultima": 0.0,
             "world's end": 0.0
         }

@@ -1,5 +1,37 @@
 [
     {
+        "id": "2464",
+        "catname": "POPS & ANIME",
+        "newflag": "1",
+        "title": "Sad Creature",
+        "reading": "SADCREATURE",
+        "artist": "麻枝 准×やなぎなぎ「ヘブンバーンズレッド」",
+        "lev_bas": "3",
+        "lev_adv": "6",
+        "lev_exp": "9+",
+        "lev_mas": "12+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "67cf721fd4ca5d57.jpg"
+    },
+    {
+        "id": "2465",
+        "catname": "POPS & ANIME",
+        "newflag": "1",
+        "title": "Goodbye Innocence",
+        "reading": "GOODBYEINNOCENCE",
+        "artist": "She is Legend「ヘブンバーンズレッド」",
+        "lev_bas": "3",
+        "lev_adv": "6",
+        "lev_exp": "10",
+        "lev_mas": "12+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "eaca4d5aae760e5b.jpg"
+    },
+    {
         "id": "2448",
         "catname": "POPS & ANIME",
         "newflag": "0",
@@ -6174,6 +6206,38 @@
         "we_kanji": "",
         "we_star": "",
         "image": "181682bf5b277726.jpg"
+    },
+    {
+        "id": "2468",
+        "catname": "東方Project",
+        "newflag": "1",
+        "title": "カリスマ煉獄天神",
+        "reading": "カリスマレンコクテンシン",
+        "artist": "森羅万象",
+        "lev_bas": "2",
+        "lev_adv": "6",
+        "lev_exp": "9",
+        "lev_mas": "12+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "ca5dc18d7ff3662a.jpg"
+    },
+    {
+        "id": "2469",
+        "catname": "東方Project",
+        "newflag": "1",
+        "title": "シアワセうさぎ",
+        "reading": "シアワセウサキ",
+        "artist": "ビートまりお＋あまね（COOL&CREATE）",
+        "lev_bas": "3",
+        "lev_adv": "5",
+        "lev_exp": "9",
+        "lev_mas": "12",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "db4961c2c7ad4acd.jpg"
     },
     {
         "id": "2412",
@@ -12432,6 +12496,22 @@
         "image": "e3db885455fb0f73.jpg"
     },
     {
+        "id": "2466",
+        "catname": "イロドリミドリ",
+        "newflag": "1",
+        "title": "Λlteration",
+        "reading": "ALTERATION",
+        "artist": "小仏 凪(CV:佐倉 薫)＆月鈴 白奈(CV:高野 麻里佳)＆御形 アリシアナ(CV:福原 綾香)＆桔梗 小夜曲(CV:原田 彩楓)",
+        "lev_bas": "3",
+        "lev_adv": "6",
+        "lev_exp": "10",
+        "lev_mas": "14",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "acc05aed8920ec8f.jpg"
+    },
+    {
         "id": "245",
         "catname": "イロドリミドリ",
         "newflag": "0",
@@ -13696,6 +13776,22 @@
         "image": "b3276a5cef7830a4.jpg"
     },
     {
+        "id": "2467",
+        "catname": "ゲキマイ",
+        "newflag": "1",
+        "title": "Regulus",
+        "reading": "REGULUS",
+        "artist": "お月さま交響曲",
+        "lev_bas": "4",
+        "lev_adv": "9+",
+        "lev_exp": "12",
+        "lev_mas": "14",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "d00b9ed5f655cf33.jpg"
+    },
+    {
         "id": "802",
         "catname": "ゲキマイ",
         "newflag": "0",
@@ -13874,7 +13970,7 @@
     {
         "id": "2463",
         "catname": "ゲキマイ",
-        "newflag": "1",
+        "newflag": "0",
         "title": "反撃! 突撃! Back To Back!",
         "reading": "ハンケキトツケキBACKTOBACK",
         "artist": "曲：矢鴇つかさ & 脇眞富（Arte Refact）／歌：星咲 あかり(CV：赤尾 ひかる)、高瀬 梨緒(CV：久保 ユリカ)",
@@ -20018,7 +20114,7 @@
     {
         "id": "2457",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "《真紅》 ～ Pavane Pour La Flamme",
         "reading": "シンクPAVANEPOURLAFLAMME",
         "artist": "林柏勲 Bo-Xun Lin feat.幻子 Maboroshiko",
@@ -20034,7 +20130,7 @@
     {
         "id": "2458",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "《楽土》 ～ One and Only One",
         "reading": "ラクトONEANDONLYONE",
         "artist": "Victor Kong & Yukino",
@@ -20050,7 +20146,7 @@
     {
         "id": "2459",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "《散華》 ～ EMBARK",
         "reading": "サンケEMBARK",
         "artist": "Farhan Sarasin",
@@ -20066,7 +20162,7 @@
     {
         "id": "2460",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "《慈雨》 ～ La Symphonie de Salacia: Agony Movement",
         "reading": "シウLASYMPHONIEDESALACIAAGONYMOVEMENT",
         "artist": "Jehezukiel (feat.Sagi & KURORAK)",
@@ -20082,7 +20178,7 @@
     {
         "id": "2461",
         "catname": "ORIGINAL",
-        "newflag": "1",
+        "newflag": "0",
         "title": "《創造》 ～ Cries, beyond The End",
         "reading": "ソウソウCRIESBEYONDTHEEND",
         "artist": "Katzeohr & Spiegel",
