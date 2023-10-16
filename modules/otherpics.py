@@ -5,7 +5,7 @@ from os import path
 import time
 import pytz
 from PIL import Image, ImageFont, ImageDraw
-
+from modules.config import env
 from modules.sk import currentevent
 
 botpath = os.path.abspath(os.path.join(path.dirname(__file__), ".."))
@@ -308,11 +308,38 @@ def charabonuspic(unitid, attr, cards, gameCharacterUnits, endtime):
     img = img.crop((0, 0, pos, 125))
     return img
 
+
+def resize_and_center(image, target_width, target_height):
+    img_width, img_height = image.size
+    
+    # 计算缩放比例
+    scale = max(target_width / img_width, target_height / img_height)
+    
+    # 计算新的尺寸
+    new_width = int(img_width * scale)
+    new_height = int(img_height * scale)
+    
+    # 缩放图片
+    image = image.resize((new_width, new_height), Image.ANTIALIAS)
+    
+    # 计算裁剪位置
+    left_margin = (new_width - target_width) / 2
+    top_margin = (new_height - target_height) / 2
+    right_margin = left_margin + target_width
+    bottom_margin = top_margin + target_height
+    
+    # 裁剪图片
+    image = image.crop((left_margin, top_margin, right_margin, bottom_margin))
+    
+    return image
+
+
 def drawevent(event):
     pic = Image.open(f'{assetpath}/ondemand/event_story/{event.assetbundleName}/screen_image/story_bg.png')
-    chara = Image.open(f'{assetpath}/ondemand/event_story/{event.assetbundleName}/screen_image/story_title.png')
+    chara = Image.open(f'{assetpath}/ondemand/event/{event.assetbundleName}/screen/character.png')
+    pic = resize_and_center(pic, 2048, 1261)
     r, g, b, mask = chara.split()
-    pic.paste(chara, (-50, 100), mask)
+    pic.paste(chara, ((1100 - chara.width) if chara.width > 1200 else (900 - chara.width), pic.height - chara.height), mask)
     logo = Image.open(f'{assetpath}/ondemand/event/{event.assetbundleName}/logo/logo.png')
     r, g, b, mask = logo.split()
     pic.paste(logo, (50, 800), mask)
@@ -371,7 +398,8 @@ def drawevent(event):
     # 在背景上粘贴角色加成图
     mask = final_bonuspic.split()[-1]
     pic.paste(final_bonuspic, base_pos, mask)
-    # pic.show()
+    if env != "prod":
+        pic.show()
     pic = pic.convert('RGB')
     pic.save(f'{botpath}/piccache/event/{event.id}.jpg')
 
