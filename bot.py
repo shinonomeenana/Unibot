@@ -599,12 +599,20 @@ def sync_handle_msg(event):
             pjskjindu(bind[1], bind[2], 'master', server, event.user_id)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind[1]}jindu.png,cache=0]")
             return
-        if event.message == "pjsk进度ex":
+        if event.message in ["pjsk进度ex", "pjsk进度expert"]:
             bind = getqqbind(event.user_id, server)
             if bind is None:
                 sendmsg(event, '查不到捏，可能是没绑定')
                 return
             pjskjindu(bind[1], bind[2], 'expert', server, event.user_id)
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind[1]}jindu.png,cache=0]")
+            return
+        if event.message in ["pjsk进度ap", "pjsk进度apd", "pjsk进度append"]:
+            bind = getqqbind(event.user_id, server)
+            if bind is None:
+                sendmsg(event, '查不到捏，可能是没绑定')
+                return
+            pjskjindu(bind[1], bind[2], 'append', server, event.user_id)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind[1]}jindu.png,cache=0]")
             return
         if re.match('^pjsk *b30$', event.message):
@@ -637,15 +645,6 @@ def sync_handle_msg(event):
             pjskprofile(bind[1], bind[2], server, event.user_id, is_force_update=True)
             sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/{bind[1]}profile.jpg,cache=0]")
             return
-        if event.message == "pjskprofile2" or event.message == "个人信息2":
-            bind = getqqbind(event.user_id, server)
-            if bind is None:
-                sendmsg(event, '查不到捏，可能是没绑定')
-                return
-            pjskprofile(bind[1], bind[2], server, event.user_id, is_force_update=True)
-            sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/{bind[1]}profile.jpg,cache=0]")
-            return
-
         if event.message[:2] == "查房" or event.message[:2] == "cf":
             if event.group_id in blacklist['sk'] and event.message[:2] == "查房":
                 return
@@ -822,7 +821,9 @@ def sync_handle_msg(event):
                 else:
                     fcap = 0
                 diff = 'master'
-                if 'expert' in event.message or 'ex' in event.message:
+                if 'append' in event.message or 'apd' in event.message or 'ap' in event.message:
+                    diff = 'append'
+                elif 'expert' in event.message or 'ex' in event.message:
                     diff = 'expert'
                 elif 'hard' in event.message or 'hd' in event.message:
                     diff = 'hard'
@@ -836,7 +837,7 @@ def sync_handle_msg(event):
                         sendmsg(event, "不支持难度26以下的单难度查询，该部分没有细分定数")
                         return
                 except:
-                    if event.message == '难度排行' or fcap in [1, 2] or diff in ['expert', 'hard', 'normal', 'easy']:
+                    if event.message == '难度排行' or fcap in [1, 2] or diff in ['append', 'expert', 'hard', 'normal', 'easy']:
                         level = 0
                     else:
                         return

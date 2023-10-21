@@ -42,9 +42,9 @@ class userprofile(object):
         self.word = ''
         self.userDecks = [0, 0, 0, 0, 0]
         self.special_training = [False, False, False, False, False]
-        self.full_perfect = [0, 0, 0, 0, 0]
-        self.full_combo = [0, 0, 0, 0, 0]
-        self.clear = [0, 0, 0, 0, 0]
+        self.full_perfect = [0, 0, 0, 0, 0, 0]
+        self.full_combo = [0, 0, 0, 0, 0, 0]
+        self.clear = [0, 0, 0, 0, 0, 0]
         self.mvpCount = 0
         self.superStarCount = 0
         self.userProfileHonors = {}
@@ -54,12 +54,15 @@ class userprofile(object):
         self.highScore = 0
         self.masterscore = {}
         self.expertscore = {}
+        self.appendscore = {}
         self.musicResult = {}
         self.isNewData = False
         for i in range(26, 38):
             self.masterscore[i] = [0, 0, 0, 0]
         for i in range(21, 32):
             self.expertscore[i] = [0, 0, 0, 0]
+        for i in range(23, 39):
+            self.appendscore[i] = [0, 0, 0, 0]
 
     def getprofile(self, userid, server, qqnum='未知', data=None, query_type='unknown', is_force_update=False):
         if server == 'jp':
@@ -106,11 +109,11 @@ class userprofile(object):
             self.rank = data['user']['rank']
             count_data = data['userMusicDifficultyClearCount']
             try:
-                self.full_perfect = [count_data[i]['allPerfect'] for i in range(5)]
+                self.full_perfect = [count_data[i]['allPerfect'] for i in range(6)]
             except:
-                self.full_perfect = ['无数据' for i in range(5)]
-            self.full_combo = [count_data[i]['fullCombo'] for i in range(5)]
-            self.clear = [count_data[i]['liveClear'] for i in range(5)]
+                self.full_perfect = ['无数据' for i in range(6)]
+            self.full_combo = [count_data[i]['fullCombo'] for i in range(6)]
+            self.clear = [count_data[i]['liveClear'] for i in range(6)]
             self.mvpCount = data['userMultiLiveTopScoreCount']['mvp']
             self.superStarCount = data['userMultiLiveTopScoreCount']['superStar']
         else:
@@ -124,9 +127,9 @@ class userprofile(object):
             now = int(time.time() * 1000)
             self.masterscore['33+musicId'] = []
             for music in allmusic:
-                result[music['id']] = [0, 0, 0, 0, 0]
+                result[music['id']] = [0, 0, 0, 0, 0, 0]
                 if music['publishedAt'] < now:
-                    found = [0, 0]
+                    found = [0, 0, 0]
                     for diff in musicDifficulties:
                         if music['id'] == diff['musicId'] and diff['musicDifficulty'] == 'expert':
                             playLevel = diff['playLevel']
@@ -138,7 +141,11 @@ class userprofile(object):
                                 self.masterscore['33+musicId'].append(music['id'])
                             self.masterscore[playLevel][3] = self.masterscore[playLevel][3] + 1
                             found[1] = 1
-                        if found == [1, 1]:
+                        elif music['id'] == diff['musicId'] and diff['musicDifficulty'] == 'append':
+                            playLevel = diff['playLevel']
+                            self.appendscore[playLevel][3] = self.appendscore[playLevel][3] + 1
+                            found[2] = 1
+                        if found == [1, 1, 1]:
                             break
             for music in data['userMusicResults']:
                 musicId = music['musicId']
@@ -154,8 +161,10 @@ class userprofile(object):
                     diffculty = 2
                 elif musicDifficulty == 'expert':
                     diffculty = 3
-                else:
+                elif musicDifficulty == 'master':
                     diffculty = 4
+                elif musicDifficulty == 'append':
+                    diffculty = 5
                 try:
                     if playResult == 'full_perfect':
                         if result[musicId][diffculty] < 3:
@@ -170,7 +179,7 @@ class userprofile(object):
                     # 韩服删除了on the rocks等歌曲 但这些歌曲成绩还保留在用户profile数据中 匹配不到歌曲会造成KeyError
                     pass
             for music in result:
-                for i in range(0, 5):
+                for i in range(0, 6):
                     if result[music][i] == 3:
                         self.full_perfect[i] = self.full_perfect[i] + 1
                         self.full_combo[i] = self.full_combo[i] + 1
@@ -180,7 +189,21 @@ class userprofile(object):
                         self.clear[i] = self.clear[i] + 1
                     elif result[music][i] == 1:
                         self.clear[i] = self.clear[i] + 1
-                    if i == 4:
+                    if i == 5:
+                        for diff in musicDifficulties:
+                            if music == diff['musicId'] and diff['musicDifficulty'] == 'append':
+                                playLevel = diff['playLevel']
+                                break
+                        if result[music][i] == 3:
+                            self.appendscore[playLevel][0] += 1
+                            self.appendscore[playLevel][1] += 1
+                            self.appendscore[playLevel][2] += 1
+                        elif result[music][i] == 2:
+                            self.appendscore[playLevel][1] += 1
+                            self.appendscore[playLevel][2] += 1
+                        elif result[music][i] == 1:
+                            self.appendscore[playLevel][2] += 1
+                    elif i == 4:
                         for diff in musicDifficulties:
                             if music == diff['musicId'] and diff['musicDifficulty'] == 'master':
                                 playLevel = diff['playLevel']
@@ -459,8 +482,10 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
         id = userid
     if diff == 'master':
         img = Image.open('pics/bgmaster.png')
-    else:
+    elif diff == 'expert':
         img = Image.open('pics/bgexpert.png')
+    elif diff == 'append':
+        img = Image.open('pics/bgappend.png')
     with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
         cards = json.load(f)
     try:
@@ -493,10 +518,16 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
     if diff == 'master':
         levelmin = 26
-    else:
+    elif diff == 'expert':
         levelmin = 21
         profile.masterscore = profile.expertscore
-    for i in range(0, 5):
+    elif diff == 'append':
+        levelmin = 24
+        profile.masterscore = profile.appendscore
+
+    firstRawCount = 5 if diff != 'append' else 7
+
+    for i in range(0, firstRawCount):
         text_width = font_style.getsize(str(profile.masterscore[i + levelmin][0]))
         text_coordinate = (int(183 - text_width[0] / 2), int(295 + 97 * i - text_width[1] / 2))
         draw.text(text_coordinate, str(profile.masterscore[i + levelmin][0]), fill=(228, 159, 251), font=font_style)
@@ -516,27 +547,33 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
 
     if diff == 'master':
         secondRawCount = 7
-    else:
+    elif diff == 'expert':
         secondRawCount = 6
+    elif diff == 'append':
+        secondRawCount = 8
     for i in range(0, secondRawCount):
-        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 5][0]))
+        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + firstRawCount][0]))
         text_coordinate = (int(683 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][0]), fill=(228, 159, 251), font=font_style)
+        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + firstRawCount][0]), fill=(228, 159, 251), font=font_style)
 
-        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 5][1]))
+        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + firstRawCount][1]))
         text_coordinate = (int(683 + 78 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][1]), fill=(254, 143, 249), font=font_style)
+        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + firstRawCount][1]), fill=(254, 143, 249), font=font_style)
 
-        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 5][2]))
+        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + firstRawCount][2]))
         text_coordinate = (int(683 + 2 * 78 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][2]), fill=(255, 227, 113), font=font_style)
+        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + firstRawCount][2]), fill=(255, 227, 113), font=font_style)
 
-        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + 5][3]))
+        text_width = font_style.getsize(str(profile.masterscore[i + levelmin + firstRawCount][3]))
         text_coordinate = (int(683 + 3 * 78 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + 5][3]), fill=(108, 237, 226), font=font_style)
+        draw.text(text_coordinate, str(profile.masterscore[i + levelmin + firstRawCount][3]), fill=(108, 237, 226), font=font_style)
     chart = jinduChart(profile.masterscore)
     r,g,b,mask = chart.split()
-    img.paste(chart, (280 - int(chart.size[0] / 2), 732), mask)
+    if diff != 'append':
+        img.paste(chart, (280 - int(chart.size[0] / 2), 732), mask)
+    else:
+        img.paste(chart, (280 - int(chart.size[0] / 2), 920), mask)
+        
 
     if server in rank_query_ban_servers and not profile.isNewData:
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
@@ -549,13 +586,17 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
 
 
 def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_update=False):
+    new_profile_servers = ['jp']
     profile = userprofile()
     profile.getprofile(userid, server, qqnum, is_force_update=is_force_update)
     if private:
         id = '保密'
     else:
         id = userid
-    img = Image.open('pics/bg.png')
+    if server in new_profile_servers:
+        img = Image.open('pics/pjskprofile_new.png')
+    else:
+        img = Image.open('pics/bg.png')
     with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
         cards = json.load(f)
     try:
@@ -612,46 +653,103 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
             img.paste(cardimg, (111 + 128 * i, 488), mask)
         except FileNotFoundError:
             pass
-    font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 27)
-    for i in range(0, 5):
-        text_width = font_style.getsize(str(profile.clear[i]))
-        text_coordinate = (int(170 + 132 * i - text_width[0] / 2), int(735 - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.clear[i]), fill=(0, 0, 0), font=font_style)
+    
+    if server in new_profile_servers:
+        font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 24)
+        for i in range(0, 5):
+            text_width = font_style.getsize(str(profile.clear[i]))
+            text_coordinate = (int(167 + 105 * i - text_width[0] / 2), int(732 - text_width[1] / 2))
+            draw.text(text_coordinate, str(profile.clear[i]), fill=(0, 0, 0), font=font_style)
 
-        text_width = font_style.getsize(str(profile.full_combo[i]))
-        text_coordinate = (int(170 + 132 * i - text_width[0] / 2), int(735 + 133 - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.full_combo[i]), fill=(0, 0, 0), font=font_style)
+            text_width = font_style.getsize(str(profile.full_combo[i]))
+            text_coordinate = (int(167 + 105 * i - text_width[0] / 2), int(732 + 133 - text_width[1] / 2))
+            draw.text(text_coordinate, str(profile.full_combo[i]), fill=(0, 0, 0), font=font_style)
 
-        text_width = font_style.getsize(str(profile.full_perfect[i]))
-        text_coordinate = (int(170 + 132 * i - text_width[0] / 2), int(735 + 2 * 133 - text_width[1] / 2))
-        draw.text(text_coordinate, str(profile.full_perfect[i]), fill=(0, 0, 0), font=font_style)
+            text_width = font_style.getsize(str(profile.full_perfect[i]))
+            text_coordinate = (int(167 + 105 * i - text_width[0] / 2), int(732 + 2 * 133 - text_width[1] / 2))
+            draw.text(text_coordinate, str(profile.full_perfect[i]), fill=(0, 0, 0), font=font_style)
+
+        text_width = font_style.getsize(str(profile.clear[5]))
+        text_coordinate = (int(707 - text_width[0] / 2), int(732 - text_width[1] / 2))
+        draw.text(text_coordinate, str(profile.clear[5]), fill=(0, 0, 0), font=font_style)
+
+        text_width = font_style.getsize(str(profile.full_combo[5]))
+        text_coordinate = (int(707 - text_width[0] / 2), int(732 + 133 - text_width[1] / 2))
+        draw.text(text_coordinate, str(profile.full_combo[5]), fill=(0, 0, 0), font=font_style)
+
+        text_width = font_style.getsize(str(profile.full_perfect[5]))
+        text_coordinate = (int(707 - text_width[0] / 2), int(732 + 2 * 133 - text_width[1] / 2))
+        draw.text(text_coordinate, str(profile.full_perfect[5]), fill=(0, 0, 0), font=font_style)
+        
+
+    else:
+        font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 27)
+        for i in range(0, 5):
+            text_width = font_style.getsize(str(profile.clear[i]))
+            text_coordinate = (int(170 + 132 * i - text_width[0] / 2), int(735 - text_width[1] / 2))
+            draw.text(text_coordinate, str(profile.clear[i]), fill=(0, 0, 0), font=font_style)
+
+            text_width = font_style.getsize(str(profile.full_combo[i]))
+            text_coordinate = (int(170 + 132 * i - text_width[0] / 2), int(735 + 133 - text_width[1] / 2))
+            draw.text(text_coordinate, str(profile.full_combo[i]), fill=(0, 0, 0), font=font_style)
+
+            text_width = font_style.getsize(str(profile.full_perfect[i]))
+            text_coordinate = (int(170 + 132 * i - text_width[0] / 2), int(735 + 2 * 133 - text_width[1] / 2))
+            draw.text(text_coordinate, str(profile.full_perfect[i]), fill=(0, 0, 0), font=font_style)
 
     character = 0
     font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 29)
-    for i in range(0, 5):
-        for j in range(0, 4):
-            character = character + 1
-            characterRank = 0
-            for charas in profile.characterRank:
-                if charas['characterId'] == character:
-                    characterRank = charas['characterRank']
+    if server in new_profile_servers:
+        for i in range(0, 5):
+            for j in range(0, 4):
+                character = character + 1
+                characterRank = 0
+                for charas in profile.characterRank:
+                    if charas['characterId'] == character:
+                        characterRank = charas['characterRank']
+                        break
+                text_width = font_style.getsize(str(characterRank))
+                text_coordinate = (int(916 + 184 * j - text_width[0] / 2), int(688 + 87.5 * i - text_width[1] / 2))
+                draw.text(text_coordinate, str(characterRank), fill=(0, 0, 0), font=font_style)
+        for i in range(0, 2):
+            for j in range(0, 4):
+                character = character + 1
+                characterRank = 0
+                for charas in profile.characterRank:
+                    if charas['characterId'] == character:
+                        characterRank = charas['characterRank']
+                        break
+                text_width = font_style.getsize(str(characterRank))
+                text_coordinate = (int(916 + 184 * j - text_width[0] / 2), int(512 + 88 * i - text_width[1] / 2))
+                draw.text(text_coordinate, str(characterRank), fill=(0, 0, 0), font=font_style)
+                if character == 26:
                     break
-            text_width = font_style.getsize(str(characterRank))
-            text_coordinate = (int(920 + 183 * j - text_width[0] / 2), int(686 + 88 * i - text_width[1] / 2))
-            draw.text(text_coordinate, str(characterRank), fill=(0, 0, 0), font=font_style)
-    for i in range(0, 2):
-        for j in range(0, 4):
-            character = character + 1
-            characterRank = 0
-            for charas in profile.characterRank:
-                if charas['characterId'] == character:
-                    characterRank = charas['characterRank']
+    else:
+        for i in range(0, 5):
+            for j in range(0, 4):
+                character = character + 1
+                characterRank = 0
+                for charas in profile.characterRank:
+                    if charas['characterId'] == character:
+                        characterRank = charas['characterRank']
+                        break
+                text_width = font_style.getsize(str(characterRank))
+                text_coordinate = (int(920 + 183 * j - text_width[0] / 2), int(686 + 88 * i - text_width[1] / 2))
+                draw.text(text_coordinate, str(characterRank), fill=(0, 0, 0), font=font_style)
+        for i in range(0, 2):
+            for j in range(0, 4):
+                character = character + 1
+                characterRank = 0
+                for charas in profile.characterRank:
+                    if charas['characterId'] == character:
+                        characterRank = charas['characterRank']
+                        break
+                text_width = font_style.getsize(str(characterRank))
+                text_coordinate = (int(920 + 183 * j - text_width[0] / 2), int(510 + 88 * i - text_width[1] / 2))
+                draw.text(text_coordinate, str(characterRank), fill=(0, 0, 0), font=font_style)
+                if character == 26:
                     break
-            text_width = font_style.getsize(str(characterRank))
-            text_coordinate = (int(920 + 183 * j - text_width[0] / 2), int(510 + 88 * i - text_width[1] / 2))
-            draw.text(text_coordinate, str(characterRank), fill=(0, 0, 0), font=font_style)
-            if character == 26:
-                break
+
     draw.text((952, 141), f'{profile.mvpCount}回', fill=(0, 0, 0), font=font_style)
     draw.text((1259, 141), f'{profile.superStarCount}回', fill=(0, 0, 0), font=font_style)
     try:
@@ -697,6 +795,8 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
         draw.text((118, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime) + '  实时数据可使用“pjskprofile2”',
                    fill=(100, 100, 100), font=font_style)
     img = img.convert('RGB')
+    if env != 'prod':
+        img.show()
     img.save(f'piccache/{userid}profile.jpg', quality=80)
     return
 

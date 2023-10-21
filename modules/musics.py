@@ -77,7 +77,7 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
     musicData = {}
     for music in target:
         if music[playLevelKey] is None:
-            if music['playLevel'] < 26 or music['playLevel'] > 33:
+            if music['playLevel'] < 26 or music['playLevel'] > 33 or difficulty == 'append':
                 levelRound = f"  {music['playLevel']}"
             else:
                 levelRound = str(music['playLevel']) + '.?'
@@ -222,7 +222,8 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
         'normal': 1,
         'hard': 2,
         'expert': 3,
-        'master': 4
+        'master': 4,
+        'append': 5
     }
     color = {
         'master': (187, 51, 238),
@@ -230,6 +231,7 @@ def singleLevelRankPic(musicData, difficulty, musicResult=None, oneRowCount=None
         'hard': (254, 170, 0),
         'normal': (51, 187, 238),
         'easy': (102, 221, 17),
+        'append': (0, 0, 0),
     }
     iconName = {
         0: 'icon_notClear.png',
