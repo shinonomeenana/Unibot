@@ -519,7 +519,7 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
         levelmin = 21
         profile.masterscore = profile.expertscore
     elif diff == 'append':
-        levelmin = 24
+        levelmin = 23
         profile.masterscore = profile.appendscore
 
     firstRawCount = 5 if diff != 'append' else 7
@@ -547,7 +547,7 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
     elif diff == 'expert':
         secondRawCount = 6
     elif diff == 'append':
-        secondRawCount = 8
+        secondRawCount = 9
     for i in range(0, secondRawCount):
         text_width = font_style.getsize(str(profile.masterscore[i + levelmin + firstRawCount][0]))
         text_coordinate = (int(683 - text_width[0] / 2), int(300 + 96.4 * i - text_width[1] / 2))
