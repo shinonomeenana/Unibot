@@ -821,7 +821,7 @@ def sync_handle_msg(event):
                 else:
                     fcap = 0
                 diff = 'master'
-                if 'append' in event.message or 'apd' in event.message or 'ap' in event.message:
+                if 'append' in event.message or 'apd' in event.message:
                     diff = 'append'
                 elif 'expert' in event.message or 'ex' in event.message:
                     diff = 'expert'
