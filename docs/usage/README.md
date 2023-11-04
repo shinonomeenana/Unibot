@@ -2,38 +2,25 @@
 
 >  本文档将引导您使用 UniBot
 > 
-- UniBot是一款功能型机器人, 主要提供《世界计划 多彩舞台》日服，国际服，台服，韩服相关查询服务。
-- 该Bot不提供私聊服务，猜曲，猜卡面，看卡图，模拟抽卡等功能仅在QQ频道Bot和Discord对所有人开放
+- UniBot是一款功能型机器人, 主要提供《世界计划 多彩舞台》相关查询服务。
+- 该Bot不提供私聊服务
 - 使用该Bot，即意味着你同意[使用条款](/licence/)及[隐私条款](/privacy/)
 
-::: danger 注意
-由于pjsk日服api做了修改，只能查到前100排名，受影响的日服功能有：
-sk，pjsk进度，pjsk b30，rk，难度排行
-:::
-
-::: tip 可用的Bot
-bot QQ频道版：[点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)Unibot频道使用，[使用文档](/guild/)
-
-bot Discord版：[点击添加](https://discord.com/api/oauth2/authorize?client_id=975690393339457547&permissions=274877908992&scope=bot)
-:::
 
 ## 查询pjsk歌曲信息
->热度，难度偏差等统计信息来自 [profile.pjsekai.moe](https://profile.pjsekai.moe/)（因为api改了已寄）
 
 ### pjskinfo
 - `pjskinfo+曲名` 查看当前歌曲详细信息
 - `pjskbpm+曲名` 查看当前歌曲的bpm（频道可直接使用`bpm+曲名`）
 - `查bpm+数字` 查询对应bpm所有歌曲
+
 ### 谱面预览
-- `谱面预览 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[ぷろせかもえ！](https://pjsekai.moe/)（~~开发中~~ 因为api改了多半不会继续做了）
-  - `难度`支持的输入: `easy`, `normal`, `hard`, `expert`, `master`, `ez`, `nm`, `hd`, `ex`, `ma`
+- `谱面预览 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[ぷろせかもえ！](https://pjsekai.moe/)
+  - `难度`支持的输入: `easy`, `normal`, `hard`, `expert`, `master`, `append`, `ez`, `nm`, `hd`, `ex`, `ma`, `ap`, `apd`
   - 如果查询`master`可省略难度
 - `谱面预览2 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[プロセカ譜面保管所](https://sdvx.in/prsk.html)）
-### 各种排行
-- `热度排行` 查看歌曲热度排行TOP40
-- `难度排行 定数 难度` 查看当前难度偏差值排行（如难度排行 26 expert，难度可省略，默认为master，需小写）
-- `fc难度排行 定数 难度` 查看当前难度FC偏差值排行（如fc难度排行 26 expert，难度可省略，默认为master，需小写）
-- `ap难度排行 定数 难度` 查看当前难度AP偏差值排行（如ap难度排行 26 expert，难度可省略，默认为master，需小写）
+
+
 ### 昵称设置
 
 - `pjskset昵称to歌名`
@@ -46,8 +33,6 @@ bot Discord版：[点击添加](https://discord.com/api/oauth2/authorize?client_
 - `charainfo昵称` 查看该角色群内和全群昵称
 
 ::: warning 注意
-如使用pjskdel命令，请仅删除确实不合适的昵称，很多猜曲用的快捷昵称删除后会造成诸多不便
-
 所有歌曲昵称设置，角色昵称设置的日志内容将会在[实时日志](/dailylog/)页面按日公示
 :::
 
@@ -173,5 +158,5 @@ sk，pjsk进度，pjsk b30，rk，难度排行
 ### 数据来源
 - 预测线: [33Kit](https://3-3.dev/)
 - 歌曲达成率，难度偏差，热度等信息: [Project Sekai Profile](https://profile.pjsekai.moe/)（因为api改了已寄）
-- 谱面预览: [ぷろせかもえ！](https://pjsekai.moe/)（~~开发中~~ 因为api改了多半不会继续做了）, [プロセカ譜面保管所](https://sdvx.in/prsk.html)
+- 谱面预览: [ぷろせかもえ！](https://pjsekai.moe/), [プロセカ譜面保管所](https://sdvx.in/prsk.html)
 - 台服国际服牌子图片：[Sekai Viewer](https://sekai.best/)

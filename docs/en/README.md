@@ -11,9 +11,6 @@ actions:
   - text: Github
     link: https://github.com/watagashi-uni/Unibot
     type: secondary
-  - text: Add to Discord
-    link: https://discord.com/api/oauth2/authorize?client_id=975690393339457547&permissions=274877908992&scope=bot
-    type: secondary
 features:
 - title: Song Query
   details: You can query detailed information about songs through precise/fuzzy matching

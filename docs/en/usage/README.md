@@ -4,32 +4,19 @@
 
 - UniBot is a functional Discord bot that mainly provides query services related to "Project SEKAI Colorful Stage" Japanese server, international server, Traditional Chinese server and Korean Server.
 - By using this bot, you agree to the [Terms of Use](/en/licence/) and [Privacy Policy](/en/privacy/).
-
-
-::: danger Note
-Due to modifications in the pjsk Japanese server API, only the top 100 rankings can be retrieved. The affected functions in the Japanese server are:
-sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
-:::
-
+- Due to the bot being added to too many servers, we are currently experiencing a high workload and cannot support new server additions. We apologize for any inconvenience this may cause
 
 ## Query Project Sekai Song Information
-> Popularity and difficulty deviation statistics are sourced from [profile.pjsekai.moe](https://profile.pjsekai.moe/) (some data may be outdated due to API changes).
-
 ### pjskinfo
 - `pjskinfo+song name` to view detailed information about the current song.
 - `pjskbpm+song name` to view the BPM.
 - `findbpm+number` to query all songs with the corresponding BPM.
 
 ### Chart Preview
-- `pjskchart [song title] [difficulty]` to preview the chart of the corresponding song and difficulty (Source: [ぷろせかもえ！](https://pjsekai.moe/) (~~under development~~ unlikely to continue due to API changes)).
-  - Supported difficulty inputs: `easy`, `normal`, `hard`, `expert`, `master`, `ez`, `nm`, `hd`, `ex`, `ma`
+- `pjskchart [song title] [difficulty]` to preview the chart of the corresponding song and difficulty (Source: [ぷろせかもえ！](https://pjsekai.moe/)
+  - Supported difficulty inputs: `easy`, `normal`, `hard`, `expert`, `master`, `append`, `ez`, `nm`, `hd`, `ex`, `ma`, `ap`, `apd`
   - If querying for `master`, the difficulty can be omitted.
 - `pjskchart2 [song title] [difficulty]` to preview the chart of the corresponding song and difficulty (Source: [プロセカ譜面保管所](https://sdvx.in/prsk.html)).
-
-### Various Rankings
-- `levelrank [playlevel] [diffculty (master, expert, etc)]` to view the rankings of songs based on deviation for the current difficulty (e.g., `levelrank 26 expert`, difficulty can be omitted, default is master, lowercase is required).
-- `fclevelrank [playlevel] [diffculty]` to view the rankings of songs based on FC deviation for the current difficulty (e.g., `fclevelrank 26 expert`, difficulty can be omitted, default is master, lowercase is required).
-- `aplevelrank [playlevel] [diffculty]` to view the rankings of songs based on AP deviation for the current difficulty (e.g., `aplevelrank 26 expert`, difficulty can be omitted, default is master, lowercase is required).
 
 ### alias Settings
 
@@ -42,8 +29,6 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 - `charainfo[alias]` to view the alias for the character in the group and across all groups.
 
 ::: warning Note
-If you use the `pjskdel` command, please only delete inappropriate aliass. Deleting shortcut aliass used for guessing songs will cause inconvenience.
-
 All song alias settings and character alias settings will be publicly displayed daily on the [Real-time Log](/dailylog/) page.
 :::
 
@@ -67,11 +52,9 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 - `sk+id` to query rankings (this command does not bind an ID).
 - `sk+rank` to query the score corresponding to the ranking.
 - `pjskpredict` to view the prediction line, prediction information is sourced from [3-3.dev](https://3-3.dev/) (Japanese server only).
-- `pjskspeed` to query the real-time speed line of the last hour (Japanese server only).
-- `pjsk5v5` to view the real-time number of players in 5v5 mode.
-- `pjskpeek+id` or `pjskpeek+rank` to query the weekly play count, speed, average points, etc. for the top 200 players (Japanese server, Taiwanese server).
-- `stoptime+id` or `stoptime+rank` to query the parking situation for the top 200 players (Japanese server, Taiwanese server).
-- `scoreline+id` or `scoreline+rank` to plot the score trend for the top 200 players over time (Japanese server, Taiwanese server).
+- `pjskpeek+id` or `pjskpeek+rank` to query the weekly play count, speed, average points, etc. for the top 100 players (Japanese server, Traditional Chinese server).
+- `stoptime+id` or `stoptime+rank` to query the parking situation for the top 200 players (Japanese server, Traditional Chinese server).
+- `scoreline+id` or `scoreline+rank` to plot the score trend for the top 200 players over time (Japanese server, Traditional Chinese server).
 
 ### User Query
 - `pjskcheck+id` to view the FC and AP count, as well as ranking information for the EX and Master difficulties of the corresponding ID.
@@ -80,7 +63,7 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 - `pjskprofile` to generate a profile image for the bound ID
 - `pjsk b30` to generate a best 30 image for the bound ID.
 ### Privacy-related
-- `pjskprivate` Your ID will not be displayed when checking scores or arresting yourself.
+- `pjskprivate` Your ID will not be displayed when checking scores or `pjskcheck` yourself.
 - `pjskpublic` to allow others to see.
 
 ### Card and Event Information Query
@@ -135,10 +118,8 @@ The card pool ID can be found by visiting <https://sekai.best/gacha> and checkin
 ## About
 - Developer: [綿菓子ウニ](https://space.bilibili.com/622551112)
 ### Framework Used
-- Framework: [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
-- SDK: [nonebot/aiocqhttp](https://github.com/nonebot/aiocqhttp)
+- [discord.py](https://discordpy.readthedocs.io/en/stable)
 ### Data Sources
 - Prediction line: [33Kit](https://3-3.dev/)
-- Song achievement rate, difficulty deviation, popularity, and other information: [Project Sekai Profile](https://profile.pjsekai.moe/) (limited due to API changes)
-- Chart preview: [ぷろせかもえ！](https://pjsekai.moe/) (~~under development~~ unlikely to continue due to API changes), [プロセカ譜面保管所](https://sdvx.in/prsk.html)
+- Chart preview: [ぷろせかもえ！](https://pjsekai.moe/), [プロセカ譜面保管所](https://sdvx.in/prsk.html)
 - honor images for Traditional Chinese and EN servers: [Sekai Viewer](https://sekai.best/)

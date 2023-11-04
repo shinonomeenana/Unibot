@@ -337,9 +337,9 @@ def b30single(single_data, version):
 
     if 'isAllJustice' in single_data:
         font = ImageFont.truetype('fonts/FOT-RodinNTLGPro-DB.ttf', 35)
-        if single_data['isAllJustice'] == 'true':
+        if single_data['isAllJustice'] == 'true' or single_data['isAllJustice'] is True:
             draw.text((530, 105), "AJ", '#000000', font)
-        elif single_data['isFullCombo'] == 'true':
+        elif single_data['isFullCombo'] == 'true' or single_data['isFullCombo'] is True:
             draw.text((530, 105), "FC", '#000000', font)
     pic = pic.resize((280, 105))
     return pic
