@@ -293,7 +293,7 @@ def get_card(charaid):
     while cardsdata[rannum]['releaseAt'] > int(time.time() * 1000):
         print(cardsdata[rannum]['prefix'], '重抽')
         rannum = random.randint(0, len(cardsdata) - 1)
-    if random.randint(0, 1) == 1:
+    if True:  # random.randint(0, 1) == 1:
         path = 'data/assets/sekai/assetbundle/resources/startapp/character/member'
         path = path + "/" + cardsdata[rannum]['assetbundleName']
         files = os.listdir(path)
