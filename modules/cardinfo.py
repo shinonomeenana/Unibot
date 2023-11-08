@@ -571,7 +571,10 @@ class CardInfo(object):
                 _bk.putalpha(mask)
                 bonusechara_pic.append(_bk.resize((65, 65)).copy())
             charapic = union(bonusechara_pic, type='col', length=0, interval=10)
-            attrpic = Image.open(f'{botpath}/chara/icon_attribute_{self.event.bonuseattr}.png').resize((60, 60))
+            try:
+                attrpic = Image.open(f'{botpath}/chara/icon_attribute_{self.event.bonuseattr}.png').resize((60, 60))
+            except IOError:
+                attrpic = Image.new('RGBA', (1, 1), (0, 0, 0, 0))  # 创建一个1x1透明图像
             _ = union([attrpic, charapic], type='row', interval=10, align_type='right')
             _ = union([timepic, _], type='col', interval=60, length=left_width)
             event_img = union(

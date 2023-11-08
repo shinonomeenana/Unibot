@@ -139,6 +139,12 @@ def union(
     :param align_type: 非组合方向的对齐类型，left/top为左(上)对齐，center为居中对齐，right/bottom为右(下)对齐
     :param bk_color: 图片背景色， none时背景为透明
     """
+    if not img_ls:
+        # 没有任何图像时返回1*1图像防止错误
+        default_width = 1
+        default_height = 1
+        default_image = Image.new('RGBA', (default_width, default_height), bk_color or (0, 0, 0, 0))
+        return default_image
     if type not in ['col', 'row']:
         raise TypeError("type类型错误")
     if align_type not in ['top', 'left', 'center', 'right', 'bottom']:

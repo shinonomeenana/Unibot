@@ -294,7 +294,7 @@ def drawEventHandbook(
             bonuse["gameCharacterUnitId"] for bonuse in current_bonuse
             if bonuse['bonusRate'] == 50 and bonuse.get('gameCharacterUnitId')
         )
-        event_bonuseattr = next(filter(lambda x: x.get('cardAttr'), current_bonuse))['cardAttr']
+        event_bonuseattr = next(filter(lambda x: x.get('cardAttr'), current_bonuse), {}).get('cardAttr')
         if event_attr is not None and event_bonuseattr != event_attr:
             continue
         tmp_bonuse_charas = []
@@ -365,8 +365,11 @@ def drawEventHandbook(
             _bk.paste(_chr_pic, (10, 10), _chr_pic)
             bonusechara_pic.append(_bk.resize((30, 30)).copy())
         charapic = union(bonusechara_pic, type='col', length=0, interval=2)
-        attrpic = Image.open(f'{botpath}/chara/icon_attribute_{event_bonuseattr}.png').resize((30, 30))
-        event_img.paste(attrpic, (bannerpic.width + _left_offset + _interval, 80), attrpic)
+        try:
+            attrpic = Image.open(f'{botpath}/chara/icon_attribute_{event_bonuseattr}.png').resize((30, 30))
+            event_img.paste(attrpic, (bannerpic.width + _left_offset + _interval, 80), attrpic)
+        except FileNotFoundError:
+            pass
         event_img.paste(charapic, (bannerpic.width + _left_offset + _interval + 60, 80), charapic)
 
         # 如果活动类型为5v5，粘贴team图
@@ -404,7 +407,7 @@ def drawEventHandbook(
             event_img.paste(_c, (_left_offset + index * 100, bannerpic.height + _interval), _c)
             draw.text((_left_offset + index * (90 + _interval), bannerpic.height + 90 + _interval), f'ID:{cardid}', dark_grey, font10)
         # 生成活动类型和活动时间图
-        eventtype = {"marathon": "马拉松(累积点数)", "cheerful_carnival": "欢乐嘉年华(5v5)"}.get(each['eventType'], "")
+        eventtype = {"marathon": "马拉松(累积点数)", "cheerful_carnival": "欢乐嘉年华(5v5)", "world_bloom": "WORLD LINK"}.get(each['eventType'], "")
         startAt = datetime.datetime.fromtimestamp(
             each['startAt'] / 1000, pytz.timezone('Asia/Shanghai')
         ).strftime('%Y/%m/%d %H:%M:%S')
