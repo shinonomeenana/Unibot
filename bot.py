@@ -508,6 +508,19 @@ def sync_handle_msg(event):
                     userid = event.message.strip()
                     if '[CQ:at' in userid:
                         userid = re.sub(r'\D', "", userid)
+                    if not userid.isdigit():
+                        # 新增world link单独榜线查询
+                        charaid = aliastocharaid(userid, event.group_id)
+                        if charaid[0] != 0:
+                            bind = getqqbind(event.user_id, server)
+                            if bind is None:
+                                sendmsg(event, '你没有绑定id！')
+                                return
+                            result = sk(targetid=bind[1], secret=bind[2], server=server, qqnum=event.user_id, world_link_chara_id=charaid[0])
+                            if 'piccache' in result:
+                                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{result},cache=0]")
+                            else:
+                                sendmsg(event, result)
                     try:
                         if int(userid) > 10000000:
                             result = sk(targetid=userid, secret=False, server=server, qqnum=event.user_id)
@@ -521,6 +534,23 @@ def sync_handle_msg(event):
                     except ValueError:
                         return
                 else:
+                    if len(userids) == 2:
+                        if not userids[0].isdigit():
+                            # 新增world link单独榜线查询
+                            charaid = aliastocharaid(userids[0], event.group_id)
+                            if charaid[0] != 0:
+                                try:
+                                    if int(userids[1]) > 10000000:
+                                        result = sk(targetid=userids[1], secret=False, server=server, qqnum=event.user_id, world_link_chara_id=charaid[0])
+                                    else:
+                                        result = sk(targetrank=userids[1], secret=True, server=server, qqnum=event.user_id, world_link_chara_id=charaid[0])
+                                    if 'piccache' in result:
+                                        sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{result},cache=0]")
+                                    else:
+                                        sendmsg(event, result)
+                                    return
+                                except ValueError:
+                                    return
                     result = ''
                     for userid in userids:
                         userid = re.sub(r'\D', "", userid)

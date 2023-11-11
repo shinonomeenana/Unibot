@@ -1,5 +1,85 @@
 [
     {
+        "name": "茉子の日常",
+        "id": "2478",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "d24b623f41295b1b.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 5.0,
+            "expert": 8.5,
+            "master": 11.6,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "キズナヒトツ",
+        "id": "2479",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "c4abc20ba7ab4f02.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 8.0,
+            "master": 10.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Love Cheat!",
+        "id": "2481",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "c9cedb76c07e091e.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.5,
+            "expert": 9.5,
+            "master": 13.4,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ドーナドーナのうた",
+        "id": "2482",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "27f879d90293b172.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 6.0,
+            "expert": 8.5,
+            "master": 12.3,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "未来への咆哮",
+        "id": "2483",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "470f8b587aca0edf.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 6.0,
+            "expert": 8.0,
+            "master": 12.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "Sad Creature",
         "id": "2464",
         "genreNames": [
@@ -1947,7 +2027,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 11.9,
-            "ultima": 0,
+            "ultima": 14.0,
             "world's end": 0.0
         }
     },
@@ -6075,7 +6155,7 @@
             "advanced": 5.0,
             "expert": 8.0,
             "master": 11.1,
-            "ultima": 0,
+            "ultima": 13.7,
             "world's end": 0.0
         }
     },
@@ -14971,6 +15051,22 @@
             "advanced": 7.5,
             "expert": 12.0,
             "master": 14.5,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "GEOMETRIC DANCE",
+        "id": "2480",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "87b65507b23fb234.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 8.5,
+            "expert": 13.4,
+            "master": 14.4,
             "ultima": 0.0,
             "world's end": 0.0
         }

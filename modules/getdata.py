@@ -33,7 +33,7 @@ class QueryBanned(Exception):
 current_api_index = {'tw': 0}
 
 
-def callapi(url, server='jp', query_type='unknown', is_force_update=False):
+def callapi(url, server='jp', query_type='unknown', is_force_update=False, chara_id=None):
     global twapiurls
     global krapiurls
     global current_api_index
@@ -56,6 +56,10 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                 with open('data/jptop100.json', 'r', encoding='utf-8') as f:
                     jptop100 = json.load(f)
                 updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                if chara_id is not None:
+                    for chapter in jptop100['userWorldBloomChapterRankings']:
+                        if chapter['gameCharacterId'] == chara_id:
+                            jptop100 = chapter
                 for single in jptop100["rankings"]:
                     if single["rank"] == targetRank:
                         return {
@@ -66,11 +70,16 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False):
                     return {
                             "rankings": []
                         }
+                    
             if '/ranking?targetUserId=' in url:
                 targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])
                 with open('data/jptop100.json', 'r', encoding='utf-8') as f:
                     jptop100 = json.load(f)
                 updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                if chara_id is not None:
+                    for chapter in jptop100['userWorldBloomChapterRankings']:
+                        if chapter['gameCharacterId'] == chara_id:
+                            jptop100 = chapter
                 for single in jptop100["rankings"]:
                     if single["userId"] == targetUserId:
                         return {
