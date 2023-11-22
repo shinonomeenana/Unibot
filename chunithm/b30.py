@@ -235,7 +235,10 @@ def chunib30(userid, server='aqua', version='2.12'):
     draw.text((215, 65), user_data['userName'], fill=(0, 0, 0), font=font_style)
     font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
     try:
-        draw.text((218, 118), get_user_team(userid, server)['teamName'], fill=(0, 0, 0), font=font_style)
+        if server == 'na':
+            draw.text((218, 118), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
+        else:
+            draw.text((218, 118), get_user_team(userid, server)['teamName'], fill=(0, 0, 0), font=font_style)
     except KeyError:
         draw.text((218, 118), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
     font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
@@ -437,7 +440,8 @@ database_list = {
         'aqua': 'chunibind',
         'lin': 'linbind',
         'super': 'superbind',
-        'na': 'leebind'
+        'na': 'leebind',
+        'rin': 'rinbind'
     }
 # database_list硬编码防止注入。%s会导致表名被加入引号报错
 

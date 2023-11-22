@@ -801,6 +801,7 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
 def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
     star = False
     backgroundAssetbundleName = ''
+    frameName = ''
     assetbundleName = ''
     groupId = 0
     honorRarity = 0
@@ -837,6 +838,11 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
                                 backgroundAssetbundleName = j['backgroundAssetbundleName']
                             except KeyError:
                                 backgroundAssetbundleName = ''
+                            
+                            try:
+                                frameName = j['frameName']
+                            except KeyError:
+                                pass
                             honorType = j['honorType']
                             break
                     filename = 'honor'
@@ -852,7 +858,6 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
                     mainname = 'scroll.png'
                     subname = 'scroll.png'
                     is_live_master = True
-        
         if honorType == 'rank_match':
             filename = 'rank_live/honor'
             mainname = 'main.png'
@@ -861,13 +866,21 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
         if ismain:
             # 大图
             if honorRarity == 'low':
-                frame = Image.open('pics/frame_degree_m_1.png')
+                path = 'pics/frame_degree_m_1.png'
             elif honorRarity == 'middle':
-                frame = Image.open('pics/frame_degree_m_2.png')
+                path = 'pics/frame_degree_m_2.png'
             elif honorRarity == 'high':
-                frame = Image.open('pics/frame_degree_m_3.png')
+                path = 'pics/frame_degree_m_3.png'
             else:
-                frame = Image.open('pics/frame_degree_m_4.png')
+                path = 'pics/frame_degree_m_4.png'
+
+            # 检查带 frameName 的路径是否存在
+            full_path = path[:-4] + frameName + '.png'
+            print(full_path, os.path.exists(full_path))
+            if os.path.exists(full_path):
+                frame = Image.open(full_path)
+            else:
+                frame = Image.open(path)  # 如果文件不存在，只打开默认图片
             if backgroundAssetbundleName == '':
                 rankpic = None
                 pic = gethonorasset(server, 'data/assets/sekai/assetbundle/resources'
@@ -925,7 +938,10 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
                 else:
                     pic.paste(frame, (0, 0), mask)
                 r, g, b, mask = rankpic.split()
-                pic.paste(rankpic, (190, 0), mask)
+                if rankpic.width == 380:
+                    pic.paste(rankpic, (0, 0), mask)
+                else:
+                    pic.paste(rankpic, (190, 0), mask)
             if honorType == 'character' or honorType == 'achievement':
                 honorlevel = honor['honorLevel']
                 if star is True:
@@ -946,15 +962,22 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
                             r, g, b, mask = lv.split()
                             pic.paste(lv, (54 + 16 * i, 63), mask)
         else:
-            # 小图
+            # 小图         
             if honorRarity == 'low':
-                frame = Image.open('pics/frame_degree_s_1.png')
+                path = 'pics/frame_degree_s_1.png'
             elif honorRarity == 'middle':
-                frame = Image.open('pics/frame_degree_s_2.png')
+                path = 'pics/frame_degree_s_2.png'
             elif honorRarity == 'high':
-                frame = Image.open('pics/frame_degree_s_3.png')
+                path = 'pics/frame_degree_s_3.png'
             else:
-                frame = Image.open('pics/frame_degree_s_4.png')
+                path = 'pics/frame_degree_s_4.png'
+
+            # 检查带 frameName 的路径是否存在
+            full_path = path[:-4] + frameName + '.png'
+            if os.path.exists(full_path):
+                frame = Image.open(full_path)
+            else:
+                frame = Image.open(path)  # 如果文件不存在，只打开默认图片
             if backgroundAssetbundleName == '':
                 rankpic = None
                 pic = gethonorasset(server, 'data/assets/sekai/assetbundle/resources'
@@ -994,7 +1017,11 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
                 else:
                     pic.paste(frame, (0, 0), mask)
                 r, g, b, mask = rankpic.split()
-                pic.paste(rankpic, (34, 42), mask)
+                print(rankpic.height)
+                if rankpic.height == 80:
+                    pic.paste(rankpic, (0, 0), mask)
+                else:
+                    pic.paste(rankpic, (34, 42), mask)
             if honorType == 'character' or honorType == 'achievement':
                 if star is True:
                     honorlevel = honor['honorLevel']
