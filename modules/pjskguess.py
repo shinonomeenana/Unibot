@@ -33,6 +33,35 @@ def getrandomchartold():
     else:
         return musicid
 
+
+def obscure_proportionally(text):
+    """
+    Function to obscure characters in words of a given text.
+    The number of obscured characters increases with the length of the word.
+    For words with only one character, the entire word is obscured.
+    For words with two characters, the second character is obscured.
+    For words with more than two characters, a larger proportion of the word is obscured.
+    """
+    words = text.split()
+
+    # Process each word
+    for i, word in enumerate(words):
+        length = len(word)
+        if length == 1:  # Obscure the entire word if it's a single character
+            words[i] = '*'
+        elif length == 2:  # Obscure the second character if the word has two characters
+            words[i] = word[0] + '*'
+        else:  # Obscure a larger proportion for longer words
+            # Calculate the number of characters to obscure based on length
+            obscure_count = length // 2
+            start = (length - obscure_count) // 2
+            end = start + obscure_count
+            words[i] = word[:start] + '*' * obscure_count + word[end:]
+
+    # Reconstruct the text
+    return ' '.join(words)
+
+
 def guessRank(guessType, typeText, qqnum=None):
     from imageutils import text2image
     mydb = pymysql.connect(host=host, port=port, user='pjskguess', password=password,
@@ -52,14 +81,15 @@ def guessRank(guessType, typeText, qqnum=None):
         raw = raw[1:]
         count += 1
         name = raw[1]
-        if len(name) > 20:
-            name = name[:5] + '...' + name[-5:]
+        discord = True if '#' in name else False
+        name = name.replace('#0', '')
+        name = obscure_proportionally(name)
         if raw[0] == str(qqnum):
             user_rank = count
             user_count = raw[2]
         if count <= 20:
             if len(raw[0]) >= 15:
-                if '#' in name:
+                if discord:
                     text += f'{name}(Discord用户): {raw[2]}次\n'
                 else:
                     text += f'{name}(频道用户): {raw[2]}次\n'

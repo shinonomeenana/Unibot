@@ -4,7 +4,6 @@
 
 - UniBot is a functional Discord bot that mainly provides query services related to "Project SEKAI Colorful Stage" Japanese server, international server, Traditional Chinese server and Korean Server.
 - By using this bot, you agree to the [Terms of Use](/en/licence/) and [Privacy Policy](/en/privacy/).
-- Due to the bot being added to too many servers, we are currently experiencing a high workload and cannot support new server additions. We apologize for any inconvenience this may cause
 
 ## Query Project Sekai Song Information
 ### pjskinfo
@@ -53,8 +52,8 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 - `sk+rank` to query the score corresponding to the ranking.
 - `pjskpredict` to view the prediction line, prediction information is sourced from [3-3.dev](https://3-3.dev/) (Japanese server only).
 - `pjskpeek+id` or `pjskpeek+rank` to query the weekly play count, speed, average points, etc. for the top 100 players (Japanese server, Traditional Chinese server).
-- `stoptime+id` or `stoptime+rank` to query the parking situation for the top 200 players (Japanese server, Traditional Chinese server).
-- `scoreline+id` or `scoreline+rank` to plot the score trend for the top 200 players over time (Japanese server, Traditional Chinese server).
+- `stoptime+id` or `stoptime+rank` to query the parking situation for the top 100 players (Japanese server, Traditional Chinese server).
+- `scoreline+id` or `scoreline+rank` to plot the score trend for the top 100 players over time (Japanese server, Traditional Chinese server).
 
 ### User Query
 - `pjskcheck+id` to view the FC and AP count, as well as ranking information for the EX and Master difficulties of the corresponding ID.
@@ -99,6 +98,8 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 
 - End song guessing: `endpjskguess`
 - End character guessing: `endcharaguess`
+
+Top 10 users：guess command + `rank`, for example `pjskguessrank`、`chartguessrank`
 
 ## Project Sekai Card Drawing (Gacha) Simulation
 > Ten consecutive card draws will generate an image.

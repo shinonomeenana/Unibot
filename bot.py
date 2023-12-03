@@ -100,6 +100,9 @@ async def handle_msg(event: Event):
     if event.user_id in block:
         # print('黑名单成员已拦截')
         return
+    if event.message == '想和镜音铃谈恋爱' and event.user_id == 3025139027:
+        await bot.send(event, '1/1')
+        return
     if event.message == '/delete unibot':
         info = await bot.get_group_member_info(self_id=event.self_id, group_id=event.group_id, user_id=event.user_id)
         if info['role'] == 'owner' or info['role'] == 'admin':
@@ -769,10 +772,7 @@ def sync_handle_msg(event):
             except ValueError:
                 return
         if event.message == '5v5人数':
-            if event.self_id == guildbot:  # 傻逼频道bot发网址要验证 不验证不让发
-                sendmsg(event, teamcount(server).replace('\n预测来自3-3.dev', ''))
-            else:
-                sendmsg(event, teamcount(server))
+            sendmsg(event, teamcount(server).replace('3-3.dev', '3-3点dev'))
         if event.message[:2] == "rk":
             if event.message == "rk":
                 bind = getqqbind(event.user_id, server=server)
@@ -1248,10 +1248,14 @@ def sync_handle_msg(event):
             userid = event.message.replace(f"{command} 绑定", "").strip()
             try:
                 int(userid)
-                sendmsg(event, bind_aimeid(event.user_id, userid, server))
             except ValueError:
+                traceback.print_exc()
                 sendmsg(event, '卡号应为20位纯数字')
                 return
+            if len(userid) != 20:
+                sendmsg(event, '卡号应为20位纯数字')
+                return
+            sendmsg(event, bind_aimeid(event.user_id, userid, server))
 
         def handle_b30(event, command, server=None, version=None):
             bind = getchunibind(event.user_id, server)
@@ -1387,10 +1391,7 @@ def sync_handle_msg(event):
                 return
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
-                    if event.self_id == guildbot:
-                        sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
-                    else:
-                        sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                    sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                 elif picdir == '':
                     sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
                     return

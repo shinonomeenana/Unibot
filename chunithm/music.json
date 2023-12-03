@@ -2,7 +2,7 @@
     {
         "id": "2478",
         "catname": "POPS & ANIME",
-        "newflag": "1",
+        "newflag": "0",
         "title": "茉子の日常",
         "reading": "マコノニチシヨウ",
         "artist": "常陸 茉子 (CV：小鳥居 夕花) 「千恋＊万花」",
@@ -18,7 +18,7 @@
     {
         "id": "2479",
         "catname": "POPS & ANIME",
-        "newflag": "1",
+        "newflag": "0",
         "title": "キズナヒトツ",
         "reading": "キスナヒトツ",
         "artist": "ムラサメ (CV：佐藤 みかん) 「千恋＊万花」",
@@ -34,7 +34,7 @@
     {
         "id": "2481",
         "catname": "POPS & ANIME",
-        "newflag": "1",
+        "newflag": "0",
         "title": "Love Cheat!",
         "reading": "LOVECHEAT",
         "artist": "MOSAIC.WAV",
@@ -50,7 +50,7 @@
     {
         "id": "2482",
         "catname": "POPS & ANIME",
-        "newflag": "1",
+        "newflag": "0",
         "title": "ドーナドーナのうた",
         "reading": "トウナトウナノウタ",
         "artist": "水夏える feat.月乃",
@@ -66,7 +66,7 @@
     {
         "id": "2483",
         "catname": "POPS & ANIME",
-        "newflag": "1",
+        "newflag": "0",
         "title": "未来への咆哮",
         "reading": "アスヘノホウコウ",
         "artist": "JAM Project feat. 影山ヒロノブ・遠藤正明・きただにひろし・福山芳樹",
@@ -13968,6 +13968,54 @@
         "image": "f5e39f5f2baeb2ad.jpg"
     },
     {
+        "id": "2486",
+        "catname": "ゲキマイ",
+        "newflag": "1",
+        "title": "ワンダーシャッフェンの法則",
+        "reading": "ワンタウシヤツフエンノホウソク",
+        "artist": "アリスシャッハと魔法の楽団",
+        "lev_bas": "3",
+        "lev_adv": "6",
+        "lev_exp": "10",
+        "lev_mas": "14",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "1f2ad791b96b4096.jpg"
+    },
+    {
+        "id": "2487",
+        "catname": "ゲキマイ",
+        "newflag": "1",
+        "title": "Paradisoda",
+        "reading": "PARADISESODA",
+        "artist": "魂音泉",
+        "lev_bas": "2",
+        "lev_adv": "5",
+        "lev_exp": "9",
+        "lev_mas": "12+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "ead3b8758a4c85b8.jpg"
+    },
+    {
+        "id": "2488",
+        "catname": "ゲキマイ",
+        "newflag": "1",
+        "title": "Yorugao",
+        "reading": "YORUGAO",
+        "artist": "An & Ryunosuke Kudo",
+        "lev_bas": "3",
+        "lev_adv": "7+",
+        "lev_exp": "12",
+        "lev_mas": "14+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "2ee4a0204cfea55b.jpg"
+    },
+    {
         "id": "802",
         "catname": "ゲキマイ",
         "newflag": "0",
@@ -14286,6 +14334,22 @@
         "we_kanji": "",
         "we_star": "",
         "image": "d3eca4d95273ed35.jpg"
+    },
+    {
+        "id": "2309",
+        "catname": "ゲキマイ",
+        "newflag": "1",
+        "title": "Let's Starry Party！",
+        "reading": "LETSSTARRYPARTY",
+        "artist": "曲：原田篤（Arte Refact）／歌：⊿TRiEDGE [高瀬 梨緒(CV：久保 ユリカ)、結城 莉玖(CV：朝日奈 丸佳)、藍原 椿(CV：橋本 ちなみ)]",
+        "lev_bas": "2",
+        "lev_adv": "6",
+        "lev_exp": "10",
+        "lev_mas": "12",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "5326c1c936cde91e.jpg"
     },
     {
         "id": "973",
@@ -15058,7 +15122,7 @@
     {
         "id": "2480",
         "catname": "ゲキマイ",
-        "newflag": "1",
+        "newflag": "0",
         "title": "GEOMETRIC DANCE",
         "reading": "GEOMETRICDANCE",
         "artist": "山本真央樹",
@@ -15070,6 +15134,22 @@
         "we_kanji": "",
         "we_star": "",
         "image": "87b65507b23fb234.jpg"
+    },
+    {
+        "id": "2485",
+        "catname": "ゲキマイ",
+        "newflag": "1",
+        "title": "Singularity",
+        "reading": "SINGULARITY",
+        "artist": "technoplanet",
+        "lev_bas": "3",
+        "lev_adv": "9+",
+        "lev_exp": "13+",
+        "lev_mas": "14+",
+        "lev_ult": "",
+        "we_kanji": "",
+        "we_star": "",
+        "image": "b719f806ac77bc29.jpg"
     },
     {
         "id": "202",
