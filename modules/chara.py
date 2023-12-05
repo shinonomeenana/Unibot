@@ -9,7 +9,7 @@ from modules.mysql_config import *
 import aiohttp
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 
-from modules.config import vitsapiurl, proxy, vitsvoiceurl
+from modules.config import vitsapiurl, proxy, vitsvoiceurl, env
 from modules.gacha import getcharaname
 from modules.otherpics import cardthumnail
 from modules.pjskinfo import isSingleEmoji, writelog
@@ -55,29 +55,63 @@ def cardidtopic(cardid):
     else:
         return [path + '/card_normal.jpg']
 
-def cardtype(cardid, cardCostume3ds, costume3ds):
-    # 普通0 限定1
-    costume = []
-    for i in cardCostume3ds:
-        if i['cardId'] == cardid:
-            costume.append(i['costume3dId'])
-    for costumeid in costume:
-        for model in costume3ds:
-            if model['id'] == costumeid:
-                if model['partType'] == 'hair':
-                    return 1
-    return 0
+
+# 用于创建 resourceBoxes 的索引
+def create_resourcebox_index(resourceBoxes):
+    index = {}
+    for item in resourceBoxes:
+        if item.get('resourceBoxPurpose') == 'gacha_ceil_exchange':
+            for detail in item.get('details', []):
+                if detail.get('resourceType') == 'card':
+                    cardid = detail.get('resourceId')
+                    index[cardid] = item.get('id')
+    return index
+
+# 用于创建 gachaCeilExchangeSummaries 的索引
+def create_exchange_summary_index(gachaCeilExchangeSummaries):
+    index = {}
+    for item in gachaCeilExchangeSummaries:
+        for exchange in item.get("gachaCeilExchanges", []):
+            resourceBoxId = exchange.get("resourceBoxId")
+            index[resourceBoxId] = exchange.get("gachaCeilExchangeLabelType")
+    return index
+
+
+def find_resourcebox_id_by_cardid(cardid, resourceBoxes=None):
+    if resourceBoxes is None:
+        with open('masterdata/resourceBoxes.json', 'r', encoding='utf-8') as f:
+            resourceBoxes = json.load(f)
+    for item in resourceBoxes:
+        if item.get('resourceBoxPurpose') == 'gacha_ceil_exchange':
+            for detail in item.get('details', []):
+                if detail.get('resourceType') == 'card' and detail.get('resourceId') == cardid:
+                    return item.get('id')
+    return None
+
+
+# 优化后的 cardtype 函数
+def cardtype(cardid, resourcebox_index, exchange_summary_index):
+    resourcebox_id = resourcebox_index.get(cardid)
+    if resourcebox_id:
+        label_type = exchange_summary_index.get(resourcebox_id)
+        if label_type in ["limited", "fes"]:
+            return label_type
+    return False
+
 
 def findcard(charaid, cardRarityType=None):
+    if os.path.exists(f"piccache/cardinfo/{charaid}{cardRarityType}.jpg") and env == 'prod':
+        return f"cardinfo/{charaid}{cardRarityType}.jpg"
     with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
         allcards = json.load(f)
-    with open(f'masterdata/cardCostume3ds.json', 'r', encoding='utf-8') as f:
-        cardCostume3ds = json.load(f)
-    with open(f'masterdata/costume3ds.json', 'r', encoding='utf-8') as f:
-        costume3ds = json.load(f)
     with open(f'masterdata/skills.json', 'r', encoding='utf-8') as f:
         skills = json.load(f)
-
+    with open('masterdata/resourceBoxes.json', 'r', encoding='utf-8') as f:
+        resourceBoxes = json.load(f)
+    with open('masterdata/gachaCeilExchangeSummaries.json', 'r', encoding='utf-8') as f:
+        gachaCeilExchangeSummaries = json.load(f)
+    resourcebox_index = create_resourcebox_index(resourceBoxes)
+    exchange_summary_index = create_exchange_summary_index(gachaCeilExchangeSummaries)
     allcards.sort(key=lambda x: x["releaseAt"], reverse=True)
     pic = Image.new('RGB', (1500, 5000), (235, 235, 235))
     count = 0
@@ -88,20 +122,19 @@ def findcard(charaid, cardRarityType=None):
                     continue
             pos = (int(70 + count % 3 * 470), int(count / 3) * 310 + 60)
             count += 1
-            single = findcardsingle(card, allcards, cardCostume3ds, costume3ds, skills)
+            single = findcardsingle(card, allcards, skills, resourcebox_index, exchange_summary_index)
             pic.paste(single, pos)
     pic = pic.crop((0, 0, 1500, (int((count - 1) / 3) + 1) * 310 + 60))
+    pic.save(f'piccache/cardinfo/{charaid}{cardRarityType}.jpg')
+    if env != 'prod':
+        pic.show()
+    return f'cardinfo/{charaid}{cardRarityType}.jpg'
 
-    pic.save(f'piccache/{charaid}{cardRarityType}.jpg')
-    return f'{charaid}{cardRarityType}.jpg'
 
-
-def findcardsingle(card, allcards, cardCostume3ds, costume3ds, skills):
+def findcardsingle(card, allcards, skills, resourcebox_index, exchange_summary_index):
     pic = Image.new("RGB", (420, 260), (255, 255, 255))
-    badge = False
-    cardtypenum = cardtype(card['id'], cardCostume3ds, costume3ds)
-    if cardtypenum == 1 or card['cardRarityType'] == 'rarity_birthday':
-        badge = True
+    badge = cardtype(card['id'], resourcebox_index, exchange_summary_index)
+
     if card['cardRarityType'] == 'rarity_3' or card['cardRarityType'] == 'rarity_4':
         thumnail = cardthumnail(card['id'], istrained=False, cards=allcards, limitedbadge=badge)
         r, g, b, mask = thumnail.split()

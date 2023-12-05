@@ -143,7 +143,7 @@ def cardthumnail(cardid, istrained=False, cards=None, limitedbadge=False):
             r, g, b, mask = attr.split()
             pic.paste(attr, (1, 1), mask)
             if limitedbadge:
-                badge = Image.open(f'{botpath}/pics/badge_limited.png')
+                badge = Image.open(f'{botpath}/pics/badge_{limitedbadge}.png')
                 # attr = attr.resize((35, 35))
                 r, g, b, mask = badge.split()
                 pic.paste(badge, (43, 0), mask)

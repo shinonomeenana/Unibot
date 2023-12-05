@@ -25,6 +25,33 @@ assetpath = botpath + '/data/assets/sekai/assetbundle/resources'
 masterdatadir = path.join(botpath, 'masterdata/')
 
 
+def find_resourcebox_id_by_cardid(cardid, resourceBoxes=None):
+    if resourceBoxes is None:
+        with open('masterdata/resourceBoxes.json', 'r', encoding='utf-8') as f:
+            resourceBoxes = json.load(f)
+    for item in resourceBoxes:
+        if item.get('resourceBoxPurpose') == 'gacha_ceil_exchange':
+            for detail in item.get('details', []):
+                if detail.get('resourceType') == 'card' and detail.get('resourceId') == cardid:
+                    return item.get('id')
+    return None
+
+
+def cardtype(cardid):
+    with open('masterdata/resourceBoxes.json', 'r', encoding='utf-8') as f:
+        resourceBoxes = json.load(f)
+    with open('masterdata/gachaCeilExchangeSummaries.json', 'r', encoding='utf-8') as f:
+        gachaCeilExchangeSummaries = json.load(f)
+    resourcebox_id = find_resourcebox_id_by_cardid(cardid, resourceBoxes)
+    for item in gachaCeilExchangeSummaries:
+        for exchange in item.get("gachaCeilExchanges", []):
+            if exchange.get("resourceBoxId") == resourcebox_id:
+                label_type = exchange.get("gachaCeilExchangeLabelType")
+                if label_type in ["limited", "fes"]:
+                    return label_type
+    return False
+
+
 def cardskill(skillid, skills, description=None):
     for skill in skills:
         if skill['id'] == skillid:
@@ -73,6 +100,7 @@ class CardInfo(object):
         self.cardRarityType: str = ''  # 卡面星数
         self.attr: str = ''  # 卡面属性
         self.isLimited: bool = False  # 卡面是否限定
+        self.limitType: str = ''  # 限定类型（普限，fes）
         self.cardParameters: Dict[str, int] = {}  # 卡面综合力
         self.releaseAt: str = ''  # 发布时间
 
@@ -280,12 +308,15 @@ class CardInfo(object):
             for each_model in costume3ds:
                 if each_model['id'] == each_costume_id:
                     _parttype = each_model["partType"]
-                    if _parttype == 'hair':
-                        self.isLimited = True
                     _assetbundleName = each_model["assetbundleName"]
                     self.assets["costume"][_parttype] = self.assets["costume"].get(_parttype, [])
                     self.assets["costume"][_parttype].append(_assetbundleName)
                     break
+        
+        self.limitType = cardtype(cardid)
+        if self.limitType:
+            self.isLimited = True
+
         # 尝试获取翻译信息
         with open(f'{botpath}/yamls/translate.yaml', encoding='utf-8') as f:
             trans = yaml.load(f, Loader=yaml.FullLoader)
@@ -387,8 +418,12 @@ class CardInfo(object):
         tmp_paramimgs.append(tmp_union)
         tmp_imgs.append(union(tmp_paramimgs, length=0, interval=25, type='row'))
         # 卡面类型
+        limit_discribe = {
+            'limited': '普通限定',
+            'fes': 'FES限定'
+        }
         tmp_union = union(
-            [t2i('类型'), t2i('限定' if self.isLimited else '普通')], type='col', length=right_width
+            [t2i('类型'), t2i(limit_discribe[self.limitType] if self.isLimited else '普通')], type='col', length=right_width
         )
         tmp_imgs.append(tmp_union)
         # 技能名
@@ -504,6 +539,7 @@ class CardInfo(object):
                 type='col',
                 length=left_width,
             )
+            # TODO: 修改判断方法，这个方法是错的，假四会显示池子是普通
             if (  # 若卡面为限定卡，当卡池也为当期池时，认定池子为限定池
                     self.isLimited
                     and self.gacha.startAt == self.releaseAt
