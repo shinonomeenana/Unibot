@@ -445,9 +445,6 @@ def sync_handle_msg(event):
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\skyc.png,cache=0]")
             return
         elif msg := re.match('^(?:查询?卡面?|findcard)(.*)', event.message):
-            if event.message.startswith('查卡') and event.group_id in [583819619, 809799430]:
-                return  # 在这两个群与其他bot命令冲突
-
             msg = msg.group(1).strip()
             if msg.isdigit():
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/piccache/cardinfo/{getcardinfo(int(msg))},cache=0]")
