@@ -154,8 +154,9 @@ sk，pjsk进度，pjsk b30，rk，难度排行
 - 交流群:`883721511`
 - Unibot频道: [点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)
 ### 使用框架
-- 框架: [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
+- QQbot框架: [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - SDK: [nonebot/aiocqhttp](https://github.com/nonebot/aiocqhttp)
+- QQ官方版bot框架：[Hoshinonyaruko/Gensokyo](https://github.com/Hoshinonyaruko/Gensokyo)
 ### 数据来源
 - 预测线: [33Kit](https://3-3.dev/)
 - 歌曲达成率，难度偏差，热度等信息: [Project Sekai Profile](https://profile.pjsekai.moe/)（因为api改了已寄）

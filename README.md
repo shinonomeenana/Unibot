@@ -47,6 +47,7 @@ masterDB（项目内放在`masterdata`文件夹下） 可使用 [Sekai-World/sek
 - [nonebot/aiocqhttp](https://github.com/nonebot/aiocqhttp): A Python SDK with async I/O for CQHTTP (OneBot).
 - [sevenc-nanashi/pjsekai-soundgen](https://github.com/sevenc-nanashi/pjsekai-soundgen): 譜面から音声を生成するツール。
 - [noneplugin/nonebot-plugin-imageutils](https://github.com/noneplugin/nonebot-plugin-imageutils): Nonebot2 PIL工具插件
+- [Hoshinonyaruko/Gensokyo](https://github.com/Hoshinonyaruko/Gensokyo): 提供QQ官方bot API到Onebot协议的转换
 
 ## 权利表记
 
