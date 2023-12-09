@@ -247,7 +247,7 @@ def wdsset(newalias, oldalias, qqnum, username, qun):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = wds_alias_to_music_id(oldalias)
     if resp['musicid'] == 0:
-        return "找不到你要设置的歌曲，请使用正确格式：pjskinfo新昵称to旧昵称"
+        return "找不到你要设置的歌曲，请使用正确格式：wdsset新昵称to旧昵称"
     musicid = resp['musicid']
 
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
@@ -278,7 +278,7 @@ def wdsdel(alias, qqnum, username, qun):
     alias = alias.strip()
     resp = wds_alias_to_music_id(alias)
     if resp['match'] != 1:
-        return "找不到你要设置的歌曲，请使用正确格式：pjskdel昵称"
+        return "找不到你要设置的歌曲，请使用正确格式：wdsdel昵称"
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
                            database='pjsk', charset='utf8mb4')
     mycursor = mydb.cursor()

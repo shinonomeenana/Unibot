@@ -13,6 +13,7 @@ import time
 import traceback
 import yaml
 from aiocqhttp import CQHttp, Event
+from chunithm.alias import chualias, chudel, chuset
 from chunithm.daily_bonus import chuni_signin
 from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel, aliastocharaid, get_card, cardidtopic, \
     findcard, getvits, getcardinfo
@@ -1311,15 +1312,55 @@ def sync_handle_msg(event):
             # 获取图像并发送
             result = get_chunithm_chart(musicid, difficulty)
             if result is not None:
-                title, image_url = result
-                if event.self_id == guildbot:
-                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx点in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图"
-                else:
-                    info = f"{title} {difficulty.upper()}\n谱面来自sdvx.in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图"
+                title, image_url, match = result
+                info = f"{title} {difficulty.upper()}\n匹配度：{match}\n谱面来自sdvx点in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图"
                 sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             else:
                 sendmsg(event, "抱歉，无法生成图像。")
-
+        if event.message[:6] == 'chuset' and 'to' in event.message:
+            if event.user_id in aliasblock:
+                sendmsg(event, '你因乱设置昵称已无法使用此功能')
+                return
+            event.message = event.message[6:]
+            para = event.message.split('to')
+            if event.sender['card'] == '':
+                username = event.sender['nickname']
+            else:
+                username = event.sender['card']
+            if event.self_id == guildbot:
+                resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
+                qun = resp.json()
+                resp = chuset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内")
+                sendmsg(event, resp)
+            else:
+                qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
+                resp = chuset(para[0], para[1], event.user_id, username, f"{qun['group_name']}({event.group_id})内")
+                sendmsg(event, resp)
+            return
+        if event.message[:6] == 'chudel':
+            if event.user_id in aliasblock:
+                sendmsg(event, '你因乱设置昵称已无法使用此功能')
+                return
+            event.message = event.message[6:]
+            if event.sender['card'] == '':
+                username = event.sender['nickname']
+            else:
+                username = event.sender['card']
+            if event.self_id == guildbot:
+                resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
+                qun = resp.json()
+                resp = chudel(event.message, event.user_id, username, f"{qun['name']}({event.guild_id})内")
+                sendmsg(event, resp)
+            else:
+                qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
+                resp = chudel(event.message, event.user_id, username, f"{qun['group_name']}({event.group_id})内")
+                sendmsg(event, resp)
+            return
+        if event.message[:8] == 'chualias':
+            event.message = event.message[8:]
+            resp = chualias(event.message)
+            sendmsg(event, resp)
+            return
         # wds
         if msg := re.match('(?:wdsinfo|wdssong?)(.*)', event.message):
             resp = wds_alias_to_music_id(msg.group(1).strip())

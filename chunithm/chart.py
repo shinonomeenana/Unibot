@@ -7,6 +7,8 @@ from PIL import Image, ImageDraw, ImageFont
 import requests
 from io import BytesIO
 
+from chunithm.alias import chu_aliastomusicid
+
 
 def load_songs(filename):
     with open(filename, 'r', encoding='utf-8') as file:
@@ -68,6 +70,15 @@ def official_id_to_sdvx_id(official_id):
 PROXY = {'http': 'http://localhost:7890', 'https': 'http://localhost:7890'}
 
 
+def paste_image(background, image, force=False):
+    if image.mode == 'RGBA':
+        # 如果图像是 RGBA 模式，则使用透明通道作为掩码
+        background.paste(image, (0, 0), image.split()[3])
+    elif force:
+        # 如果图像不是 RGBA 模式，则直接粘贴
+        background.paste(image, (0, 0))
+    return background
+
 def download_and_merge_images(musicid, sdvxid, difficulty):
     # 构建URL
     prefix = sdvxid[:2]
@@ -84,13 +95,17 @@ def download_and_merge_images(musicid, sdvxid, difficulty):
     obj_image = Image.open(BytesIO(requests.get(obj_url, proxies=PROXY).content))
     bar_image = Image.open(BytesIO(requests.get(bar_url, proxies=PROXY).content))
 
-    # 创建纯黑背景
-    black_image = Image.new("RGBA", base_image.size, (0, 0, 0, 255))
+    # 确定所有图像中的最大宽度和高度
+    max_width = max(base_image.width, obj_image.width, bar_image.width)
+    max_height = max(base_image.height, obj_image.height, bar_image.height)
 
-    # 合并图像
-    merged_image = Image.alpha_composite(black_image, base_image)
-    merged_image = Image.alpha_composite(merged_image, obj_image)
-    merged_image = Image.alpha_composite(merged_image, bar_image)
+    # 创建一个新的黑色背景图像
+    black_image = Image.new("RGBA", (max_width, max_height), (0, 0, 0, 255))
+
+    # 在黑色背景上平铺每个图像
+    black_image = paste_image(black_image, base_image)
+    black_image = paste_image(black_image, obj_image, True)
+    merged_image = paste_image(black_image, bar_image)
 
     # 保存图像
     directory = os.path.join("charts", "chunithm", str(musicid))
@@ -104,18 +119,20 @@ def download_and_merge_images(musicid, sdvxid, difficulty):
     return output_path
 
 
-def get_chunithm_chart(musicid, difficulty):
+def get_chunithm_chart(alias, difficulty):
+    resp = chu_aliastomusicid(alias)
+    musicid = str(resp['musicid'])
     print(musicid, difficulty)
     local_path = os.path.join("charts", "chunithm", str(musicid), f"{difficulty}.jpg")
     
     if os.path.exists(local_path):
-        return get_song_info(musicid) + (local_path,)
+        return get_song_info(musicid) + (local_path,) + (resp['match'], )
 
     try:
         sdvxid = official_id_to_sdvx_id(musicid)
         if sdvxid is not None:
             download_and_merge_images(musicid, sdvxid, difficulty)
-            return get_song_info(musicid) + (local_path,)
+            return get_song_info(musicid) + (local_path,) + (resp['match'], )
     except Exception as e:
         traceback.print_exc()
 

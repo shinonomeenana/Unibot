@@ -139,8 +139,11 @@ sk，pjsk进度，pjsk b30，rk，难度排行
 ## 其他游戏
 ### CHUNITHM
 - `chusearch 原曲名` 搜索匹配的曲名，给出对应歌曲id
-- `chuinfo 歌曲id` 查看歌曲信息
-- `chuchart 歌曲id` 查看谱面预览
+- `chuinfo 歌曲id/原曲名` 查看歌曲信息
+- `chuchart 歌曲id/原曲名` 查看谱面预览
+- `chuset昵称to歌名`
+- `chudel 昵称` 删除对应昵称
+- `chualias 昵称` 查看所有昵称
 
 ### WDS
 - `wdsinfo 曲名` 查看歌曲信息

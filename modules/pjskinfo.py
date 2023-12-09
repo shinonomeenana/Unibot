@@ -598,7 +598,7 @@ def pjskset(newalias, oldalias, qqnum, username, qun):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastomusicid(oldalias)
     if resp['musicid'] == 0:
-        return "找不到你要设置的歌曲，请使用正确格式：pjskinfo新昵称to旧昵称"
+        return "找不到你要设置的歌曲，请使用正确格式：pjskset新昵称to旧昵称"
     musicid = resp['musicid']
 
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,

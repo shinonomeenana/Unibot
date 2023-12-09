@@ -1,5 +1,6 @@
 import json
 import re
+from chunithm.alias import chu_aliastomusicid
 from chunithm.b30 import sun_to_sunp
 import Levenshtein as lev
 
@@ -54,7 +55,9 @@ def search_song(query):
         return "\n".join([f"{result[0]}: {result[1]}" for result in results])
 
 
-def song_details(song_id):
+def song_details(alias):
+    resp = chu_aliastomusicid(alias)
+    song_id = str(resp['musicid'])
     reverse_difficulty_mapping = {
         "basic": 0,
         "advanced": 1,
@@ -95,6 +98,7 @@ def song_details(song_id):
 
     # 格式化输出信息
     info = f"{song_music['id']}: {title}\n"\
+           f"匹配度: {resp['match']}\n"\
            f"类型：{song_music['catname']}\n"\
            f"艺术家：{song_music['artist']}\n"\
            f"难度：{difficulties_str}\n"
