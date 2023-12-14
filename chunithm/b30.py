@@ -190,8 +190,10 @@ def process_r10(userid, server, version='2.12', sort=True):
     # 读取歌曲信息
     with open("chunithm/masterdata/musics.json", "r", encoding='utf-8') as f:
         musics = json.load(f)
+    with open('chunithm/masterdata/musics_local.json', 'r', encoding='utf-8') as f:
+        sdhd_music_data = json.load(f)
     music_info = {music['id']: music for music in musics}
-
+    sdhd_music_info = {music['id']: music for music in sdhd_music_data}
     # 解析用户数据
     user_data = get_user_recent(userid, server)  # assuming user_input is your provided user data
     rating_list = []
@@ -203,25 +205,33 @@ def process_r10(userid, server, version='2.12', sort=True):
         music_id = record["musicId"]
         difficult_id = record["difficultId"]
         score = int(record["score"])
-        if music_id in music_info:
+        isdeleted = False
+        try:
             music = music_info[music_id]
-            difficulty_level = difficulty_mapping[difficult_id]
-            if difficulty_level in music['difficulties']:
-                difficulty = music['difficulties'][difficulty_level]
-                if version in ['2.15', '2.20']:
-                    difficulty = sun_to_sunp.get((int(music_id), int(difficult_id)), difficulty)
-                    if version == '2.20':
-                        difficulty = sunp_to_lmn.get((int(music_id), int(difficult_id)), difficulty)
-                
-                rating = calculate_rating(difficulty, score)
-                rating_list.append({
-                    'musicName': music['name'],
-                    'jacketFile': music['jaketFile'],
-                    'playLevel': difficulty,
-                    'musicDifficulty': difficulty_level,
-                    'score': score,
-                    'rating': rating
-                })
+        except KeyError:
+            try:
+                music = sdhd_music_info[music_id]
+                isdeleted = True
+            except KeyError:
+                continue
+        difficulty_level = difficulty_mapping[difficult_id]
+        if difficulty_level in music['difficulties']:
+            difficulty = music['difficulties'][difficulty_level]
+            if version in ['2.15', '2.20']:
+                difficulty = sun_to_sunp.get((int(music_id), int(difficult_id)), difficulty)
+                if version == '2.20':
+                    difficulty = sunp_to_lmn.get((int(music_id), int(difficult_id)), difficulty)
+            
+            rating = calculate_rating(difficulty, score)
+            rating_list.append({
+                'musicName': music['name'],
+                'jacketFile': music['jaketFile'],
+                'playLevel': difficulty,
+                'musicDifficulty': difficulty_level,
+                'score': score,
+                'rating': rating,
+                'isdeleted': isdeleted,
+            })
 
     # 将rating_list按照rating降序排序
     if sort:
@@ -249,11 +259,13 @@ def process_b30(userid, server, version='2.12'):
         music_id = str(data['musicId'])
         level_index = int(data['level'])
         level_dict = {0: "basic", 1: "advanced", 2: "expert", 3: "master", 4: "ultima", 5: "world's end"}
+        isdeleted = False
         try:
             music_info = music_dict[music_id]
         except KeyError:
             try:
                 music_info = sdhd_music_dict[music_id]
+                isdeleted = True
             except KeyError:
                 continue
         music_name = music_info['name']
@@ -277,7 +289,8 @@ def process_b30(userid, server, version='2.12'):
             'score': score,
             'rating': rating,
             'isFullCombo': data['isFullCombo'],
-            'isAllJustice': data['isAllJustice']
+            'isAllJustice': data['isAllJustice'],
+            'isdeleted': isdeleted,
         })
 
     ratings.sort(key=lambda x: x['rating'], reverse=True)
@@ -390,6 +403,8 @@ def b30single(single_data, version):
     draw = ImageDraw.Draw(pic)
     font = ImageFont.truetype('fonts/YuGothicUI-Semibold.ttf', 36)
     size = font.getsize(musictitle)
+    if version == '2.20' and single_data['isdeleted']:
+        musictitle = '(配信停止)' + musictitle
     if size[0] > 365:
         musictitle = musictitle[:int(len(musictitle)*(345/size[0]))] + '...'
     draw.text((240, 27), musictitle, '#000000', font)
