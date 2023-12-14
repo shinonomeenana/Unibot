@@ -151,6 +151,32 @@ sun_to_sunp = {
     (2385, 2): 13.4,  # eden 13.8-13.4
 }
 
+# 不全且可能有错，持续更新中
+
+sunp_to_lmn = {
+    (2338, 3): 15.1,  # Disruptor Array 15.2-15.1
+    (2400, 3): 15.0,  # LAMIA 15.1-15.0
+    (428 , 4): 15.2,  # Aleph-0 ULT 15.1-15.2
+    (1017, 3): 15.1,  # ANU 15.0-15.1
+    (2039, 3): 14.8,  # ]-[|/34<#! 14.9-14.8
+    (2336, 3): 14.8,  # 盟月 14.9-14.8
+    (2346, 3): 14.7,  # FLUFFY FLASH 14.8-14.7
+    (2401, 3): 14.7,  # オンソクデイズ!! 14.8-14.7
+    (2351, 3): 14.8,  # Sheriruth 14.7-14.8
+    (2353, 3): 14.9,  # 幻想即興曲 14.8-14.9
+    (2194, 3): 14.3,  # 蒼穹舞楽 14.5-14.3
+    (2338, 2): 14.4,  # Disruptor Array EXP 14.5-14.4
+    (2416, 4): 14.4,  # Snow Colored Score ULT 14.2-14.4
+    (2242, 3): 14.0,  # キルミーのベイベー！ 13.9-14.0
+    (159 , 4): 14.8,  # ジングルベル ULT 14.9-14.8
+    (233 , 4): 14.5,  # アルストロメリア ULT 14.4-14.5
+    (1079, 2): 14.3,  # X7124 EXP 14.4-14.3
+    (2400, 2): 14.1,  # LAMIA EXP 13.9-14.1
+    (2407, 2): 14.0,  # Makear EXP 13.9-14.0
+    # ネトゲ廃人シュプレヒコール 11.9-12+不明
+}
+
+
 def process_r10(userid, server, version='2.12', sort=True):
     difficulty_mapping = {
         "0": "basic",
@@ -182,8 +208,11 @@ def process_r10(userid, server, version='2.12', sort=True):
             difficulty_level = difficulty_mapping[difficult_id]
             if difficulty_level in music['difficulties']:
                 difficulty = music['difficulties'][difficulty_level]
-                if version == '2.15':
+                if version in ['2.15', '2.20']:
                     difficulty = sun_to_sunp.get((int(music_id), int(difficult_id)), difficulty)
+                    if version == '2.20':
+                        difficulty = sunp_to_lmn.get((int(music_id), int(difficult_id)), difficulty)
+                
                 rating = calculate_rating(difficulty, score)
                 rating_list.append({
                     'musicName': music['name'],
@@ -231,8 +260,10 @@ def process_b30(userid, server, version='2.12'):
         jacket_file = music_info['jaketFile']
         try:
             difficulty = music_info['difficulties'][level_dict[level_index]]
-            if version == '2.15':
+            if version in ['2.15', '2.20']:
                 difficulty = sun_to_sunp.get((int(music_id), int(level_index)), difficulty)
+                if version == '2.20':
+                    difficulty = sunp_to_lmn.get((int(music_id), int(level_index)), difficulty)
         except KeyError:
             continue
         score = int(data['scoreMax'])
@@ -258,6 +289,8 @@ def process_b30(userid, server, version='2.12'):
 def chunib30(userid, server='aqua', version='2.12'):
     if version == '2.15':
         pic = Image.open('pics/chub30sunp.png')
+    elif version == '2.20':
+        pic = Image.open('pics/chub30lmn.png')
     else:
         pic = Image.open('pics/chub30.png')
     draw = ImageDraw.Draw(pic)

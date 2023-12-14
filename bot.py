@@ -1275,6 +1275,9 @@ def sync_handle_msg(event):
             elif re.match(f'^{command} *b30 sunp$', event.message):
                 handle_b30(event, command, server, version='2.15')
                 return
+            elif re.match(f'^{command} *b30 (lmn|阿米诺斯|啊米诺斯|[Ll]uminous)$', event.message):
+                handle_b30(event, command, server, version='2.20')
+                return
     
         if event.message in ['aqua 中二签到', 'knd 中二签到']:
             bind = getchunibind(event.user_id)
@@ -2019,57 +2022,19 @@ async def handle_group_request(event: Event):
                                      message=f'{event.user_id}邀请我加入群{event.group_id}，已自动拒绝')
     elif event.sub_type == 'add':  # 有人加群
         if event.group_id == 883721511 or event.group_id == 647347636:
-            try:
-                if groupaudit[event.user_id] >= 4:
-                    await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                    approve=False,
-                                                    reason=f'多次回答错误，你已被本群暂时拉黑')
-                    await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                             message=f'{event.user_id}申请加群\n多次回答错误，已被暂时拉黑')
-                    return
-            except:
-                pass
             answer = event.comment[event.comment.find("答案：") + len("答案："):].strip()
-            answer = re.sub(r'\D', "", answer)
-            async with aiofiles.open('masterdata/musics.json', 'r', encoding='utf-8') as f:
-                contents = await f.read()
-            musics = json.loads(contents)
-            now = time.time() * 1000
-            count = 0
-            for music in musics:
-                if music['publishedAt'] < now:
-                    count += 1
-            print(count)
-            try:
-                answer_int = int(answer)
-                if count - 5 < answer_int < count + 5:
-                    await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                    approve=True)
-                    await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                            message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n误差<5，已自动通过')
-                else:
-                    try:
-                        groupaudit[event.user_id]
-                    except:
-                        groupaudit[event.user_id] = 0
-
-                    await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                    approve=False, reason=f'机器判定答案错误，请用纯数字认真回答')
-                    await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                            message=f'自动拒绝\n{event.user_id}申请加群\n{event.comment}\n误差>5，已自动拒绝')
-                    groupaudit[event.user_id] += 1
-            except ValueError:
-                try:
-                    groupaudit[event.user_id]
-                except:
-                    groupaudit[event.user_id] = 0
-
+            if '近藤' in answer:
                 await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                approve=False, reason=f'无法识别答案，请使用纯数字')
+                                                approve=True)
                 await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                        message=f'自动拒绝\n{event.user_id}申请加群\n{event.comment}\n无法识别答案，已自动拒绝')
-                groupaudit[event.user_id] += 1
-
+                                         message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n已自动通过')
+                await bot.send_group_msg(self_id=event.self_id, group_id=883721511,
+                                         message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n已自动通过')
+            else:
+                await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
+                                         message=f'{event.user_id}申请加群\n{event.comment}')
+                await bot.send_group_msg(self_id=event.self_id, group_id=883721511,
+                                         message=f'{event.user_id}申请加群\n{event.comment}')
         elif event.group_id == 467602419:
             answer = event.comment[event.comment.find("答案：") + len("答案："):].strip()
             if 'Mrs4s/go-cqhttp' in answer:

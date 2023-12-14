@@ -1,5 +1,101 @@
 [
     {
+        "name": "ALIVE",
+        "id": "2490",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "b7ec25d973052f3c.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 9.0,
+            "master": 12.6,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "可愛くてごめん",
+        "id": "2491",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "175628cd37c4ac4e.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 5.0,
+            "expert": 9.0,
+            "master": 11.5,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "トウキョウ・シャンディ・ランデヴ feat. 花譜, ツミキ",
+        "id": "2492",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "9159db0de6b0c305.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 6.0,
+            "expert": 10.0,
+            "master": 13.3,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "マツケンサンバⅡ",
+        "id": "2493",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "7f8fac22ddf8c740.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 9.5,
+            "master": 12.9,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "アイドル",
+        "id": "2494",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "8a7411e0baae4915.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 5.0,
+            "expert": 9.5,
+            "master": 12.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "STORM",
+        "id": "2495",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "9d4b0ac6f5244d48.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 9.0,
+            "master": 12.3,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "茉子の日常",
         "id": "2478",
         "genreNames": [
@@ -1392,22 +1488,6 @@
         }
     },
     {
-        "name": "乙女のルートはひとつじゃない！",
-        "id": "2088",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "3954c29f2cb33da9.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 5.0,
-            "expert": 9.5,
-            "master": 11.5,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
         "name": "I believe what you said",
         "id": "2078",
         "genreNames": [
@@ -1472,38 +1552,6 @@
         }
     },
     {
-        "name": "Deep in Abyss",
-        "id": "1095",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "95de956eec31ecd7.jpg",
-        "difficulties": {
-            "basic": 2.0,
-            "advanced": 5.0,
-            "expert": 8.5,
-            "master": 11.8,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "町かどタンジェント",
-        "id": "1045",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "ca2ba0b7a2a527e0.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 9.0,
-            "master": 11.5,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
         "name": "異世界かるてっと",
         "id": "1080",
         "genreNames": [
@@ -1514,70 +1562,6 @@
             "basic": 3.0,
             "advanced": 5.0,
             "expert": 9.5,
-            "master": 12.8,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "Paradise Lost",
-        "id": "1093",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "41dbfeeb5f6bfab6.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 9.5,
-            "master": 12.3,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "もってけ!セーラーふく",
-        "id": "1053",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "c7d865b58420a4f7.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 9.0,
-            "master": 12.3,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "歩いていこう！",
-        "id": "1046",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "800f6701500e2884.jpg",
-        "difficulties": {
-            "basic": 1.0,
-            "advanced": 4.0,
-            "expert": 8.0,
-            "master": 11.2,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "甲賀忍法帖",
-        "id": "1036",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "591f01ac8ccabcbc.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 5.0,
-            "expert": 9.0,
             "master": 12.8,
             "ultima": 0,
             "world's end": 0.0
@@ -1600,102 +1584,6 @@
         }
     },
     {
-        "name": "キラメキライダー☆",
-        "id": "1024",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "f45abc9c44d11b49.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 5.0,
-            "expert": 8.5,
-            "master": 12.8,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "モノノケ・イン・ザ・フィクション",
-        "id": "1018",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "49c3a9b021c5c3b4.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 9.0,
-            "master": 12.9,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "君のせい",
-        "id": "1049",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "1ed35d2c9e895086.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 9.5,
-            "master": 11.9,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "Pretender",
-        "id": "1000",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "4bae403f082b0f8d.jpg",
-        "difficulties": {
-            "basic": 2.0,
-            "advanced": 5.0,
-            "expert": 8.0,
-            "master": 11.0,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "Phantom Joke",
-        "id": "1050",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "ca155a9d2aa670ce.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 10.3,
-            "master": 13.6,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "ごまかし",
-        "id": "1001",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "561188dea5032964.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 8.0,
-            "master": 12.1,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
         "name": "だから僕は音楽を辞めた",
         "id": "1002",
         "genreNames": [
@@ -1707,22 +1595,6 @@
             "advanced": 5.0,
             "expert": 7.5,
             "master": 11.8,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "真赤な誓い",
-        "id": "1003",
-        "genreNames": [
-            "POPS & ANIME"
-        ],
-        "jaketFile": "fc0de759f8a89941.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 9.5,
-            "master": 12.7,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -2304,6 +2176,54 @@
         }
     },
     {
+        "name": "ラブカ？",
+        "id": "2505",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "edd015566bd12d55.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 7.0,
+            "expert": 10.2,
+            "master": 13.5,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "強風オールバック",
+        "id": "2506",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "de9e41bbc14fc172.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 8.5,
+            "master": 12.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "星界ちゃんと可不ちゃんのおつかい合騒曲",
+        "id": "2507",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "274ebb3c6568210f.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.5,
+            "expert": 12.0,
+            "master": 14.4,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "あなたは世界の終わりにずんだを食べるのだ",
         "id": "2452",
         "genreNames": [
@@ -2459,22 +2379,6 @@
             "advanced": 5.0,
             "expert": 8.0,
             "master": 11.4,
-            "ultima": 0.0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "ゴー・トゥ・大都会",
-        "id": "2419",
-        "genreNames": [
-            "niconico"
-        ],
-        "jaketFile": "3a29fbb04e7e4c49.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 11.3,
-            "master": 14.1,
             "ultima": 0.0,
             "world's end": 0.0
         }
@@ -3643,22 +3547,6 @@
             "advanced": 5.0,
             "expert": 8.0,
             "master": 11.7,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "サクリファイス",
-        "id": "1054",
-        "genreNames": [
-            "niconico"
-        ],
-        "jaketFile": "eae765592a4cf534.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 7.0,
-            "expert": 9.5,
-            "master": 13.4,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -6011,7 +5899,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 11.9,
-            "ultima": 0,
+            "ultima": 14.3,
             "world's end": 0.0
         }
     },
@@ -8944,6 +8832,22 @@
         }
     },
     {
+        "name": "Big Bang",
+        "id": "2531",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "345b5ef96c048e02.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 7.0,
+            "expert": 12.0,
+            "master": 14.9,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "Blue Noise",
         "id": "33",
         "genreNames": [
@@ -9296,6 +9200,22 @@
         }
     },
     {
+        "name": "Jakarta PROGRESSION",
+        "id": "2529",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "57afdaf21a762451.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 7.0,
+            "expert": 12.1,
+            "master": 14.2,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "BlythE",
         "id": "807",
         "genreNames": [
@@ -9452,6 +9372,38 @@
             "expert": 13.5,
             "master": 14.0,
             "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "本物のヒーローとの戦い",
+        "id": "2525",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "a46150b122cb6def.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 11.5,
+            "master": 14.3,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "華麗なる死闘",
+        "id": "2526",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "003ce376f1d36976.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 11.0,
+            "master": 13.6,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -11232,6 +11184,38 @@
         }
     },
     {
+        "name": "御旗のもとに",
+        "id": "858",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "94ce0709e9953590.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 9.0,
+            "master": 12.3,
+            "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "檄！帝国華撃団＜新章＞",
+        "id": "962",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "10528348b73246ed.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 8.0,
+            "master": 11.7,
+            "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "In The Blue Sky '01",
         "id": "304",
         "genreNames": [
@@ -11440,22 +11424,6 @@
         }
     },
     {
-        "name": "御旗のもとに",
-        "id": "858",
-        "genreNames": [
-            "VARIETY"
-        ],
-        "jaketFile": "94ce0709e9953590.jpg",
-        "difficulties": {
-            "basic": 2.0,
-            "advanced": 5.0,
-            "expert": 9.0,
-            "master": 12.3,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
         "name": "Be A Shooter！～NORMAL BIG BONUS～",
         "id": "901",
         "genreNames": [
@@ -11467,22 +11435,6 @@
             "advanced": 7.0,
             "expert": 10.3,
             "master": 12.4,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "檄！帝国華撃団＜新章＞",
-        "id": "962",
-        "genreNames": [
-            "VARIETY"
-        ],
-        "jaketFile": "10528348b73246ed.jpg",
-        "difficulties": {
-            "basic": 3.0,
-            "advanced": 6.0,
-            "expert": 8.0,
-            "master": 11.7,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -12332,6 +12284,22 @@
             "expert": 9.0,
             "master": 13.8,
             "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "どこにもいかない",
+        "id": "2549",
+        "genreNames": [
+            "イロドリミドリ"
+        ],
+        "jaketFile": "e4a4dca49f290a20.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 9.5,
+            "master": 12.0,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -14016,6 +13984,38 @@
         }
     },
     {
+        "name": "Sage",
+        "id": "2555",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "daccb17998e9943e.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.5,
+            "expert": 13.2,
+            "master": 14.6,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "SILENT BLUE",
+        "id": "2583",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "1efa961aecb0dc77.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 7.5,
+            "expert": 13.3,
+            "master": 14.2,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "STARTLINER",
         "id": "802",
         "genreNames": [
@@ -14219,6 +14219,38 @@
             "advanced": 5.0,
             "expert": 9.0,
             "master": 12.1,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ぱくぱく☆がーる",
+        "id": "2365",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "a15f5130a2fa9045.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 9.5,
+            "master": 12.2,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "オン×ステージ！",
+        "id": "2553",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "6848b4dbeaa1feee.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 8.5,
+            "master": 12.3,
             "ultima": 0.0,
             "world's end": 0.0
         }
@@ -14620,22 +14652,6 @@
             "expert": 10.9,
             "master": 14.1,
             "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "ぱくぱく☆がーる",
-        "id": "2365",
-        "genreNames": [
-            "ゲキマイ"
-        ],
-        "jaketFile": "a15f5130a2fa9045.jpg",
-        "difficulties": {
-            "basic": 2.0,
-            "advanced": 5.0,
-            "expert": 9.5,
-            "master": 12.2,
-            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -15152,6 +15168,22 @@
         }
     },
     {
+        "name": "MarbleBlue.",
+        "id": "2554",
+        "genreNames": [
+            "ゲキマイ"
+        ],
+        "jaketFile": "c3f0a08e4135055c.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 8.5,
+            "expert": 13.7,
+            "master": 14.9,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "GEMINI -C-",
         "id": "202",
         "genreNames": [
@@ -15435,7 +15467,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 12.3,
-            "ultima": 0,
+            "ultima": 13.1,
             "world's end": 0.0
         }
     },
@@ -20496,6 +20528,182 @@
         }
     },
     {
+        "name": "少女PastQ",
+        "id": "2566",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "e6175e4461258d40.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 8.5,
+            "master": 11.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "君と夏色っ！～わんダフルバケーション～",
+        "id": "2567",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "62724ff67c659c30.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 10.0,
+            "master": 12.9,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "MyPaceInvention",
+        "id": "2568",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "b0434023ff8fa6ac.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 9.5,
+            "master": 12.2,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "colorful",
+        "id": "2569",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "868c447fe51e1189.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 10.1,
+            "master": 13.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ZegalltA",
+        "id": "2570",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "0192ebe0c2a1d0bc.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 9.5,
+            "expert": 13.1,
+            "master": 15.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "驚異の魔法",
+        "id": "2572",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "084a66065554b0f3.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 7.0,
+            "expert": 11.8,
+            "master": 13.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ウニの歌",
+        "id": "2571",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "c2399923d0c571c5.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 7.5,
+            "expert": 11.1,
+            "master": 14.6,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "liberate",
+        "id": "2573",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "af1a934c6aa4ce6d.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 10.3,
+            "master": 13.4,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "セカイはまだ始まってすらいない",
+        "id": "8278",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "467b16ec81ebdcf1.jpg",
+        "difficulties": {
+            "basic": 0.0,
+            "advanced": 0.0,
+            "expert": 0.0,
+            "master": 0.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "フリーフォール",
+        "id": "8279",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "497d4f2cfba41251.jpg",
+        "difficulties": {
+            "basic": 0.0,
+            "advanced": 0.0,
+            "expert": 0.0,
+            "master": 0.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "人生攻略☆Tips",
+        "id": "8280",
+        "genreNames": [
+            "ORIGINAL"
+        ],
+        "jaketFile": "0705dfb84b4fd162.jpg",
+        "difficulties": {
+            "basic": 0.0,
+            "advanced": 0.0,
+            "expert": 0.0,
+            "master": 0.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "ETERNAL DRAIN",
         "id": "8267",
         "genreNames": [
@@ -20816,38 +21024,6 @@
         }
     },
     {
-        "name": "]-[|/34<#!",
-        "id": "8240",
-        "genreNames": [
-            "VARIETY"
-        ],
-        "jaketFile": "c80c5e27071c36ab.jpg",
-        "difficulties": {
-            "basic": 0.0,
-            "advanced": 0.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "ダブルラリアット",
-        "id": "8239",
-        "genreNames": [
-            "niconico"
-        ],
-        "jaketFile": "d32a2b57080cb0ca.jpg",
-        "difficulties": {
-            "basic": 0.0,
-            "advanced": 0.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
         "name": "ラグトレイン",
         "id": "8238",
         "genreNames": [
@@ -20870,54 +21046,6 @@
             "VARIETY"
         ],
         "jaketFile": "b973f85a8b74d1ea.jpg",
-        "difficulties": {
-            "basic": 0.0,
-            "advanced": 0.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "Elemental Ethnic",
-        "id": "8236",
-        "genreNames": [
-            "ORIGINAL"
-        ],
-        "jaketFile": "563915e14965661d.jpg",
-        "difficulties": {
-            "basic": 0.0,
-            "advanced": 0.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "XL TECHNO -More Dance Remix-",
-        "id": "8235",
-        "genreNames": [
-            "VARIETY"
-        ],
-        "jaketFile": "d9396ccc80b17e66.jpg",
-        "difficulties": {
-            "basic": 0.0,
-            "advanced": 0.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "きゅうりバーにダイブ",
-        "id": "8234",
-        "genreNames": [
-            "東方Project"
-        ],
-        "jaketFile": "998020ba6a2b819f.jpg",
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
@@ -21008,12 +21136,12 @@
         }
     },
     {
-        "name": "もってけ!セーラーふく",
-        "id": "8221",
+        "name": "Trackless wilderness",
+        "id": "8227",
         "genreNames": [
-            "POPS & ANIME"
+            "ORIGINAL"
         ],
-        "jaketFile": "8d461ca722869fb0.jpg",
+        "jaketFile": "629be924b3383e08.jpg",
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
@@ -21024,12 +21152,12 @@
         }
     },
     {
-        "name": "タテマエと本心の大乱闘",
-        "id": "8225",
+        "name": "Trrricksters!!",
+        "id": "8228",
         "genreNames": [
-            "ゲキマイ"
+            "ORIGINAL"
         ],
-        "jaketFile": "5302b187d86cd816.jpg",
+        "jaketFile": "7615de9e9eced518.jpg",
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
@@ -21104,44 +21232,12 @@
         }
     },
     {
-        "name": "Taiko Drum Monster",
-        "id": "8199",
-        "genreNames": [
-            "VARIETY"
-        ],
-        "jaketFile": "986992ea77e7459e.jpg",
-        "difficulties": {
-            "basic": 0.0,
-            "advanced": 0.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
         "name": "Fidget Dancer",
         "id": "8201",
         "genreNames": [
             "ORIGINAL"
         ],
         "jaketFile": "2fa12d6f7252ab5d.jpg",
-        "difficulties": {
-            "basic": 0.0,
-            "advanced": 0.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
-            "world's end": 0.0
-        }
-    },
-    {
-        "name": "Ai Nov",
-        "id": "8188",
-        "genreNames": [
-            "ゲキマイ"
-        ],
-        "jaketFile": "8d5c76dc879915e8.jpg",
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
