@@ -1261,7 +1261,10 @@ def sync_handle_msg(event):
                 sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：{command} 绑定xxxxx')
                 return
             chunib30(userid=bind, server=server, version=version)
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
+            if re.match(f'^{command} *b30 sunp$', event.message):
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]" + '\n查sunp定数已无需添加sunp')
+            else:
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
 
         commands = [("aqua", "aqua"), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin'), ("na", 'na'), ("lee", 'na'), ("lin", 'lin'), ("rin", "rin")]
 
