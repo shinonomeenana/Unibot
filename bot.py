@@ -1270,7 +1270,7 @@ def sync_handle_msg(event):
                 handle_bind(event, command, server)
                 return
             elif re.match(f'^{command} *b30$', event.message):
-                handle_b30(event, command, server)
+                handle_b30(event, command, server, version='2.15')
                 return
             elif re.match(f'^{command} *b30 sunp$', event.message):
                 handle_b30(event, command, server, version='2.15')

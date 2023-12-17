@@ -99,60 +99,7 @@ def calculate_rating(constant, score):
         return 0
 
 
-sun_to_sunp = {
-    (76, 2): 13.1,    # luna blu 13.0-13.1
-    (141, 2): 13.1,   # 閃鋼のブリューナク 12.5-13.1
-    (171, 2): 12.5,   # XL TECHNO 12.0-12.5
-    (435, 2): 12.4,   # JIGOKU STATION CENTRAL GATE 11.4-12.4
-    (700, 2): 13.1,   # 夕焼けのRed Parade 13.0-13.1
-    (744, 3): 14.3,   # ゴールドビジョン 14.4-14.3
-    (788, 1): 11.0,   # Rebellion 10.0-11.0
-    (1010, 2): 13.4,  # Viyella's Tears 13.7-13.4
-    (1039, 3): 12.7,  # 恋はりんりん☆あーりんベル 12.4-12.7
-    (2069, 2): 13.0,  # Pre Paid Pog Punk Panic 12.0-13.0
-    (2121, 3): 15.1,  # Strange Love 15.2-15.1
-    (2132, 3): 13.6,  # ぽっぴっぽー 13.7-13.6
-    (2161, 2): 14.0,  # POTENTIAL 14.3-14.0
-    (2188, 3): 12.9,  # パズルリボン 13.0-12.9
-    (2208, 2): 13.0,  # Reverberate 13.2-13.0
-    (2218, 3): 14.9,  # Re：End of a Dream 14.8-14.9
-    (2221, 3): 14.1,  # Last Kingdom 14.2-14.1
-    (2229, 3): 14.8,  # QZKago Requiem 14.9-14.8
-    (2232, 3): 14.2,  # Brightness 14.4-14.2
-    (2238, 3): 14.2,  # GODLINESS 14.1-14.2
-    (2241, 2): 14.3,  # DA'AT -The First Seeker of Souls- 14.6-14.3
-    (2242, 2): 11.0,  # キルミーのベイベー！ 10.4-11.0
-    (428, 4): 15.1,   # Aleph-0 15.0-15.1
-    (428, 2): 13.7,   # Aleph-0 14.1-13.7
-    (2257, 3): 13.0,  # ミックスナッツ 12.7-13.0
-    (2258, 3): 13.0,  # 阿修羅ちゃん 12.6-13.0
-    (2260, 3): 12.6,  # ユメヲカケル！ 12.9-12.6
-    (2262, 3): 13.0,  # キュートなカノジョ 12.9-13.0
-    (2264, 3): 13.7,  # トンデモワンダーズ 13.9-13.7
-    (2265, 3): 13.9,  # スカーレット警察のゲットーパトロール24時 13.7-13.9
-    (2266, 3): 13.7,  # I'm so Happy 13.8-13.7
-    (2269, 3): 12.6,  # アンビバレンス 12.3-12.6
-    (2270, 2): 13.5,  # TEmPTaTiON 13.2-13.5
-    (2273, 3): 14.1,  # インパアフェクシオン・ホワイトガアル 14.0-14.1
-    (2276, 3): 12.7,  # 推してもダメならひいてみな！ 12.6-12.7
-    (2277, 3): 14.0,  # ガチ恋ラビリンス 14.1-14.0
-    (2279, 2): 14.0,  # グラウンドスライダー協奏曲第一番「風唄」 14.1-14.0
-    (2285, 3): 14.2,  # Revived 14.4-14.2
-    (2288, 2): 13.3,  # Armageddon 13.8-13.3
-    (2288, 3): 14.9,  # Armageddon 14.8-14.9
-    (2253, 3): 13.7,  # レッド・ルーラー 13.5-13.7
-    (2292, 3): 14.3,  # がんばれ！蜘蛛子さんのテーマ 14.4-14.3
-    (2295, 2): 13.6,  # Viyella's Scream 13.4-13.6
-    (2296, 2): 13.3,  # Desperado Waltz 13.0-13.3
-    (2296, 3): 14.6,  # Desperado Waltz 14.8-14.6
-    (2382, 2): 12.8,  # Knight Rider 13.4-12.8
-    (2384, 2): 13.4,  # Exitium 13.5-13.4
-    (2384, 3): 14.8,  # Exitium 14.9-14.8
-    (2385, 2): 13.4,  # eden 13.8-13.4
-}
-
 # 不全且可能有错，持续更新中
-
 sunp_to_lmn = {
     (2338, 3): 15.1,  # Disruptor Array 15.2-15.1
     (2400, 3): 15.0,  # LAMIA 15.1-15.0
@@ -173,11 +120,19 @@ sunp_to_lmn = {
     (1079, 2): 14.3,  # X7124 EXP 14.4-14.3
     (2400, 2): 14.1,  # LAMIA EXP 13.9-14.1
     (2407, 2): 14.0,  # Makear EXP 13.9-14.0
-    # ネトゲ廃人シュプレヒコール 11.9-12+不明
+    (2364, 3): 14.3,  # MAXRAGE 14.2-14.3
+    (2193, 3): 14.1,  # モ°ルモ°ル 14.2-14.1
+    (152 , 3): 14.1,  # Gustav Battle 14.2-14.1
+    (2406, 3): 14.0,  # ASH 14.1-14.0
+    (2356, 3): 14.4,  # Moon of Noon 14.3-14.4
+    (141 , 2): 13.5,  # 閃鋼のブリューナク EXP 13.1-13.5
+    (2445, 3): 13.1,  # Night Spider 12.9-13.1
+    (2336, 2): 12.5,  # 盟月 EXP 12.0-12.5
+    (2343, 3): 12.0,  # ワールドイズマイン 11.6-12.0
 }
 
 
-def process_r10(userid, server, version='2.12', sort=True):
+def process_r10(userid, server, version='2.15', sort=True):
     difficulty_mapping = {
         "0": "basic",
         "1": "advanced",
@@ -217,10 +172,8 @@ def process_r10(userid, server, version='2.12', sort=True):
         difficulty_level = difficulty_mapping[difficult_id]
         if difficulty_level in music['difficulties']:
             difficulty = music['difficulties'][difficulty_level]
-            if version in ['2.15', '2.20']:
-                difficulty = sun_to_sunp.get((int(music_id), int(difficult_id)), difficulty)
-                if version == '2.20':
-                    difficulty = sunp_to_lmn.get((int(music_id), int(difficult_id)), difficulty)
+            if version == '2.20':
+                difficulty = sunp_to_lmn.get((int(music_id), int(difficult_id)), difficulty)
             
             rating = calculate_rating(difficulty, score)
             rating_list.append({
@@ -239,7 +192,7 @@ def process_r10(userid, server, version='2.12', sort=True):
     return rating_list
 
 
-def process_b30(userid, server, version='2.12'):
+def process_b30(userid, server, version='2.15'):
     # 获取用户数据
     user_data = get_all_music(userid, server)
     # 读取音乐数据
@@ -272,10 +225,8 @@ def process_b30(userid, server, version='2.12'):
         jacket_file = music_info['jaketFile']
         try:
             difficulty = music_info['difficulties'][level_dict[level_index]]
-            if version in ['2.15', '2.20']:
-                difficulty = sun_to_sunp.get((int(music_id), int(level_index)), difficulty)
-                if version == '2.20':
-                    difficulty = sunp_to_lmn.get((int(music_id), int(level_index)), difficulty)
+            if version == '2.20':
+                difficulty = sunp_to_lmn.get((int(music_id), int(level_index)), difficulty)
         except KeyError:
             continue
         score = int(data['scoreMax'])
@@ -299,13 +250,12 @@ def process_b30(userid, server, version='2.12'):
 
 
 
-def chunib30(userid, server='aqua', version='2.12'):
+def chunib30(userid, server='aqua', version='2.15'):
     if version == '2.15':
         pic = Image.open('pics/chub30sunp.png')
     elif version == '2.20':
         pic = Image.open('pics/chub30lmn.png')
-    else:
-        pic = Image.open('pics/chub30.png')
+
     draw = ImageDraw.Draw(pic)
 
     user_data = get_user_data(userid, server)
@@ -429,7 +379,7 @@ def b30single(single_data, version):
     return pic
 
 
-def chuni_r30(userid, server='aqua', version='2.12'):
+def chuni_r30(userid, server='aqua', version='2.15'):
     # TODO: r30施工中
     if version == '2.15':
         pic = Image.open('pics/chub30sunp.png')

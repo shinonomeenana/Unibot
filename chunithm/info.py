@@ -1,7 +1,6 @@
 import json
 import re
 from chunithm.alias import chu_aliastomusicid
-from chunithm.b30 import sun_to_sunp
 import Levenshtein as lev
 
 
@@ -82,11 +81,6 @@ def song_details(alias):
     # 格式化标题和难度
     title = song_music['title']
     difficulties = song_musics['difficulties']
-    for single in difficulties:
-        try:
-            difficulties[single] = sun_to_sunp.get((int(song_id), reverse_difficulty_mapping[single]), difficulties[single])
-        except KeyError:
-            pass
     difficulties_str = f"{difficulties['basic']}/{difficulties['advanced']}/{difficulties['expert']}/{difficulties['master']}"
     
     if 'ultima' in difficulties and difficulties['ultima'] > 0:

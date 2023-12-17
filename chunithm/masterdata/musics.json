@@ -219,7 +219,7 @@
             "advanced": 7.0,
             "expert": 10.3,
             "master": 13.7,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -235,7 +235,7 @@
             "advanced": 5.0,
             "expert": 9.0,
             "master": 12.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -251,7 +251,7 @@
             "advanced": 5.0,
             "expert": 9.0,
             "master": 11.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -267,7 +267,7 @@
             "advanced": 6.0,
             "expert": 8.5,
             "master": 12.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -283,7 +283,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -299,7 +299,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 12.7,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -315,7 +315,7 @@
             "advanced": 5.0,
             "expert": 8.5,
             "master": 12.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -331,7 +331,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.1,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -347,7 +347,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.6,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -363,7 +363,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 12.4,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -379,7 +379,7 @@
             "advanced": 6.0,
             "expert": 8.5,
             "master": 13.0,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -395,7 +395,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -411,7 +411,7 @@
             "advanced": 6.0,
             "expert": 8.5,
             "master": 12.1,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -427,7 +427,7 @@
             "advanced": 7.0,
             "expert": 12.0,
             "master": 14.5,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -443,7 +443,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 11.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -459,7 +459,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 11.3,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -554,7 +554,7 @@
             "basic": 3.0,
             "advanced": 7.0,
             "expert": 10.9,
-            "master": 13.5,
+            "master": 13.7,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -570,7 +570,7 @@
             "basic": 4.0,
             "advanced": 7.0,
             "expert": 10.5,
-            "master": 14.4,
+            "master": 14.3,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -634,7 +634,7 @@
             "basic": 2.0,
             "advanced": 5.0,
             "expert": 9.0,
-            "master": 12.7,
+            "master": 13.0,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -650,7 +650,7 @@
             "basic": 3.0,
             "advanced": 5.0,
             "expert": 9.0,
-            "master": 12.6,
+            "master": 13.0,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -682,7 +682,7 @@
             "basic": 3.0,
             "advanced": 6.0,
             "expert": 9.5,
-            "master": 12.9,
+            "master": 12.6,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -713,7 +713,7 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 5.0,
-            "expert": 10.4,
+            "expert": 11.0,
             "master": 13.9,
             "ultima": 0,
             "world's end": 0.0
@@ -2235,7 +2235,7 @@
             "advanced": 5.0,
             "expert": 7.5,
             "master": 12.7,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2251,7 +2251,7 @@
             "advanced": 6.0,
             "expert": 8.5,
             "master": 12.3,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2267,7 +2267,7 @@
             "advanced": 7.5,
             "expert": 10.1,
             "master": 13.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2283,7 +2283,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 12.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2299,7 +2299,7 @@
             "advanced": 5.0,
             "expert": 9.0,
             "master": 11.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2315,7 +2315,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2331,7 +2331,7 @@
             "advanced": 6.0,
             "expert": 10.4,
             "master": 13.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2347,7 +2347,7 @@
             "advanced": 5.0,
             "expert": 8.0,
             "master": 12.6,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2363,7 +2363,7 @@
             "advanced": 6.0,
             "expert": 10.1,
             "master": 13.0,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2379,7 +2379,7 @@
             "advanced": 5.0,
             "expert": 8.0,
             "master": 11.4,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2395,7 +2395,7 @@
             "advanced": 6.0,
             "expert": 9.5,
             "master": 12.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2411,7 +2411,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.0,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2427,7 +2427,7 @@
             "advanced": 5.0,
             "expert": 10.1,
             "master": 13.5,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2443,7 +2443,7 @@
             "advanced": 5.0,
             "expert": 8.5,
             "master": 13.0,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2459,7 +2459,7 @@
             "advanced": 5.0,
             "expert": 9.0,
             "master": 12.3,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -2746,7 +2746,7 @@
             "basic": 3.0,
             "advanced": 6.0,
             "expert": 9.0,
-            "master": 12.9,
+            "master": 13.0,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -2778,7 +2778,7 @@
             "basic": 3.0,
             "advanced": 6.0,
             "expert": 11.3,
-            "master": 13.9,
+            "master": 13.7,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -2858,7 +2858,7 @@
             "basic": 3.0,
             "advanced": 5.0,
             "expert": 9.5,
-            "master": 13.7,
+            "master": 13.6,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -6219,7 +6219,7 @@
             "advanced": 5.0,
             "expert": 9.0,
             "master": 11.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -6235,7 +6235,7 @@
             "advanced": 7.0,
             "expert": 9.5,
             "master": 13.5,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -6298,7 +6298,7 @@
             "basic": 3.0,
             "advanced": 7.5,
             "expert": 10.9,
-            "master": 14.4,
+            "master": 14.2,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -6345,8 +6345,8 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 8.5,
-            "expert": 13.8,
-            "master": 14.8,
+            "expert": 13.3,
+            "master": 14.9,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -6362,7 +6362,7 @@
             "basic": 3.0,
             "advanced": 5.0,
             "expert": 9.0,
-            "master": 13.7,
+            "master": 13.9,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -7258,7 +7258,7 @@
             "basic": 3.0,
             "advanced": 7.0,
             "expert": 10.0,
-            "master": 14.4,
+            "master": 14.3,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -8522,7 +8522,7 @@
             "basic": 4.0,
             "advanced": 8.5,
             "expert": 12.5,
-            "master": 13.8,
+            "master": 13.7,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -8539,7 +8539,7 @@
             "advanced": 9.0,
             "expert": 13.8,
             "master": 14.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -8729,7 +8729,7 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 9.0,
-            "expert": 13.4,
+            "expert": 12.8,
             "master": 14.2,
             "ultima": 0,
             "world's end": 0.0
@@ -8761,8 +8761,8 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 8.5,
-            "expert": 13.5,
-            "master": 14.9,
+            "expert": 13.4,
+            "master": 14.8,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -8777,7 +8777,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 8.0,
-            "expert": 13.8,
+            "expert": 13.4,
             "master": 14.8,
             "ultima": 0,
             "world's end": 0.0
@@ -8827,7 +8827,7 @@
             "advanced": 8.0,
             "expert": 11.3,
             "master": 13.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -8889,7 +8889,7 @@
         "difficulties": {
             "basic": 2.0,
             "advanced": 5.0,
-            "expert": 12.0,
+            "expert": 12.5,
             "master": 13.6,
             "ultima": 0,
             "world's end": 0.0
@@ -9179,7 +9179,7 @@
             "advanced": 8.0,
             "expert": 11.5,
             "master": 14.4,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -9195,7 +9195,7 @@
             "advanced": 7.5,
             "expert": 11.2,
             "master": 13.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -11050,7 +11050,7 @@
             "basic": 4.0,
             "advanced": 8.0,
             "expert": 13.4,
-            "master": 14.8,
+            "master": 14.9,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -11097,9 +11097,9 @@
         "difficulties": {
             "basic": 6.0,
             "advanced": 9.5,
-            "expert": 14.1,
+            "expert": 13.7,
             "master": 14.7,
-            "ultima": 15.0,
+            "ultima": 15.1,
             "world's end": 0.0
         }
     },
@@ -11131,7 +11131,7 @@
             "advanced": 5.0,
             "expert": 12.5,
             "master": 14.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -11419,7 +11419,7 @@
             "advanced": 5.0,
             "expert": 8.0,
             "master": 12.7,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -11483,7 +11483,7 @@
             "advanced": 5.0,
             "expert": 10.2,
             "master": 13.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -11883,7 +11883,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.6,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -12603,7 +12603,7 @@
             "advanced": 5.0,
             "expert": 8.5,
             "master": 12.7,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -12619,7 +12619,7 @@
             "advanced": 6.0,
             "expert": 10.0,
             "master": 13.7,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -12906,7 +12906,7 @@
             "basic": 3.0,
             "advanced": 5.0,
             "expert": 9.0,
-            "master": 12.4,
+            "master": 12.7,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -13194,7 +13194,7 @@
             "basic": 4.0,
             "advanced": 7.0,
             "expert": 10.5,
-            "master": 12.3,
+            "master": 12.6,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -13754,7 +13754,7 @@
             "basic": 5.0,
             "advanced": 8.5,
             "expert": 13.7,
-            "master": 14.9,
+            "master": 14.8,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -13769,7 +13769,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 8.0,
-            "expert": 13.2,
+            "expert": 13.5,
             "master": 14.8,
             "ultima": 0,
             "world's end": 0.0
@@ -13835,7 +13835,7 @@
             "advanced": 5.0,
             "expert": 10.0,
             "master": 12.0,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -13851,7 +13851,7 @@
             "advanced": 7.5,
             "expert": 12.2,
             "master": 14.3,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -13867,7 +13867,7 @@
             "advanced": 9.0,
             "expert": 11.9,
             "master": 14.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -13883,7 +13883,7 @@
             "advanced": 9.0,
             "expert": 12.5,
             "master": 14.7,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -13899,7 +13899,7 @@
             "advanced": 9.0,
             "expert": 13.6,
             "master": 14.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -14091,7 +14091,7 @@
             "advanced": 5.0,
             "expert": 8.0,
             "master": 12.4,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -14155,7 +14155,7 @@
             "advanced": 6.0,
             "expert": 8.0,
             "master": 12.3,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -14171,7 +14171,7 @@
             "advanced": 4.0,
             "expert": 8.5,
             "master": 11.3,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -14187,7 +14187,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.0,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -14235,7 +14235,7 @@
             "advanced": 5.0,
             "expert": 9.5,
             "master": 12.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -14363,7 +14363,7 @@
             "advanced": 5.0,
             "expert": 9.0,
             "master": 12.0,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -14650,7 +14650,7 @@
             "basic": 3.0,
             "advanced": 7.0,
             "expert": 10.9,
-            "master": 14.1,
+            "master": 14.2,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -14667,7 +14667,7 @@
             "advanced": 7.0,
             "expert": 10.9,
             "master": 13.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -14761,7 +14761,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 9.0,
-            "expert": 13.7,
+            "expert": 13.4,
             "master": 14.9,
             "ultima": 0,
             "world's end": 0.0
@@ -14890,7 +14890,7 @@
             "basic": 4.0,
             "advanced": 8.0,
             "expert": 11.0,
-            "master": 14.2,
+            "master": 14.1,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -14953,7 +14953,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 9.0,
-            "expert": 13.4,
+            "expert": 13.6,
             "master": 14.9,
             "ultima": 0,
             "world's end": 0.0
@@ -14969,8 +14969,8 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 9.5,
-            "expert": 13.0,
-            "master": 14.8,
+            "expert": 13.3,
+            "master": 14.6,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -15051,7 +15051,7 @@
             "advanced": 8.0,
             "expert": 13.5,
             "master": 14.5,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -15067,7 +15067,7 @@
             "advanced": 9.0,
             "expert": 13.9,
             "master": 15.1,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -15083,7 +15083,7 @@
             "advanced": 8.5,
             "expert": 12.3,
             "master": 14.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -15099,7 +15099,7 @@
             "advanced": 7.5,
             "expert": 12.3,
             "master": 14.6,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -15115,7 +15115,7 @@
             "advanced": 8.5,
             "expert": 13.4,
             "master": 14.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -15131,7 +15131,7 @@
             "advanced": 7.5,
             "expert": 12.0,
             "master": 14.5,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -15353,7 +15353,7 @@
         "difficulties": {
             "basic": 5.0,
             "advanced": 10.0,
-            "expert": 14.3,
+            "expert": 14.0,
             "master": 15.1,
             "ultima": 0,
             "world's end": 0.0
@@ -15721,7 +15721,7 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 9.0,
-            "expert": 13.0,
+            "expert": 13.1,
             "master": 14.5,
             "ultima": 0,
             "world's end": 0.0
@@ -15737,7 +15737,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 9.0,
-            "expert": 12.5,
+            "expert": 13.1,
             "master": 14.5,
             "ultima": 0,
             "world's end": 0.0
@@ -16793,7 +16793,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 7.5,
-            "expert": 11.4,
+            "expert": 12.4,
             "master": 14.3,
             "ultima": 0,
             "world's end": 0.0
@@ -17465,7 +17465,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 8.0,
-            "expert": 13.0,
+            "expert": 13.1,
             "master": 14.8,
             "ultima": 0,
             "world's end": 0.0
@@ -19241,7 +19241,7 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 7.0,
-            "expert": 12.0,
+            "expert": 13.0,
             "master": 14.2,
             "ultima": 0,
             "world's end": 0.0
@@ -19626,7 +19626,7 @@
             "basic": 4.0,
             "advanced": 10.0,
             "expert": 13.7,
-            "master": 15.2,
+            "master": 15.1,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -19674,7 +19674,7 @@
             "basic": 3.0,
             "advanced": 6.0,
             "expert": 9.5,
-            "master": 13.0,
+            "master": 12.9,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -19769,7 +19769,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 8.0,
-            "expert": 13.2,
+            "expert": 13.0,
             "master": 14.9,
             "ultima": 0,
             "world's end": 0.0
@@ -19850,7 +19850,7 @@
             "basic": 3.0,
             "advanced": 6.0,
             "expert": 12.0,
-            "master": 14.4,
+            "master": 14.2,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -19897,7 +19897,7 @@
         "difficulties": {
             "basic": 5.0,
             "advanced": 12.0,
-            "expert": 14.6,
+            "expert": 14.3,
             "master": 15.3,
             "ultima": 0,
             "world's end": 0.0
@@ -19914,7 +19914,7 @@
             "basic": 3.0,
             "advanced": 6.0,
             "expert": 10.9,
-            "master": 14.0,
+            "master": 14.1,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -19962,7 +19962,7 @@
             "basic": 3.0,
             "advanced": 7.0,
             "expert": 9.5,
-            "master": 12.6,
+            "master": 12.7,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -19978,7 +19978,7 @@
             "basic": 4.0,
             "advanced": 7.0,
             "expert": 10.5,
-            "master": 14.1,
+            "master": 14.0,
             "ultima": 0,
             "world's end": 0.0
         }
@@ -20009,7 +20009,7 @@
         "difficulties": {
             "basic": 4.0,
             "advanced": 8.0,
-            "expert": 14.1,
+            "expert": 14.0,
             "master": 15.3,
             "ultima": 0,
             "world's end": 0.0
@@ -20219,7 +20219,7 @@
             "advanced": 6.0,
             "expert": 9.0,
             "master": 12.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20235,7 +20235,7 @@
             "advanced": 5.0,
             "expert": 9.5,
             "master": 12.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20251,7 +20251,7 @@
             "advanced": 4.0,
             "expert": 10.0,
             "master": 14.1,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20267,7 +20267,7 @@
             "advanced": 7.5,
             "expert": 13.3,
             "master": 14.6,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20283,7 +20283,7 @@
             "advanced": 9.5,
             "expert": 13.9,
             "master": 15.3,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20299,7 +20299,7 @@
             "advanced": 8.0,
             "expert": 13.4,
             "master": 14.7,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20315,7 +20315,7 @@
             "advanced": 9.0,
             "expert": 12.0,
             "master": 14.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20331,7 +20331,7 @@
             "advanced": 8.0,
             "expert": 12.2,
             "master": 14.3,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20347,7 +20347,7 @@
             "advanced": 8.0,
             "expert": 12.5,
             "master": 13.9,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20363,7 +20363,7 @@
             "advanced": 8.5,
             "expert": 12.8,
             "master": 14.6,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20379,7 +20379,7 @@
             "advanced": 7.0,
             "expert": 11.4,
             "master": 14.1,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20395,7 +20395,7 @@
             "advanced": 9.0,
             "expert": 13.5,
             "master": 14.8,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20411,7 +20411,7 @@
             "advanced": 7.0,
             "expert": 12.3,
             "master": 14.5,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20427,7 +20427,7 @@
             "advanced": 9.0,
             "expert": 13.8,
             "master": 15.2,
-            "ultima": 0.0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20713,9 +20713,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 0.0,
-            "master": 0.0,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20729,9 +20729,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 0.0,
-            "master": 0.0,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20745,9 +20745,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 0.0,
-            "master": 0.0,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20761,9 +20761,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 10.9,
-            "master": 14.2,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20777,9 +20777,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 0.0,
-            "master": 0.0,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20793,9 +20793,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 0.0,
-            "master": 0.0,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20809,9 +20809,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 0.0,
-            "master": 0.0,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20825,9 +20825,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 0.0,
-            "master": 0.0,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -20841,9 +20841,9 @@
         "difficulties": {
             "basic": 0.0,
             "advanced": 0.0,
-            "expert": 0.0,
-            "master": 0.0,
-            "ultima": 0.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },

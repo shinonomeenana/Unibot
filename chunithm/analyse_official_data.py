@@ -115,8 +115,8 @@ with open(csv_path, 'r', encoding='utf-8-sig') as file:
             'ultima': float(row['ultima']) if row['ultima'] else 0,
         }
 
-A000_dir = 'D:/chunithm_sun_hdd/App/data/A000'
-option_dir = 'D:/chunithm_sun_hdd/App/bin/option'
+A000_dir = 'F:/SDHD2.16/data/A000'
+option_dir = 'F:/SDHD2.16/bin/option'
 output_data = []
 music_data_cache = cache_music_data(A000_dir, option_dir)
 
