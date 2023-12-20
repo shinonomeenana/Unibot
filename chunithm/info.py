@@ -2,7 +2,7 @@ import json
 import re
 from chunithm.alias import chu_aliastomusicid
 import Levenshtein as lev
-
+from chunithm.b30 import sunp_to_lmn
 
 def get_match_rate(query, title):
     # 将查询和标题转换为小写
@@ -81,21 +81,45 @@ def song_details(alias):
     # 格式化标题和难度
     title = song_music['title']
     difficulties = song_musics['difficulties']
+    original_difficulties = difficulties.copy()  # 复制原始难度
+    modified = False  # 标记是否有修改
+
+    for single in difficulties:
+        try:
+            new_value = sunp_to_lmn.get((int(song_id), reverse_difficulty_mapping[single]))
+            if new_value is not None:
+                difficulties[single] = new_value
+                modified = True
+        except KeyError:
+            pass
+
+    # 构建原始难度字符串
+    original_difficulties_str = f"{original_difficulties['basic']}/{original_difficulties['advanced']}/{original_difficulties['expert']}/{original_difficulties['master']}"
+    if 'ultima' in original_difficulties and original_difficulties['ultima'] > 0:
+        original_difficulties_str += f"/{original_difficulties['ultima']}"
+
+    # 构建修改后的难度字符串
     difficulties_str = f"{difficulties['basic']}/{difficulties['advanced']}/{difficulties['expert']}/{difficulties['master']}"
-    
     if 'ultima' in difficulties and difficulties['ultima'] > 0:
         difficulties_str += f"/{difficulties['ultima']}"
-        
+
+    # 根据是否有修改，构建最终输出字符串
+    if modified:
+        final_str = f"{original_difficulties_str} (SUN PLUS)\n{difficulties_str} (Luminous)"
+    else:
+        final_str = original_difficulties_str
+
+
     if song_music['we_kanji'] and song_music['we_star']:
         title += f"【{song_music['we_kanji']}】"
-        difficulties_str = f"WORLD'S END {'★'*int(int(song_music['we_star'])/2)}"
+        final_str = f"WORLD'S END {'★'*int(int(song_music['we_star'])/2)}"
 
     # 格式化输出信息
     info = f"{song_music['id']}: {title}\n"\
            f"匹配度: {resp['match']}\n"\
            f"类型：{song_music['catname']}\n"\
            f"艺术家：{song_music['artist']}\n"\
-           f"难度：{difficulties_str}\n"
+           f"难度：{final_str}\n"
 
     # 图片地址
     image_url = f"/chunithm/jackets/{song_musics['jaketFile']}"

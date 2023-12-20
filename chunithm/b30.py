@@ -129,6 +129,8 @@ sunp_to_lmn = {
     (2445, 3): 13.1,  # Night Spider 12.9-13.1
     (2336, 2): 12.5,  # 盟月 EXP 12.0-12.5
     (2343, 3): 12.0,  # ワールドイズマイン 11.6-12.0
+    (2130, 3): 13.8,  # 崩壊歌姫 -disruptive diva- 13.9-13.8
+    (18  , 4): 13.7,  # 千本桜 ULT 13.9-13.7
 }
 
 
@@ -472,7 +474,8 @@ database_list = {
         'lin': 'linbind',
         'super': 'superbind',
         'na': 'leebind',
-        'rin': 'rinbind'
+        'rin': 'rinbind',
+        'mobi': 'mobibind'
     }
 # database_list硬编码防止注入。%s会导致表名被加入引号报错
 
