@@ -1,4 +1,5 @@
 import datetime
+import math
 import random
 import re
 import emoji
@@ -59,6 +60,22 @@ def string_similar(s1, s2):
     max_len = max(len(s1), len(s2))
     # 计算相似度，并返回。距离越小，相似度越高，所以我们用1减去它们的比值
     return 1 - (distance / max_len)
+
+
+def get_match_rate_sqrt(query, title):
+    # 将查询和标题转换为小写
+    query = query.lower()
+    title = title.lower()
+
+    # 检查query是否是title的子串
+    if query in title:
+        match_ratio = len(query) / len(title)
+        # 使用逻辑斯蒂函数调整匹配度
+        adjusted_match_rate = 1 / (1 + math.exp(-10 * (match_ratio - 0.3)))
+        return adjusted_match_rate
+    else:
+        return 0.0
+
 
 # from https://gitlab.com/pjsekai/musics/-/blob/main/music_bpm.py
 def parse_bpm(music_id):
@@ -175,7 +192,9 @@ def matchname(alias):
 
     for musics in data:
         name = musics['title']
-        similar = string_similar(alias.lower(), name.lower())
+        fuzzy_match = string_similar(alias.lower(), name.lower())
+        exact_match = get_match_rate_sqrt(alias.lower(), name.lower())
+        similar = max(exact_match, fuzzy_match)
         if similar > match['match']:
             match['match'] = similar
             match['musicid'] = musics['id']
@@ -185,13 +204,17 @@ def matchname(alias):
             if '/' in translate:
                 alltrans = translate.split('/')
                 for i in alltrans:
-                    similar = string_similar(alias.lower(), i.lower())
+                    fuzzy_match = string_similar(alias.lower(), i.lower())
+                    exact_match = get_match_rate_sqrt(alias.lower(), i.lower())
+                    similar = max(exact_match, fuzzy_match)
                     if similar > match['match']:
                         match['match'] = similar
                         match['musicid'] = musics['id']
                         match['name'] = musics['title']
             else:
-                similar = string_similar(alias.lower(), translate.lower())
+                fuzzy_match = string_similar(alias.lower(), translate.lower())
+                exact_match = get_match_rate_sqrt(alias.lower(), translate.lower())
+                similar = max(exact_match, fuzzy_match)
                 if similar > match['match']:
                     match['match'] = similar
                     match['musicid'] = musics['id']

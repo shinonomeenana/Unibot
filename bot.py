@@ -1319,7 +1319,7 @@ def sync_handle_msg(event):
             result = get_chunithm_chart(musicid, difficulty)
             if result is not None:
                 title, image_url, match = result
-                info = f"{title} {difficulty.upper()}\n匹配度：{match}\n谱面来自sdvx点in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图"
+                info = f"{title} {difficulty.upper()}\n匹配度：{round(match, 4)}\n谱面来自sdvx点in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图"
                 sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             else:
                 sendmsg(event, "抱歉，无法生成图像。")

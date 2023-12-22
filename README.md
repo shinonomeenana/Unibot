@@ -19,17 +19,20 @@
 
 具体可参考[使用文档](https://docs.unipjsk.com/)
 
-## 关于本项目
+## 使用
 
-该项目依赖的API与本地资源库未公开，无法自行部署，但是你可以尝试使用[分布式客户端](https://docs.unipjsk.com/distributed/)搭建一个Unibot，或者稍微修改一下其中一些功能，移植一些模块到你自己的机器人。
+直接使用已上线的bot：
 
-其中推特推送单独开源并配有部署文档：[watagashi-uni/twitterpush](https://github.com/watagashi-uni/twitterpush)
+QQ群：
+![群bot](/pics/group.png)
 
-### 关于游戏 API、masterDB 和 游戏资源库
+QQ频道：
+![频道bot](/pics/group.png)
 
-本项目直接调用本地资源，如你的项目需要资源库可使用 [assets.unipjsk.com](http://assets.unipjsk.com/) 或 [Sekai Viewer](https://sekai.best/asset_viewer)、[pjsek.ai](https://pjsek.ai/assets) 的资源库，api 可使用 [api.unipjsk.com/api](https://api.unipjsk.com/api)，使用方法请参考 [Unibot API 使用文档](https://docs.unipjsk.com/API)
+Discord：[点击添加](https://docs.unipjsk.com/discord/)
 
-masterDB（项目内放在`masterdata`文件夹下） 可使用 [Sekai-World/sekai-master-db-diff](https://github.com/Sekai-World/sekai-master-db-diff)。带玩家游玩数据、难度偏差值的乐曲信息（项目内放在`masterdata\realtime`文件夹下）来自 [pjsekai/database/musics](https://gitlab.com/pjsekai/database/musics)，自动更新可参考`autotask.py`
+注意：该项目开源部分由于缺少重要api实现无法自行部署，仅作学习交流用途
+
 
 ## 支持与贡献
 

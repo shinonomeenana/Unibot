@@ -23,12 +23,25 @@ def get_match_rate(query, title):
     return similarity
 
 
+def get_match_rate_sub(query, title):
+    # 将查询和标题转换为小写
+    query = query.lower()
+    title = title.lower()
+
+    # 检查query是否是title的子串
+    if query in title:
+        return len(query) / len(title)
+    else:
+        return 0.0
+
+
 def search_song(query):
     # 读取数据
     with open('chunithm/music.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    results = []
+    exact_matches = []
+    fuzzy_matches = []
 
     for song in data:
         # 根据需求格式化标题
@@ -36,17 +49,28 @@ def search_song(query):
         if song['we_kanji'] and song['we_star']:
             title += f"【{song['we_kanji']}】"
 
-        # 计算匹配度
-        match_rate = get_match_rate(query, title)
+        # 计算精确匹配度
+        exact_match_rate = get_match_rate_sub(query, title)
+        # 计算模糊匹配度
+        fuzzy_match_rate = get_match_rate(query, title)
 
-        if match_rate > 0:
-            results.append((song['id'], title, match_rate))
+        if exact_match_rate > 0:
+            exact_matches.append((song['id'], title, exact_match_rate))
+        elif fuzzy_match_rate > 0:
+            fuzzy_matches.append((song['id'], title, fuzzy_match_rate))
 
-    # 根据匹配度排序
-    results.sort(key=lambda x: x[2], reverse=True)
+    # 分别排序精确匹配和模糊匹配结果
+    exact_matches.sort(key=lambda x: x[2], reverse=True)
+    fuzzy_matches.sort(key=lambda x: x[2], reverse=True)
 
-    # 取前10个结果
-    results = results[:10]
+    # 组合结果：先取前三个精确匹配（如果存在），然后取模糊匹配
+    # 确保不重复添加模糊匹配结果
+    results = exact_matches[:3]
+    for match in fuzzy_matches:
+        if match[0] not in [exact_match[0] for exact_match in exact_matches]:
+            results.append(match)
+            if len(results) == 10:
+                break
 
     if len(results) == 0:
         return "没有找到捏"
@@ -116,7 +140,7 @@ def song_details(alias):
 
     # 格式化输出信息
     info = f"{song_music['id']}: {title}\n"\
-           f"匹配度: {resp['match']}\n"\
+           f"匹配度: {round(resp['match'], 4)}\n"\
            f"类型：{song_music['catname']}\n"\
            f"艺术家：{song_music['artist']}\n"\
            f"难度：{final_str}\n"

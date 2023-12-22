@@ -1,5 +1,21 @@
 [
     {
+        "name": "さくゆいたいそう",
+        "id": "2496",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "da2cdaccbcc16009.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "ALIVE",
         "id": "2490",
         "genreNames": [
@@ -2172,6 +2188,38 @@
             "expert": 8.5,
             "master": 14.5,
             "ultima": 14.9,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "リレイアウター",
+        "id": "2508",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "e6ff48a21f6f9dea.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "おどロボ",
+        "id": "2509",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "e250cee33106255a.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 5.0,
+            "expert": 0,
+            "master": 0,
+            "ultima": 0,
             "world's end": 0.0
         }
     },
@@ -8544,6 +8592,22 @@
         }
     },
     {
+        "name": "VALLIS-NERIA",
+        "id": "2530",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "bc9c88b3adb6137e.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.5,
+            "expert": 13.5,
+            "master": 14.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "8OROCHI",
         "id": "2041",
         "genreNames": [
@@ -9200,6 +9264,22 @@
         }
     },
     {
+        "name": "Blow My Mind",
+        "id": "2528",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "31f2d85d83a17865.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 11.8,
+            "master": 14.1,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "Jakarta PROGRESSION",
         "id": "2529",
         "genreNames": [
@@ -9340,6 +9420,38 @@
             "expert": 12.9,
             "master": 14.9,
             "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Spasmodic",
+        "id": "2532",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "f2d688396385d66e.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.5,
+            "expert": 7.5,
+            "master": 14.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ΩΩPARTS",
+        "id": "2533",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "045ae01786c3b5f5.jpg",
+        "difficulties": {
+            "basic": 4.0,
+            "advanced": 8.0,
+            "expert": 13.6,
+            "master": 14.9,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -11132,6 +11244,22 @@
             "expert": 12.5,
             "master": 14.2,
             "ultima": 0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "New York Back Raise",
+        "id": "2535",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "9f060e856cb7ad10.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.0,
+            "expert": 11.9,
+            "master": 14.3,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
