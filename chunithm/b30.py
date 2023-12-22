@@ -22,7 +22,7 @@ def process_user_music_list(user_music_list):
 
 
 def truncate_two_decimal_places(number):
-    str_number = str(number)
+    str_number = str(number + 0.00000002)
     decimal_index = str_number.find('.')
     if decimal_index != -1:
         str_number = str_number[:decimal_index + 3]  # 保留两位小数
@@ -293,6 +293,7 @@ def chunib30(userid, server='aqua', version='2.15'):
         pic.paste(single, ((int(53+(i%5)*290)), int(289+int(i/5)*127)))
         rating_sum += ratings[i]['rating']
     b30 = truncate_two_decimal_places(rating_sum / 30)
+    b30_accurate = rating_sum / 30
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
     draw.text((208, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
 
@@ -308,9 +309,10 @@ def chunib30(userid, server='aqua', version='2.15'):
         pic.paste(single, ((int(1582+(i%2)*290)), int(289+int(i/2)*127)))
         rating_sum += ratings[i]['rating']
     r10 = truncate_two_decimal_places(rating_sum / 10)
+    r10_accurate = rating_sum / 10
     draw.text((1726, 205), str(r10), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
     
-    rank = truncate_two_decimal_places((b30 * 3 + r10) / 4)
+    rank = truncate_two_decimal_places((b30_accurate * 3 + r10_accurate) / 4)
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
     

@@ -14,7 +14,7 @@ import traceback
 import yaml
 from aiocqhttp import CQHttp, Event
 from chunithm.alias import chualias, chudel, chuset
-from chunithm.daily_bonus import chuni_signin
+from chunithm.daily_bonus import chuni_signin, chuni_signin_lin
 from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel, aliastocharaid, get_card, cardidtopic, \
     findcard, getvits, getcardinfo
 from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
@@ -1289,6 +1289,13 @@ def sync_handle_msg(event):
                 return
             sendmsg(event, chuni_signin(str(event.user_id), str(bind)))
             return
+        if event.message in ['lin 中二签到']:
+            bind = getchunibind(event.user_id, server='lin')
+            if bind is None:
+                sendmsg(event, '签到不了捏，可能是没绑定，绑定命令：lin 绑定xxxxx')
+                return
+            sendmsg(event, chuni_signin_lin(str(event.user_id), str(bind)))
+            return
         if msg := re.match('(?:chusearch)(.*)', event.message):
             query = msg.group(1).strip()
             # 使用查询字符串搜索歌曲
@@ -1941,6 +1948,8 @@ def sync_handle_msg(event):
         traceback.print_exc()
         if repr(a) == "KeyError('status')":
             sendmsg(event, '图片发送失败，请再试一次')
+        elif 'OperationalError' in repr(a):
+            sendmsg(event, '数据库无法连接，可能是bot维护中')
         else:
             sendmsg(event, '出问题了捏\n' + repr(a))
 
