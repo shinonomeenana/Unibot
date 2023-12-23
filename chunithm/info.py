@@ -1,8 +1,12 @@
 import json
+import os
 import re
+import uuid
 from chunithm.alias import chu_aliastomusicid
 import Levenshtein as lev
-from chunithm.b30 import sunp_to_lmn
+from chunithm.b30 import get_all_music, get_user_data, get_user_team, sunp_to_lmn
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+
 
 def get_match_rate(query, title):
     # 将查询和标题转换为小写
@@ -105,6 +109,12 @@ def song_details(alias):
     # 格式化标题和难度
     title = song_music['title']
     difficulties = song_musics['difficulties']
+
+    if difficulties['expert'] == 0:
+        difficulties['expert'] = song_music["lev_exp"] if "+" in song_music["lev_exp"] else (song_music["lev_exp"] + '.?')
+    if difficulties['master'] == 0:
+        difficulties['master'] = song_music["lev_mas"] if "+" in song_music["lev_mas"] else (song_music["lev_mas"] + '.?')
+    
     original_difficulties = difficulties.copy()  # 复制原始难度
     modified = False  # 标记是否有修改
 
@@ -118,12 +128,12 @@ def song_details(alias):
             pass
 
     # 构建原始难度字符串
-    original_difficulties_str = f"{original_difficulties['basic']}/{original_difficulties['advanced']}/{original_difficulties['expert']}/{original_difficulties['master']}"
+    original_difficulties_str = f"{song_music['lev_bas']}/{song_music['lev_adv']}/{original_difficulties['expert']}/{original_difficulties['master']}"
     if 'ultima' in original_difficulties and original_difficulties['ultima'] > 0:
         original_difficulties_str += f"/{original_difficulties['ultima']}"
 
     # 构建修改后的难度字符串
-    difficulties_str = f"{difficulties['basic']}/{difficulties['advanced']}/{difficulties['expert']}/{difficulties['master']}"
+    difficulties_str = f"{song_music['lev_bas']}/{song_music['lev_adv']}/{difficulties['expert']}/{difficulties['master']}"
     if 'ultima' in difficulties and difficulties['ultima'] > 0:
         difficulties_str += f"/{difficulties['ultima']}"
 
@@ -151,4 +161,247 @@ def song_details(alias):
     return info, image_url
 
 
+class ChuLevelError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
+
+def group_by_difficulty(tuples_list):
+    grouped_dict = {}
+    for item in tuples_list:
+        # 假设元组的第三个元素是难度值
+        difficulty_value = item[2]
+        if difficulty_value not in grouped_dict:
+            grouped_dict[difficulty_value] = []
+        grouped_dict[difficulty_value].append(item)
+
+    # 对字典的键进行排序，确保从大到小的顺序
+    sorted_difficulties = sorted(grouped_dict.keys(), reverse=True)
+
+    # 创建一个新的排序后的字典
+    sorted_grouped_dict = {difficulty: grouped_dict[difficulty] for difficulty in sorted_difficulties}
+
+    return sorted_grouped_dict
+
+
+
+def get_diff_music(difficult):
+    with open('chunithm/music.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+    levels = {'lev_exp': 2, 'lev_mas': 3, 'lev_ult': 4}
+    result = [(music['id'], levels[level]) 
+              for music in musics
+              for level in levels 
+              if music[level] == difficult]
+    
+    with open('chunithm/masterdata/musics.json', 'r', encoding='utf-8') as f:
+        music_list = json.load(f)
+    difficulty_map = {'expert': 2, 'master': 3, 'ultima': 4}
+    difficulty_value_dict = {}
+
+    for music in music_list:
+        for difficulty_name, difficulty_number in difficulty_map.items():
+            key = (music['id'], difficulty_number)
+            difficulty_value = music['difficulties'].get(difficulty_name, 0)
+            difficulty_value_dict[key] = difficulty_value
+    id_to_image_map = {music['id']: music['image'] for music in musics}
+    
+    # 更新 result，添加难度值
+    result_with_difficulty = []
+    for (music_id, difficulty_number) in result:
+        if (int(music_id), difficulty_number) in sunp_to_lmn:
+            difficulty_value = sunp_to_lmn[(int(music_id), difficulty_number)]
+        else:
+            difficulty_value = difficulty_value_dict.get((music_id, difficulty_number), 0)
+        result_with_difficulty.append((music_id, difficulty_number, difficulty_value, id_to_image_map.get(music_id)))
+
+    return group_by_difficulty(result_with_difficulty)
+
+
+def get_difficulty_range(input_value):
+    if input_value.endswith("+"):
+        base_value = float(input_value[:-1])  # 去掉 "+"，然后转换为浮点数
+        return [base_value + 0.5 + i * 0.1 for i in range(5)]  # 生成 base_value + 0.5 到 base_value + 0.9 的列表
+    else:
+        base_value = float(input_value)
+        return [base_value + i * 0.1 for i in range(5)]  # 生成 base_value 到 base_value + 0.4 的列表
+
+
+def get_rank(score):
+    if score >= 1009000:
+        return 'SSS+'
+    elif 1007500 <= score < 1009000:
+        return 'SSS'
+    elif 1005000 <= score < 1007500:
+        return 'SS+'
+    elif 1000000 <= score < 1005000:
+        return 'SS'
+    elif 990000 <= score < 1000000:
+        return 'S+'
+    elif 975000 <= score < 990000:
+        return 'S'
+
+
+def gen_single_lev(list, user_music_map=None):
+    color = {
+        2: (238, 67, 102),
+        4: (0, 0, 0),
+    }
+    singleRank = Image.new("RGBA", (1100, 2500), (0, 0, 0, 0))
+    row = 0
+    i = 0
+    for music in list:
+        base_x = 20 + 95 * i
+        base_y = 20 + 100 * row
+        if music[1] in [2, 4]:
+            # 获取底色
+            base_color = color.get(music[1], (0, 0, 0))  # 假设music[1]是难度等级
+            
+            # 底色正方形的位置
+            draw = ImageDraw.Draw(singleRank)
+
+            # 绘制底色正方形，稍微大于jacket尺寸
+            draw.rectangle([base_x - 5, base_y - 5, base_x + 85, base_y + 85], fill=base_color)
+
+        # 粘贴jacket图片
+        jacket = Image.open(f'chunithm/jackets/{music[3]}')
+        jacket = jacket.resize((80, 80))
+        singleRank.paste(jacket, (base_x, base_y))
+        if user_music_map is not None:
+            draw = ImageDraw.Draw(singleRank)
+            font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 18)
+            if (int(music[0]), music[1]) in user_music_map:
+                score = user_music_map.get((int(music[0]), music[1]))
+                w = int(font_style.getsize(str(score))[0] / 2)
+                draw.text((base_x - w + 40, base_y + 70), str(score), fill='#000000',
+                        font=font_style, align='right', stroke_width=2, stroke_fill=(255, 255, 255))
+                if (srank := get_rank(score)):
+                    rank_pic = Image.open(f'pics/chu_{srank}.png')
+                    singleRank.paste(rank_pic, (base_x + 8, base_y - 5))
+            else:
+                overlay = Image.new('RGBA', (80, 80), (0, 0, 0, 55))
+                singleRank.paste(overlay, (base_x, base_y), overlay.split()[3])
+        i += 1
+        if i == 11:
+            i = 0
+            row += 1
+    if i == 0:
+        row = row - 1
+    singleRank = singleRank.crop((0, 0, 1100, 20 + 100 * (row + 1)))
+    return singleRank
+
+
+def add_background_to_rank_pic(rank_pic, background_path):
+    # 打开排名图片和背景图片
+    rank_image = rank_pic
+    background = Image.open(background_path)
+
+    # 获取排名图片和背景图片的尺寸
+    rank_width, rank_height = rank_image.size
+    bg_width, bg_height = background.size
+
+    # 计算背景图片等比例缩放的新尺寸
+    # 使得背景图片能够覆盖rank_pic的最大面积
+    rank_ratio = rank_width / rank_height
+    bg_ratio = bg_width / bg_height
+
+    if bg_ratio > rank_ratio:
+        # 缩放背景的高度以适应rank_pic的高度
+        new_height = rank_height
+        new_width = int(new_height * bg_ratio)
+    else:
+        # 缩放背景的宽度以适应rank_pic的宽度
+        new_width = rank_width
+        new_height = int(new_width / bg_ratio)
+
+    # 调整背景图片的尺寸
+    resized_background = background.resize((new_width, new_height), Image.ANTIALIAS)
+
+    # 计算裁剪背景图片的位置
+    x = (new_width - rank_width) // 2
+    y = (new_height - rank_height) // 2
+
+    # 裁剪背景图片以适应rank_pic的尺寸
+    cropped_background = resized_background.crop((x, y, x + rank_width, y + rank_height))
+
+    # 将rank_pic粘贴到裁剪后的背景图片上
+    cropped_background.paste(rank_image, (0, 0), rank_image)
+
+    return cropped_background
+
+
+def gen_level_rank(diff, userid=None, server='aqua'):
+    grouped_dict = get_diff_music(diff)
+    if diff.isdigit() or '+' in diff:
+        if grouped_dict == {}:
+            raise ChuLevelError('没有找到该难度数据，bot仅支持exp, mst, ult')
+        all_diff = get_difficulty_range(diff)
+
+        user_music_map = None
+        if userid is not None:
+            user_music = get_all_music(userid, server)
+            user_music_map = {(int(music["musicId"]), int(music["level"])): int(music["scoreMax"]) for music in user_music}
+            user_data = get_user_data(userid, server)
+            user_team = get_user_team(userid, server)
+            rank_pic = Image.new("RGBA", (1300, 7000), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(rank_pic)
+        y = 300
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 55)
+        for level in grouped_dict:
+            if level in all_diff:
+                draw.text((40, y + 10), str(level), fill=(0, 0, 0), font=font_style)
+                single_rank = gen_single_lev(grouped_dict[level], user_music_map)
+                rank_pic.paste(single_rank, (170, y), mask=single_rank.split()[3])
+                y += single_rank.size[1] + 20
+        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+        draw.text((940, y), 'Generated by Unibot\nDesigned by Watagashi_uni', fill='#00CCBB',
+                font=font_style, align='right')
+        rank_pic = rank_pic.crop((0, 0, 1300, y + 100))
+        
+        logo = Image.open('pics/top_main_logo.png')
+        logo = logo.resize((int(logo.size[0] / 1.5), int(logo.size[1] / 1.5)))
+        if userid is not None:
+            draw = ImageDraw.Draw(rank_pic)
+            rank_pic.paste(logo, (930, 80), logo.split()[3])
+            user_pic = Image.open('pics/chuni_user.png')
+            rank_pic.paste(user_pic, (140, 60), user_pic.split()[3])
+            font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+            draw.text((215 + 110, 65 + 32), user_data['userName'], fill=(0, 0, 0), font=font_style)
+            font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
+            try:
+                if server == 'na':
+                    draw.text((218 + 110, 118 + 32), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
+                else:
+                    draw.text((218 + 110, 118 + 32), user_team['teamName'], fill=(0, 0, 0), font=font_style)
+            except KeyError:
+                draw.text((218 + 110, 118 + 32), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
+            font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
+            draw.text((314 + 110, 150 + 32), str(int(user_data['level']) + int(user_data['reincarnationNum']) * 100), fill=(255, 255, 255), font=font_style)
+            
+        else:
+            rank_pic.paste(logo, (530, 80), logo.split()[3])
+        background_path = 'pics/lmn.png'
+        result_image = add_background_to_rank_pic(rank_pic, background_path)
+        result_image.convert('RGB')
+        
+        if userid is None:
+            result_image.save(f'piccache/chu/{diff}.jpg')
+            return f'piccache/chu/{diff}.jpg'
+        else:
+            uuid_name = uuid.uuid4()
+            result_image.save(f'piccache/chu_{uuid_name}.jpg')
+            return f'piccache/chu_{uuid_name}.jpg'
+
+    else:
+        raise ChuLevelError('请正确输入，仅支持14，14+这种格式的难度')
+
+
+def chu_level_rank(diff, userid=None, server='aqua'):
+    if userid is None:
+        if os.path.exists(f'piccache/chu/{diff}.jpg'):
+            return f'piccache/chu/{diff}.jpg'
+        else:
+            return gen_level_rank(diff)
+    else:
+        return gen_level_rank(diff, userid, server)

@@ -9,7 +9,7 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 6.0,
-            "expert": 0,
+            "expert": 9.5,
             "master": 0,
             "ultima": 0,
             "world's end": 0.0
@@ -2201,9 +2201,9 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 6.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
+            "expert": 9.0,
+            "master": 13.3,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -2217,9 +2217,9 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 5.0,
-            "expert": 0,
-            "master": 0,
-            "ultima": 0,
+            "expert": 9.0,
+            "master": 12.7,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -9433,7 +9433,7 @@
         "difficulties": {
             "basic": 3.0,
             "advanced": 7.5,
-            "expert": 7.5,
+            "expert": 12.7,
             "master": 14.8,
             "ultima": 0.0,
             "world's end": 0.0

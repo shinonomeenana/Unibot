@@ -46,7 +46,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from imageutils import text2image
 import hashlib
 from chunithm.b30 import chunib30, getchunibind, bind_aimeid
-from chunithm.info import search_song, song_details
+from chunithm.info import search_song, song_details, chu_level_rank
 from chunithm.chart import get_chunithm_chart
 from wds.musicinfo import wds_alias_to_music_id, wdsinfo, wdsset, wdsdel, wdsalias, wds_alias_to_chart
 from wds.event import wds_score_line
@@ -1311,16 +1311,36 @@ def sync_handle_msg(event):
                 # 输出歌曲信息和图片
                 sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             return
+        if msg := re.match(r'chulevel\s*(\d+\+?)(?:\s+(\w+))?', event.message):
+            print(event.message)
+            # 获取第一个参数（难度）
+            diff = msg.group(1).strip()
+
+            # 检查是否有第二个参数（服务器）
+            if server := msg.group(2):
+                # 如果有第二个参数，获取用户ID
+                userid = getchunibind(event.user_id, server=server)
+                if userid is None:
+                    sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：{server} 绑定xxxxx')
+                    return
+                output_dir = chu_level_rank(diff, userid, server)
+            else:
+                # 如果没有第二个参数，像之前一样调用函数
+                output_dir = chu_level_rank(diff)
+
+            sendmsg(event, f"[CQ:image,file=file:///{botdir}/{output_dir},cache=0]")
+            return
         if event.message.startswith('chuchart'):
             difficulty = "master"
             if event.message.lower().endswith(("ma", "master")):
                 difficulty = "master"
             elif event.message.lower().endswith(("expert", "ex")):
                 difficulty = "expert"
-
+            elif event.message.lower().endswith(("ultima", "ult")):
+                difficulty = "ultima"
             # 提取musicid
             musicid = re.sub(r"chuchart|\s+", "", event.message, flags=re.I)
-            musicid = re.sub(r"ma|master|expert|ex$", "", musicid, flags=re.I)
+            musicid = re.sub(r"ma|master|expert|ex|ultima|ult$", "", musicid, flags=re.I)
 
             # 获取图像并发送
             result = get_chunithm_chart(musicid, difficulty)

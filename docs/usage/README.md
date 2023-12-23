@@ -145,12 +145,13 @@ sk，pjsk进度，pjsk b30，rk，难度排行
 - `chudel 昵称` 删除对应昵称
 - `chualias 昵称` 查看所有昵称
 
-
 - `[服务器] 绑定[20位卡号]`：绑定卡号，请注意`绑定`二字前面有空格，后面没有
-- `[服务器] b30`：查询绑定卡号的b30歌曲（SUN PLUS定数）
-- `[服务器] b30 lmn`：查询绑定卡号的b30歌曲（Luminous定数）
+- `[服务器] b30`：查询绑定卡号的b30歌曲（SUN PLUS定数），如`aqua b30`
+- `[服务器] b30 lmn`：查询绑定卡号的b30歌曲（Luminous定数），如`aqua b30 lmn`
+- `chulevel [定数]`: 查询定数表，如`chulevel 14+`
+- `chulevel [定数] [服务器]`: 查询带你绑定账号分数的定数表，如`chulevel 14+ aqua`
 
-[服务器]支持`aqua`（Sam aqua）, `rin`, `na`，如`aqua b30`。不支持官服查询。
+[服务器]支持`aqua`（Sam aqua）, `rin`, `na`。不支持官服查询。
 
 ### WDS
 - `wdsinfo 曲名` 查看歌曲信息

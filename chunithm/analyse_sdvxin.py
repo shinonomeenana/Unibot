@@ -10,6 +10,7 @@ urls = [
     "https://sdvx.in/chunithm/sort/irodorimidori.htm",
     "https://sdvx.in/chunithm/sort/gekimai.htm",
     "https://sdvx.in/chunithm/sort/original.htm",
+    "https://sdvx.in/chunithm/del.htm"
 ]
 
 songs = {}
