@@ -176,14 +176,16 @@ def group_by_difficulty(tuples_list):
             grouped_dict[difficulty_value] = []
         grouped_dict[difficulty_value].append(item)
 
+    # 对每个难度级别内的元组按照level（第二个元素）从大到小排序
+    for difficulty in grouped_dict:
+        grouped_dict[difficulty] = sorted(grouped_dict[difficulty], key=lambda x: x[1], reverse=True)
+
     # 对字典的键进行排序，确保从大到小的顺序
     sorted_difficulties = sorted(grouped_dict.keys(), reverse=True)
 
     # 创建一个新的排序后的字典
     sorted_grouped_dict = {difficulty: grouped_dict[difficulty] for difficulty in sorted_difficulties}
-
     return sorted_grouped_dict
-
 
 
 def get_diff_music(difficult):
@@ -344,7 +346,7 @@ def gen_level_rank(diff, userid=None, server='aqua'):
             user_music_map = {(int(music["musicId"]), int(music["level"])): int(music["scoreMax"]) for music in user_music}
             user_data = get_user_data(userid, server)
             user_team = get_user_team(userid, server)
-            rank_pic = Image.new("RGBA", (1300, 7000), (0, 0, 0, 0))
+        rank_pic = Image.new("RGBA", (1300, 7000), (0, 0, 0, 0))
         draw = ImageDraw.Draw(rank_pic)
         y = 300
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 55)
