@@ -10,8 +10,8 @@
             "basic": 3.0,
             "advanced": 6.0,
             "expert": 9.5,
-            "master": 0,
-            "ultima": 0,
+            "master": 11.7,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -8987,7 +8987,7 @@
             "advanced": 5.0,
             "expert": 9.5,
             "master": 13.5,
-            "ultima": 0,
+            "ultima": 14.7,
             "world's end": 0.0
         }
     },
@@ -9307,7 +9307,7 @@
             "advanced": 7.0,
             "expert": 11.6,
             "master": 14.1,
-            "ultima": 0,
+            "ultima": 14.9,
             "world's end": 0.0
         }
     },

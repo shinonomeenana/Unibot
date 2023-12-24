@@ -1266,7 +1266,8 @@ def sync_handle_msg(event):
             else:
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
 
-        commands = [("aqua", "aqua"), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin'), ("na", 'na'), ("lee", 'na'), ("lin", 'lin'), ("rin", "rin"), ("mai", "mobi")]
+        commands = [("aqua", "aqua"), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin'),
+                     ("na", 'na'), ("lee", 'na'), ("lin", 'lin'), ("rin", "rin"), ("mai", "mobi"), ('mobi', 'mobi')]
 
         for command, server in commands:
             if event.message.startswith(f"{command} 绑定"):
@@ -1318,6 +1319,12 @@ def sync_handle_msg(event):
 
             # 检查是否有第二个参数（服务器）
             if server := msg.group(2):
+                server_mapping = next((mapping[1] for mapping in commands if mapping[0] == server), None)
+                if server_mapping:
+                    server = server_mapping
+                else:
+                    sendmsg(event, '服务器不支持，仅支持aqua，rin，na')
+                    return
                 # 如果有第二个参数，获取用户ID
                 userid = getchunibind(event.user_id, server=server)
                 if userid is None:
