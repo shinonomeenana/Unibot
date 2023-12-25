@@ -114,8 +114,12 @@ class userprofile(object):
             self.mvpCount = data['userMultiLiveTopScoreCount']['mvp']
             self.superStarCount = data['userMultiLiveTopScoreCount']['superStar']
         else:
-            self.name = data['user']['userGamedata']['name']
-            self.rank = data['user']['userGamedata']['rank']
+            try:
+                self.name = data['user']['userGamedata']['name']
+                self.rank = data['user']['userGamedata']['rank']
+            except KeyError:
+                self.name = data['userGamedata']['name']
+                self.rank = data['userGamedata']['rank']
             with open(f'{masterdatadir}/musics.json', 'r', encoding='utf-8') as f:
                 allmusic = json.load(f)
             with open(f'{masterdatadir}/musicDifficulties.json', 'r', encoding='utf-8') as f:
@@ -234,7 +238,10 @@ class userprofile(object):
                 if self.isNewData:
                     self.userDecks[i] = data['userDeck'][f'member{i + 1}']
                 else:
-                    decknum = data['user']['userGamedata']['deck']
+                    try:
+                        decknum = data['user']['userGamedata']['deck']
+                    except KeyError:
+                        decknum = data['userGamedata']['deck']
                     for deck in data['userDecks']:
                         if deck['deckId'] == decknum:
                             self.userDecks[i] = deck[f'member{i + 1}']
