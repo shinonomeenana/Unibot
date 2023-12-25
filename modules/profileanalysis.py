@@ -882,7 +882,7 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
                 path = 'pics/frame_degree_m_4.png'
 
             # 检查带 frameName 的路径是否存在
-            full_path = path[:-4] + frameName + '.png'
+            full_path = 'data/assets/sekai/assetbundle/resources/startapp/honor_frame/' + frameName + path[4:]
             print(full_path, os.path.exists(full_path))
             if os.path.exists(full_path):
                 frame = Image.open(full_path)
@@ -980,7 +980,7 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
                 path = 'pics/frame_degree_s_4.png'
 
             # 检查带 frameName 的路径是否存在
-            full_path = path[:-4] + frameName + '.png'
+            full_path = 'data/assets/sekai/assetbundle/resources/startapp/honor_frame/' + frameName + path[4:]
             if os.path.exists(full_path):
                 frame = Image.open(full_path)
             else:
