@@ -58,6 +58,12 @@ def get_user_data(userid, server):
     response = call_chuniapi(str(uuid.uuid4()), 'GetUserPreviewApi', params, server)
     return response.json()
     
+def get_user_full_data(userid, server):
+    params = {
+        "userId": userid
+    }
+    response = call_chuniapi(str(uuid.uuid4()), 'GetUserDataApi', params, server)
+    return response.json()
 
 def get_user_team(userid, server):
     current_date = datetime.now()
@@ -99,7 +105,6 @@ def calculate_rating(constant, score):
         return 0
 
 
-# 不全且可能有错，持续更新中
 sunp_to_lmn = {
     (2338, 3): 15.1,  # Disruptor Array 15.2-15.1
     (2400, 3): 15.0,  # LAMIA 15.1-15.0
@@ -135,10 +140,11 @@ sunp_to_lmn = {
     (2254, 3): 13.2,  # 1 13.1-13.2
     (2401, 2): 12.6,  # オンソクデイズ!! EXP 12.3-12.6
     (2078, 3): 11.8,  # I believe what you said 11.7-11.8
-    # Pris-Magic! 12.2-12+ 未确认
-    # ネトゲ廃人シュプレヒコール 11.9-12+ 未确认
-    # MAXRAGE EXP 11.9-12 未确认
-    # Snow Colored Score 11.1-11+ 未确认
+    (2414, 3): 12.5,  # Pris-Magic! 12.2-12.6
+    (168 , 3): 12.5,  # ネトゲ廃人シュプレヒコール 11.9-12.5
+    (2364, 2): 12.0,  # MAXRAGE EXP 11.9-12.0
+    (2416, 3): 11.8,  # Snow Colored Score 11.1-11.8
+    (70,   3): 13.3,  # STAR 13.1-13.3
 }
 
 
