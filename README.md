@@ -27,7 +27,7 @@ QQ群：
 ![群bot](/pics/group.png)
 
 QQ频道：
-![频道bot](/pics/group.png)
+![频道bot](/pics/guild.png)
 
 Discord：[点击添加](https://docs.unipjsk.com/discord/)
 
