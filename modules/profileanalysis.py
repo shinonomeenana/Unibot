@@ -57,7 +57,7 @@ class userprofile(object):
         self.appendscore = {}
         self.musicResult = {}
         self.isNewData = False
-        for i in range(26, 38):
+        for i in range(25, 38):
             self.masterscore[i] = [0, 0, 0, 0]
         for i in range(21, 32):
             self.expertscore[i] = [0, 0, 0, 0]
@@ -521,7 +521,7 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
     draw.text((314, 138), str(profile.rank), fill=(255, 255, 255), font=font_style)
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
     if diff == 'master':
-        levelmin = 26
+        levelmin = 25
     elif diff == 'expert':
         levelmin = 21
         profile.masterscore = profile.expertscore
@@ -529,7 +529,12 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
         levelmin = 23
         profile.masterscore = profile.appendscore
 
-    firstRawCount = 5 if diff != 'append' else 7
+    if diff == 'master':
+        firstRawCount = 6
+    elif diff == 'expert':
+        firstRawCount = 5
+    elif diff == 'append':
+        firstRawCount = 7
 
     for i in range(0, firstRawCount):
         text_width = font_style.getsize(str(profile.masterscore[i + levelmin][0]))
@@ -573,10 +578,12 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
         draw.text(text_coordinate, str(profile.masterscore[i + levelmin + firstRawCount][3]), fill=(108, 237, 226), font=font_style)
     chart = jinduChart(profile.masterscore)
     r,g,b,mask = chart.split()
-    if diff != 'append':
+    if diff == 'expert':
         img.paste(chart, (280 - int(chart.size[0] / 2), 732), mask)
-    else:
+    elif diff == 'append':
         img.paste(chart, (280 - int(chart.size[0] / 2), 920), mask)
+    elif diff == 'master':
+        img.paste(chart, (280 - int(chart.size[0] / 2), 824), mask)
         
 
     if server in rank_query_ban_servers and not profile.isNewData:
