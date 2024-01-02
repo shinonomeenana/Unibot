@@ -1,10 +1,11 @@
 from datetime import datetime
 import hashlib
+import os
 import uuid
 import pymysql
 from modules.mysql_config import *
 import numpy as np
-from chunithm.chuniapi import aime_to_userid, call_chuniapi
+from chunithm.chuniapi import aime_to_userid, call_chuniapi, get_chuni_asset, get_trophy_by_id
 import ujson as json
 import traceback
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
@@ -148,6 +149,169 @@ sunp_to_lmn = {
 }
 
 
+
+
+def parse_chara_id_to_chara_and_trans(chara_id):
+    return str(chara_id)[0: len(str(chara_id)) - 1].zfill(4), str(chara_id)[-1].zfill(2)
+
+
+def create_rating_image(number):
+    """
+    根据给定的数字和等级，创建一个评分图片。
+    :param number: 整数，将被除以100来得到要显示的评分数字。
+    :return: 一个带有透明背景的PIL图像对象，其中数字在高度上居中。
+    """
+    if number <= 399:
+        level='green'
+    elif number <= 699:
+        level='orange'
+    elif number <= 999:
+        level='red'
+    elif number <= 1199:
+        level='purple'
+    elif number <= 1324:
+        level='bronze'
+    elif number <= 1449:
+        level='silver'
+    elif number <= 1524:
+        level='gold'
+    elif number <= 1599:
+        level='platinum'
+    else:
+        level='rainbow'
+
+
+     # 将输入的整数转换为xx.xx格式的字符串
+    number /= 100
+    formatted_number = f"{number:.2f}"  # 保留两位小数，但不在整数部分填充0
+    
+    # 评分图片存储的目录
+    rating_dir = 'chunithm/assets/rating'
+    
+    # 分割格式化后的数字为整数部分和小数部分
+    integer_part, decimal_part = formatted_number.split('.')
+    
+    # 创建列表存储对应的图片文件名
+    image_files = []
+    
+    # 添加整数部分的数字图片文件名，对于小于10的数字不添加前导零
+    for digit in integer_part:
+        image_files.append(f'rating_{level}_{int(digit):02d}.png')
+    
+    # 添加小数点图片文件名
+    image_files.append(f'rating_{level}_comma.png')
+    
+    # 添加小数部分的数字图片文件名，确保每个数字都是两位数
+    for digit in decimal_part:
+        image_files.append(f'rating_{level}_{int(digit):02d}.png')
+    
+    # 加载图片并计算总宽度和最大高度
+    images = [Image.open(os.path.join(rating_dir, file)).convert("RGBA") for file in image_files]
+    total_width = sum(img.width for img in images)
+    max_height = max(img.height for img in images)
+    
+    # 创建新图像
+    result_image = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
+    
+    # 粘贴数字到新图像，确保高度上居中
+    current_width = 0
+    for i, img in enumerate(images):
+        # 通过索引判断当前是否为小数点图片
+        if image_files[i].endswith('_comma.png'):
+            # 小数点位置稍低
+            offset_y = max_height - img.height
+        else:
+            # 数字居中
+            offset_y = (max_height - img.height) // 2
+        result_image.paste(img, (current_width, offset_y), img)
+        current_width += img.width
+    
+    # 返回最终的图片
+    return result_image
+
+
+def get_user_info_pic(user_full_data, team_data):
+    img = get_chuni_asset(f'namePlate/CHU_UI_NamePlate_{int(user_full_data["userData"]["nameplateId"]):08d}.png')
+    if img is None:
+        img = get_chuni_asset('namePlate/CHU_UI_NamePlate_00000001')
+    img = img.convert("RGBA")
+    chara1, chara2 = parse_chara_id_to_chara_and_trans(user_full_data["userData"]["characterId"])
+    nameplate = Image.open('pics/chu_nameplate.png')
+    img.paste(nameplate, (0, 0), nameplate.split()[3])
+    ddsImage = get_chuni_asset(f'ddsImage/CHU_UI_Character_{chara1}_{chara2}_02.png')
+    if ddsImage is None:
+        ddsImage = get_chuni_asset('ddsImage/CHU_UI_Character_0000_00_02.png')
+    ddsImage = ddsImage.resize((82, 82))
+    img.paste(ddsImage, (471, 89), ddsImage.split()[3])
+    rating = create_rating_image(int(user_full_data["userData"]["playerRating"]))
+    rating = rating.resize((int(rating.size[0] / 1.25), int(rating.size[1] / 1.25)))
+    img.paste(rating, (222, 147), rating.split()[3])
+    draw = ImageDraw.Draw(img)
+    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 30)
+    draw.text((184, 100), str(user_full_data["userData"]["level"]), fill=(0, 0, 0), font=font_style)
+    font_style = ImageFont.truetype("fonts/ヒラギノ角ゴ ( Hira Kaku) Pro W6.otf", 30)
+    draw.text((228, 107), str(user_full_data["userData"]["userName"]), fill=(0, 0, 0), font=font_style)
+
+    if (reincarnationNum := int(user_full_data["userData"]["reincarnationNum"])) != 0:
+        reincarnation_star = Image.open('pics/chu_reincarnation.png')
+        reincarnation_star = reincarnation_star.resize((34, 34))
+        img.paste(reincarnation_star, (148, 85), reincarnation_star.split()[3])
+        font_style = ImageFont.truetype("fonts/YuGothicUI-Semibold.ttf", 16)
+        text_width = font_style.getsize(str(reincarnationNum))
+        draw.text((int(165 - text_width[0] / 2), 91), str(reincarnationNum), fill=(0, 0, 0), font=font_style)
+    
+
+    trophy_data = get_trophy_by_id(user_full_data["userData"]["trophyId"])
+    if trophy_data is not None:
+
+        id, version, trophy_name, explain_text, rarity = trophy_data
+
+        trophy_rarity_to_color = [
+            'normal', 'bronze', 'silver', 'gold', 'gold', 'platina', 'platina', 'rainbow', 'ongeki', 'staff', 'ongeki'
+        ]
+        trophy_pic = Image.open(f'chunithm/assets/trophy/{trophy_rarity_to_color[rarity]}.png')
+        img.paste(trophy_pic, (145, 46), trophy_pic.split()[3])
+        font_style = ImageFont.truetype("fonts/KOZGOPRO-BOLD.OTF", 23)
+        left_bound = 157
+        right_bound = 547
+
+        # 计算文本大小
+        text_width, text_height = draw.textsize(trophy_name, font=font_style)
+
+        # 确定文本的x坐标和宽度
+        if text_width < right_bound - left_bound:
+            # 如果文本没有超过边界，则居中显示
+            x = left_bound + (right_bound - left_bound - text_width) // 2
+            text_to_draw = trophy_name
+        else:
+            # 如果文本超过边界，对齐到左边界并截断超出部分
+            x = left_bound
+            # 计算可以显示的文本长度
+            while text_width > right_bound - left_bound:
+                trophy_name = trophy_name[:-1]
+                text_width, text_height = draw.textsize(trophy_name, font=font_style)
+            text_to_draw = trophy_name
+
+        # 绘制文本
+        draw.text((x, 54), text_to_draw, fill=(0, 0, 0), font=font_style)
+
+    if 'teamRank' in team_data:
+        if int(team_data['teamRank']) <= 10:
+            team_pic = Image.open('chunithm/assets/team/rainbow.png')
+        elif int(team_data['teamRank']) <= 40:
+            team_pic = Image.open('chunithm/assets/team/gold.png')
+        elif int(team_data['teamRank']) <= 70:
+            team_pic = Image.open('chunithm/assets/team/silver.png')
+        else:
+            team_pic = Image.open('chunithm/assets/team/common.png')
+        img.paste(team_pic, (0, 0), team_pic.split()[3])
+        font_style = ImageFont.truetype("fonts/KOZGOPRO-BOLD.OTF", 18)
+        draw.text((240, 19), team_data['teamName'], fill=(0, 0, 0, 180), font=font_style)
+        draw.text((238, 17), team_data['teamName'], fill=(255, 255, 255), font=font_style)
+
+    return img
+
+
 def process_r10(userid, server, version='2.15', sort=True):
     difficulty_mapping = {
         "0": "basic",
@@ -276,18 +440,7 @@ def chunib30(userid, server='aqua', version='2.15'):
 
     user_data = get_user_data(userid, server)
 
-    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
-    draw.text((215, 65), user_data['userName'], fill=(0, 0, 0), font=font_style)
-    font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
-    try:
-        if server == 'na':
-            draw.text((218, 118), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
-        else:
-            draw.text((218, 118), get_user_team(userid, server)['teamName'], fill=(0, 0, 0), font=font_style)
-    except KeyError:
-        draw.text((218, 118), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
-    font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
-    draw.text((314, 150), str(int(user_data['level']) + int(user_data['reincarnationNum']) * 100), fill=(255, 255, 255), font=font_style)
+    user_team = get_user_team(userid, server)
     
     shadow = Image.new("RGBA", (320, 130), (0, 0, 0, 0))
     shadow.paste(Image.new("RGBA", (280, 105), (0, 0, 0, 50)), (5, 5))
@@ -309,7 +462,7 @@ def chunib30(userid, server='aqua', version='2.15'):
     b30 = truncate_two_decimal_places(rating_sum / 30)
     b30_accurate = rating_sum / 30
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
-    draw.text((208, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
+    draw.text((1340, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
 
     ratings = process_r10(userid, server, version)
     rating_sum = 0
@@ -342,7 +495,11 @@ def chunib30(userid, server='aqua', version='2.15'):
     draw = ImageDraw.Draw(rankimg)
     draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(255, 255, 255), font=font_style)
     r, g, b, mask = rankimg.split()
-    pic.paste(rankimg, (492, 110), mask)
+    pic.paste(rankimg, (719, 118), mask)
+
+    user_full_data = get_user_full_data(userid, server)
+    user_nameplate = get_user_info_pic(user_full_data, user_team)
+    pic.paste(user_nameplate, (65, 30), user_nameplate.split()[3])
 
     pic = pic.convert("RGB")
     pic.save(f'piccache/{hashlib.sha256(userid.encode()).hexdigest()}b30.jpg')

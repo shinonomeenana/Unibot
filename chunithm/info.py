@@ -4,7 +4,7 @@ import re
 import uuid
 from chunithm.alias import chu_aliastomusicid
 import Levenshtein as lev
-from chunithm.b30 import get_all_music, get_user_data, get_user_team, sunp_to_lmn
+from chunithm.b30 import get_all_music, get_user_data, get_user_full_data, get_user_info_pic, get_user_team, sunp_to_lmn
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 
@@ -344,7 +344,7 @@ def gen_level_rank(diff, userid=None, server='aqua'):
         if userid is not None:
             user_music = get_all_music(userid, server)
             user_music_map = {(int(music["musicId"]), int(music["level"])): int(music["scoreMax"]) for music in user_music}
-            user_data = get_user_data(userid, server)
+            user_full_data = get_user_full_data(userid, server)
             user_team = get_user_team(userid, server)
         rank_pic = Image.new("RGBA", (1300, 7000), (0, 0, 0, 0))
         draw = ImageDraw.Draw(rank_pic)
@@ -364,22 +364,9 @@ def gen_level_rank(diff, userid=None, server='aqua'):
         logo = Image.open('pics/top_main_logo.png')
         logo = logo.resize((int(logo.size[0] / 1.5), int(logo.size[1] / 1.5)))
         if userid is not None:
-            draw = ImageDraw.Draw(rank_pic)
             rank_pic.paste(logo, (930, 80), logo.split()[3])
-            user_pic = Image.open('pics/chuni_user.png')
-            rank_pic.paste(user_pic, (140, 60), user_pic.split()[3])
-            font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
-            draw.text((215 + 110, 65 + 32), user_data['userName'], fill=(0, 0, 0), font=font_style)
-            font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 15)
-            try:
-                if server == 'na':
-                    draw.text((218 + 110, 118 + 32), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
-                else:
-                    draw.text((218 + 110, 118 + 32), user_team['teamName'], fill=(0, 0, 0), font=font_style)
-            except KeyError:
-                draw.text((218 + 110, 118 + 32), 'CHUNITHM', fill=(0, 0, 0), font=font_style)
-            font_style = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.ttf", 28)
-            draw.text((314 + 110, 150 + 32), str(int(user_data['level']) + int(user_data['reincarnationNum']) * 100), fill=(255, 255, 255), font=font_style)
+            user_nameplate = get_user_info_pic(user_full_data, user_team)
+            rank_pic.paste(user_nameplate, (175, 60), user_nameplate.split()[3])
             
         else:
             rank_pic.paste(logo, (530, 80), logo.split()[3])
