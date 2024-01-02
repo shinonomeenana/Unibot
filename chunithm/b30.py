@@ -233,7 +233,7 @@ def create_rating_image(number):
 def get_user_info_pic(user_full_data, team_data):
     img = get_chuni_asset(f'namePlate/CHU_UI_NamePlate_{int(user_full_data["userData"]["nameplateId"]):08d}.png')
     if img is None:
-        img = get_chuni_asset('namePlate/CHU_UI_NamePlate_00000001')
+        img = get_chuni_asset('namePlate/CHU_UI_NamePlate_00000001.png')
     img = img.convert("RGBA")
     chara1, chara2 = parse_chara_id_to_chara_and_trans(user_full_data["userData"]["characterId"])
     nameplate = Image.open('pics/chu_nameplate.png')
