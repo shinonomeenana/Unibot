@@ -459,10 +459,10 @@ def chunib30(userid, server='aqua', version='2.15'):
         pic.paste(shadow, ((int(52 + (i % 5) * 290)), int(287 + int(i / 5) * 127)), mask)
         pic.paste(single, ((int(53+(i%5)*290)), int(289+int(i/5)*127)))
         rating_sum += ratings[i]['rating']
-    b30 = truncate_two_decimal_places(rating_sum / 30)
+    b30 = round(rating_sum / 30, 4)
     b30_accurate = rating_sum / 30
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
-    draw.text((1340, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
+    draw.text((1331, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
 
     ratings = process_r10(userid, server, version)
     rating_sum = 0
@@ -475,27 +475,27 @@ def chunib30(userid, server='aqua', version='2.15'):
         pic.paste(shadow, ((int(1582 + (i % 2) * 290)), int(287 + int(i / 2) * 127)), mask)
         pic.paste(single, ((int(1582+(i%2)*290)), int(289+int(i/2)*127)))
         rating_sum += ratings[i]['rating']
-    r10 = truncate_two_decimal_places(rating_sum / 10)
+    r10 = round(rating_sum / 10, 4)
     r10_accurate = rating_sum / 10
-    draw.text((1726, 205), str(r10), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
+    draw.text((1717, 205), str(r10), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
     
-    rank = truncate_two_decimal_places((b30_accurate * 3 + r10_accurate) / 4)
+    rank = round((b30_accurate * 3 + r10_accurate) / 4, 4)
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
     
     
     # 创建一个单独的图层用于绘制rank阴影
-    rankimg = Image.new("RGBA", (120, 55), (100, 110, 180, 0))
+    rankimg = Image.new("RGBA", (140, 55), (100, 110, 180, 0))
     draw = ImageDraw.Draw(rankimg)
-    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
+    font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 34)
     text_width = font_style.getsize(str(rank))
-    draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(61, 74, 162, 210),
+    draw.text((int(70 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(61, 74, 162, 210),
               font=font_style, stroke_width=2, stroke_fill=(61, 74, 162, 210))
     rankimg = rankimg.filter(ImageFilter.GaussianBlur(1.2))
     draw = ImageDraw.Draw(rankimg)
-    draw.text((int(60 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(255, 255, 255), font=font_style)
+    draw.text((int(70 - text_width[0] / 2), int(20 - text_width[1] / 2)), str(rank), fill=(255, 255, 255), font=font_style)
     r, g, b, mask = rankimg.split()
-    pic.paste(rankimg, (719, 118), mask)
+    pic.paste(rankimg, (712, 118), mask)
 
     user_full_data = get_user_full_data(userid, server)
     user_nameplate = get_user_info_pic(user_full_data, user_team)
