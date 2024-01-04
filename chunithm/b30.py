@@ -458,11 +458,10 @@ def chunib30(userid, server='aqua', version='2.15'):
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(52 + (i % 5) * 290)), int(287 + int(i / 5) * 127)), mask)
         pic.paste(single, ((int(53+(i%5)*290)), int(289+int(i/5)*127)))
-        rating_sum += ratings[i]['rating']
-    b30 = round(rating_sum / 30, 4)
-    b30_accurate = rating_sum / 30
+        rating_sum += truncate_two_decimal_places(ratings[i]['rating'])
+    b30 = rating_sum / 30
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 37)
-    draw.text((1331, 205), str(b30), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
+    draw.text((1331, 205), str(round(b30, 4)), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
 
     ratings = process_r10(userid, server, version)
     rating_sum = 0
@@ -474,12 +473,11 @@ def chunib30(userid, server='aqua', version='2.15'):
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(1582 + (i % 2) * 290)), int(287 + int(i / 2) * 127)), mask)
         pic.paste(single, ((int(1582+(i%2)*290)), int(289+int(i/2)*127)))
-        rating_sum += ratings[i]['rating']
-    r10 = round(rating_sum / 10, 4)
-    r10_accurate = rating_sum / 10
-    draw.text((1717, 205), str(r10), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
+        rating_sum += truncate_two_decimal_places(ratings[i]['rating'])
+    r10 = rating_sum / 10
+    draw.text((1717, 205), str(round(r10, 4)), fill=(255,255,255,255), font=font_style, stroke_width=2, stroke_fill="#38809A")
     
-    rank = round((b30_accurate * 3 + r10_accurate) / 4, 4)
+    rank = round((b30 * 3 + r10) / 4, 4)
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
     
@@ -499,7 +497,7 @@ def chunib30(userid, server='aqua', version='2.15'):
 
     user_full_data = get_user_full_data(userid, server)
     user_nameplate = get_user_info_pic(user_full_data, user_team)
-    pic.paste(user_nameplate, (65, 30), user_nameplate.split()[3])
+    pic.paste(user_nameplate, (57, 55), user_nameplate.split()[3])
 
     pic = pic.convert("RGB")
     pic.save(f'piccache/{hashlib.sha256(userid.encode()).hexdigest()}b30.jpg')
