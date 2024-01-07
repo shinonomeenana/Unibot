@@ -3,43 +3,9 @@ import time
 import pymysql
 import ujson as json
 from modules.mysql_config import *
-from modules.pjskinfo import isSingleEmoji, writelog
+from modules.pjskinfo import get_match_rate_sqrt, isSingleEmoji, string_similar, writelog
 import Levenshtein as lev
 import math
-
-
-def get_match_rate(query, title):
-    # 将查询和标题转换为小写
-    query = query.lower()
-    title = title.lower()
-
-    # 计算 Levenshtein 距离
-    distance = lev.distance(query, title)
-
-    # 计算最大长度以标准化距离
-    max_len = max(len(query), len(title))
-    if max_len == 0:
-        return 1.0  # 避免除以零
-
-    # 计算相似度（1 - (距离/最大长度)）
-    similarity = 1 - (distance / max_len)
-
-    return similarity
-
-
-def get_match_rate_sqrt(query, title):
-    # 将查询和标题转换为小写
-    query = query.lower()
-    title = title.lower()
-
-    # 检查query是否是title的子串
-    if query in title:
-        match_ratio = len(query) / len(title)
-        # 使用逻辑斯蒂函数调整匹配度
-        adjusted_match_rate = 1 / (1 + math.exp(-10 * (match_ratio - 0.3)))
-        return adjusted_match_rate
-    else:
-        return 0.0
 
 
 def chu_matchname(alias):
@@ -52,7 +18,7 @@ def chu_matchname(alias):
         # 计算精确匹配度
         exact_match = get_match_rate_sqrt(alias.lower(), name.lower())
         # 计算模糊匹配度
-        fuzzy_match = get_match_rate(alias.lower(), name.lower())
+        fuzzy_match = string_similar(alias.lower(), name.lower())
 
         # 选择匹配度较高的一种
         higher_match = max(exact_match, fuzzy_match)

@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import re
 import uuid
@@ -7,36 +8,7 @@ import Levenshtein as lev
 from chunithm.b30 import get_all_music, get_user_data, get_user_full_data, get_user_info_pic, get_user_team, sunp_to_lmn
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-
-def get_match_rate(query, title):
-    # 将查询和标题转换为小写
-    query = query.lower()
-    title = title.lower()
-
-    # 计算 Levenshtein 距离
-    distance = lev.distance(query, title)
-
-    # 计算最大长度以标准化距离
-    max_len = max(len(query), len(title))
-    if max_len == 0:
-        return 1.0  # 避免除以零
-
-    # 计算相似度（1 - (距离/最大长度)）
-    similarity = 1 - (distance / max_len)
-
-    return similarity
-
-
-def get_match_rate_sub(query, title):
-    # 将查询和标题转换为小写
-    query = query.lower()
-    title = title.lower()
-
-    # 检查query是否是title的子串
-    if query in title:
-        return len(query) / len(title)
-    else:
-        return 0.0
+from modules.pjskinfo import get_match_rate_sqrt, string_similar
 
 
 def search_song(query):
@@ -54,9 +26,9 @@ def search_song(query):
             title += f"【{song['we_kanji']}】"
 
         # 计算精确匹配度
-        exact_match_rate = get_match_rate_sub(query, title)
+        exact_match_rate = get_match_rate_sqrt(query, title)
         # 计算模糊匹配度
-        fuzzy_match_rate = get_match_rate(query, title)
+        fuzzy_match_rate = string_similar(query, title)
 
         if exact_match_rate > 0:
             exact_matches.append((song['id'], title, exact_match_rate))

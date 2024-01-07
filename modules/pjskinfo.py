@@ -54,6 +54,8 @@ def isSingleEmoji(content):
 # def string_similar(s1, s2):
 #     return difflib.SequenceMatcher(None, s1, s2).quick_ratio()
 def string_similar(s1, s2):
+    s1 = s1.replace(" ", "")
+    s2 = s2.replace(" ", "")
     # 使用Levenshtein库计算两个字符串之间的距离
     distance = lev.distance(s1, s2)
     # 计算最大可能的距离
@@ -64,14 +66,16 @@ def string_similar(s1, s2):
 
 def get_match_rate_sqrt(query, title):
     # 将查询和标题转换为小写
-    query = query.lower()
-    title = title.lower()
+    query = query.lower().replace(" ", "")
+    title = title.lower().replace(" ", "")
 
     # 检查query是否是title的子串
     if query in title:
         match_ratio = len(query) / len(title)
-        # 使用逻辑斯蒂函数调整匹配度
-        adjusted_match_rate = 1 / (1 + math.exp(-10 * (match_ratio - 0.3)))
+        if len(query) == 1 or len(title) < 4:
+            return match_ratio
+        else:
+            adjusted_match_rate = math.pow(match_ratio, 1/3)
         return adjusted_match_rate
     else:
         return 0.0
@@ -183,54 +187,65 @@ def aliastomusicid(alias):
     return matchname(alias)
 
 
-def matchname(alias):
-    match = {'musicid': 0, "match": 0, 'name': ''}
-    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    with open('yamls/translate.yaml', encoding='utf-8') as f:
-        trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
+def load_data(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-    for musics in data:
-        name = musics['title']
-        fuzzy_match = string_similar(alias.lower(), name.lower())
-        exact_match = get_match_rate_sqrt(alias.lower(), name.lower())
+
+def is_hangul(text):
+    return any('\uac00' <= char <= '\ud7a3' for char in text)
+
+
+def get_best_match(alias, data, match, is_translation=False, is_kr=False):
+    for music in data:
+        title = music["infos"][0]["title"] if is_kr else music.get('title', '')
+        fuzzy_match = string_similar(alias.lower(), title.lower())
+        exact_match = get_match_rate_sqrt(alias.lower(), title.lower())
         similar = max(exact_match, fuzzy_match)
         if similar > match['match']:
             match['match'] = similar
-            match['musicid'] = musics['id']
-            match['name'] = musics['title']
-        try:
-            translate = trans[musics['id']]
-            if '/' in translate:
-                alltrans = translate.split('/')
-                for i in alltrans:
-                    fuzzy_match = string_similar(alias.lower(), i.lower())
-                    exact_match = get_match_rate_sqrt(alias.lower(), i.lower())
-                    similar = max(exact_match, fuzzy_match)
-                    if similar > match['match']:
-                        match['match'] = similar
-                        match['musicid'] = musics['id']
-                        match['name'] = musics['title']
-            else:
-                fuzzy_match = string_similar(alias.lower(), translate.lower())
-                exact_match = get_match_rate_sqrt(alias.lower(), translate.lower())
-                similar = max(exact_match, fuzzy_match)
-                if similar > match['match']:
-                    match['match'] = similar
-                    match['musicid'] = musics['id']
-                    match['name'] = musics['title']
-        except KeyError:
-            pass
-    try:
-        match['translate'] = trans[match['musicid']]
-        if match['translate'] == match['name']:
-            match['translate'] = ''
-    except KeyError:
-        match['translate'] = ''
+            match['musicid'] = music['id']
+            if not is_translation:
+                match['name'] = title
+
+
+def match_trans(alias, trans, match):
+    for id, translate in trans.items():
+        fuzzy_match = string_similar(alias.lower(), translate.lower())
+        exact_match = get_match_rate_sqrt(alias.lower(), translate.lower())
+        similar = max(exact_match, fuzzy_match)
+        if similar > match['match']:
+            match['match'] = similar
+            match['musicid'] = id
+            match['translate'] = translate
+
+
+def matchname(alias):
+    match = {'musicid': 0, 'match': 0, 'name': '', 'translate': ''}
+
+    main_data = load_data('masterdata/musics.json')
+    en_data = load_data('../enapi/masterdata/musics.json')
+    kr_data = load_data('../krapi/masterdata/musics.json') if is_hangul(alias) else []
+    with open('yamls/translate.yaml', encoding='utf-8') as f:
+        trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
+
+    get_best_match(alias, main_data, match)
+    get_best_match(alias, en_data, match)
+    match_trans(alias, trans, match)
+    if is_hangul(alias):
+        get_best_match(alias, kr_data, match, is_kr=True)
+
+    if match['musicid']:
+        original_name = next((m['title'] for m in main_data if m['id'] == match['musicid']), '')
+        match['name'] = original_name
+        match['translate'] = trans.get(match['musicid'], '')
+
     return match
+
 
 def get_filectime(file):
     return datetime.datetime.fromtimestamp(os.path.getmtime(file))
+
 
 def isleak(musicid):
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
@@ -242,6 +257,7 @@ def isleak(musicid):
             else:
                 return False
     return True
+
 
 def pjskinfo(musicid):
     if os.path.exists(f'piccache/pjskinfo/{musicid}.png'):
@@ -271,16 +287,18 @@ def drawpjskinfo(musicid):
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     for music in data:
-        if music['id'] != musicid:
-            continue
-        info.title = music['title']
-        info.lyricist = music['lyricist']
-        info.composer = music['composer']
-        info.arranger = music['arranger']
-        info.publishedAt = music['publishedAt']
-        info.fillerSec = music['fillerSec']
-        info.categories = music['categories']
-        info.assetbundleName = music['assetbundleName']
+        if music['id'] == musicid:
+            info.title = music['title']
+            info.lyricist = music['lyricist']
+            info.composer = music['composer']
+            info.arranger = music['arranger']
+            info.publishedAt = music['publishedAt']
+            info.fillerSec = music['fillerSec']
+            info.categories = music['categories']
+            info.assetbundleName = music['assetbundleName']
+            break
+    else:
+        raise ValueError("日服不存在该歌曲；The song doesn't exist in JP ver")
     
     with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
