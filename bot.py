@@ -842,12 +842,7 @@ def sync_handle_msg(event):
             return
         try:
             if event.message[:4] == "难度排行" or event.message[2:6] == "难度排行" or event.message[-4:] == "难度排行":
-                if 'fc' in event.message:
-                    fcap = 1
-                elif 'ap' in event.message:
-                    fcap = 2
-                else:
-                    fcap = 0
+                fcap = 0
                 diff = 'master'
                 if 'append' in event.message or 'apd' in event.message:
                     diff = 'append'
@@ -930,7 +925,10 @@ def sync_handle_msg(event):
                 return
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
-                    sendmsg(event, picdir[0] + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                    if event.self_id == guildbot:
+                        sendmsg(event, picdir[0] + f"\niOS如果图片糊，请将QQ更新到最新版本（9开头），安卓需在群内使用官方bot才能查看原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                    else:
+                        sendmsg(event, picdir[0] + f"\niOS保存后即可查看原图，安卓使用官方Bot才可查看原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                 elif picdir == '':
                     sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
                     return
@@ -1353,7 +1351,10 @@ def sync_handle_msg(event):
             result = get_chunithm_chart(musicid, difficulty)
             if result is not None:
                 title, image_url, match = result
-                info = f"{title} {difficulty.upper()}\n匹配度：{round(match, 4)}\n谱面来自sdvx点in\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图"
+                if event.self_id == guildbot:
+                    info = f"{title} {difficulty.upper()}\n匹配度：{round(match, 4)}\n谱面来自sdvx点in\niOS如果图片糊，请将QQ更新到最新版本（9开头），安卓需在群内使用官方bot才能查看原图"
+                else:
+                    info = f"{title} {difficulty.upper()}\n匹配度：{round(match, 4)}\n谱面来自sdvx点in\niOS保存后即可查看原图，安卓使用官方Bot才可查看原图"
                 sendmsg(event, info + fr"[CQ:image,file=file:///{botdir}/{image_url},cache=0]")
             else:
                 sendmsg(event, "抱歉，无法生成图像。")
@@ -1469,7 +1470,10 @@ def sync_handle_msg(event):
                 return
             if picdir is not None:  # 匹配到歌曲
                 if len(picdir) == 2:  # 有图片
-                    sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\niOS用户如果图片糊点一下保存，等几秒保存成功后重新点进图片即可查看高清原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                    if event.self_id == guildbot:
+                        sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\niOS如果图片糊，请将QQ更新到最新版本（9开头），安卓需在群内使用官方bot才能查看原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
+                    else:
+                        sendmsg(event, picdir[0].replace('estertion.win', 'estertion点win') + f"\niOS保存后即可查看原图，安卓使用官方Bot才可查看原图[CQ:image,file=file:///{botdir}/{picdir[1]},cache=0]")
                 elif picdir == '':
                     sendmsg(event, f'[CQ:poke,qq={event.user_id}]')
                     return
@@ -2062,7 +2066,7 @@ async def handle_group_request(event: Event):
     elif event.sub_type == 'add':  # 有人加群
         if event.group_id == 883721511 or event.group_id == 647347636:
             answer = event.comment[event.comment.find("答案：") + len("答案："):].strip()
-            if '近藤' in answer:
+            if 'sega' in answer.lower() or 'sbga' in answer.lower() or '彩盘' in answer or 'cp' in answer.lower() or 'palette' in answer.lower():
                 await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
                                                 approve=True)
                 await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
@@ -2099,32 +2103,32 @@ async def handle_group_ban(event: Event):
         await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
                                  message=f'我在群{event.group_id}内被{event.operator_id}禁言{event.duration / 60}分钟，已自动退群')
 
-@bot.on_notice()
-async def handle_poke(event: Event):
-    if event.self_id == guildbot:
-        return
-    if event.sub_type == 'poke' and event.target_id == event.self_id:
-        if event.self_id in mainbot:
-            global pokelimit
-            nowtime = f"{str(datetime.now().hour).zfill(2)}{str(datetime.now().minute).zfill(2)}"
-            lasttime = pokelimit['lasttime']
-            count = pokelimit['count']
-            if nowtime == lasttime and count >= 5:
-                print(pokelimit)
-                print('达到每分钟戳一戳发语音上限')
-                return
-            if nowtime != lasttime:
-                count = 0
-            pokelimit['lasttime'] = nowtime
-            pokelimit['count'] = count + 1
-            print(pokelimit)
-            voiceDir = 'data/assets/sekai/assetbundle/resources/additionalvoice/sound/system_live2d/voice/voicepack_17'
-            voiceList = os.listdir(voiceDir)
-            voiceList.remove('soundbundlebuilddata.json')
-            voiceList.remove('voicepack_17.acb')
-            print(f'{voiceDir}/{random.choice(voiceList)}')
-            await bot.send_group_msg(self_id=event.self_id, group_id=event.group_id,
-                                 message=fr"[CQ:record,file=file:///{botdir}/{voiceDir}/{random.choice(voiceList)},cache=0]")
+# @bot.on_notice()
+# async def handle_poke(event: Event):
+#     if event.self_id == guildbot:
+#         return
+#     if event.sub_type == 'poke' and event.target_id == event.self_id:
+#         if event.self_id in mainbot:
+#             global pokelimit
+#             nowtime = f"{str(datetime.now().hour).zfill(2)}{str(datetime.now().minute).zfill(2)}"
+#             lasttime = pokelimit['lasttime']
+#             count = pokelimit['count']
+#             if nowtime == lasttime and count >= 5:
+#                 print(pokelimit)
+#                 print('达到每分钟戳一戳发语音上限')
+#                 return
+#             if nowtime != lasttime:
+#                 count = 0
+#             pokelimit['lasttime'] = nowtime
+#             pokelimit['count'] = count + 1
+#             print(pokelimit)
+#             voiceDir = 'data/assets/sekai/assetbundle/resources/additionalvoice/sound/system_live2d/voice/voicepack_17'
+#             voiceList = os.listdir(voiceDir)
+#             voiceList.remove('soundbundlebuilddata.json')
+#             voiceList.remove('voicepack_17.acb')
+#             print(f'{voiceDir}/{random.choice(voiceList)}')
+#             await bot.send_group_msg(self_id=event.self_id, group_id=event.group_id,
+#                                  message=fr"[CQ:record,file=file:///{botdir}/{voiceDir}/{random.choice(voiceList)},cache=0]")
 
 async def autopjskguess():
     global pjskguess

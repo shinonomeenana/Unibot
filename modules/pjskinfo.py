@@ -298,7 +298,7 @@ def drawpjskinfo(musicid):
             info.assetbundleName = music['assetbundleName']
             break
     else:
-        raise ValueError("日服不存在该歌曲；The song doesn't exist in JP ver")
+        raise KeyError("日服不存在该歌曲；The song doesn't exist in JP ver")
     
     with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
