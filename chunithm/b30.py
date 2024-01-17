@@ -267,7 +267,7 @@ def get_user_info_pic(user_full_data, team_data):
         text_width = font_style.getsize(str(reincarnationNum))
         draw.text((int(165 - text_width[0] / 2), 91), str(reincarnationNum), fill=(0, 0, 0), font=font_style)
     
-
+    print("trophyId", user_full_data["userData"]["trophyId"])
     trophy_data = get_trophy_by_id(user_full_data["userData"]["trophyId"])
     if trophy_data is not None:
 
@@ -515,7 +515,7 @@ def chunib30(userid, server='aqua', version='2.15'):
     shadow_draw = ImageDraw.Draw(shadow_layer)
 
     # 绘制文字阴影
-    shadow_position = (1977, 998) if len(text.split('\n')) == 3 else (1976, 977)
+    shadow_position = (1976, 996) if len(text.split('\n')) == 3 else (1976, 977)
     shadow_draw.text(shadow_position, text, fill=(0, 0, 0, 150), font=font_style, align='right')
     shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(0.5))
     # 将带有阴影的图层合并到原始图像上
