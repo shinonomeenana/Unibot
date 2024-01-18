@@ -856,9 +856,6 @@ def sync_handle_msg(event):
                     diff = 'easy'
                 try:
                     level = int(re.sub(r'\D', "", event.message))
-                    if level < 26:
-                        sendmsg(event, "不支持难度26以下的单难度查询，该部分没有细分定数")
-                        return
                 except:
                     if event.message == '难度排行' or fcap in [1, 2] or diff in ['append', 'expert', 'hard', 'normal', 'easy']:
                         level = 0

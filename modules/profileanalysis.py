@@ -1217,11 +1217,11 @@ def bondsbackground(chara1, chara2, ismain=True):
 
 def fcrank(playlevel, rank):
     if playlevel <= 32:
-        return rank - 1.5
+        return rank - 1
     # elif rank == 33:
     #     return rank - 0.5
     else:
-        return rank - 1
+        return rank - 0.5
 
 
 def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知'):
@@ -1303,7 +1303,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
             except:
                 pass
 
-    with open('masterdata/realtime/musicDifficulties.json', 'r', encoding='utf-8') as f:
+    with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
         diff = json.load(f)
     for i in range(0, len(diff)):
         try:
@@ -1342,7 +1342,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         if found:
             if playResult == 'full_perfect':
                 diff[i]['result'] = 2
-                diff[i]['rank'] = diff[i]['aplevel+']
+                diff[i]['rank'] = diff[i]['aplevel+'] + 0.5
             elif playResult == 'full_combo':
                 if diff[i]['result'] < 1:
                     diff[i]['result'] = 1
@@ -1369,9 +1369,9 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         textadd = f'，当前理论值为{highest}'
     else:
         textadd = ''
-    draw.text((50, 1722), f'注：33+FC权重减1，其他减1.5，非官方算法，仅供参考娱乐{textadd}', fill='#00CCBB',
+    draw.text((50, 1722), f'注：33+FC权重减0.5，其他减1，非官方算法，仅供参考娱乐{textadd}', fill='#00CCBB',
               font=font_style)
-    draw.text((50, 1752), '小数定数来自Twitter:@MaengZombie 仅供参考 可能在之后会有改变', fill='#00CCBB',
+    draw.text((50, 1752), '使用原曲定数 由于缺少关键完成率数据 仅供参考', fill='#00CCBB',
               font=font_style)
     
     # 创建一个单独的图层用于绘制rank阴影
@@ -1428,40 +1428,24 @@ def b30single(diff, musics):
         jacket = jacket.resize((186, 186))
         pic.paste(jacket, (32, 28))
 
-        draw.ellipse((5, 5, 5+60, 5+60), fill=color[diff['musicDifficulty']])
         font = ImageFont.truetype('fonts/SourceHanSansCN-Bold.otf', 38)
-        text_width = font.getsize(str(diff['playLevel']))
-        text_coordinate = (int(36 - text_width[0] / 2), int(28 - text_width[1] / 2))
-        draw.text(text_coordinate, str(diff['playLevel']), (255, 255, 255), font)
-
         draw.ellipse((242, 32, 286, 76), fill=color[diff['musicDifficulty']])
         draw.rectangle((262, 32, 334, 76), fill=color[diff['musicDifficulty']])
         draw.ellipse((312, 32, 356, 76), fill=color[diff['musicDifficulty']])
 
 
-        if diff['playLevelAdjust'] is not None:
-            if diff['result'] == 2:
-                resultpic = Image.open('pics/AllPerfect.png')
-                draw.text((259, 24), str(round(diff['aplevel+'], 1)), (255, 255, 255), font)
-                draw.text((370, 24), '→ ' + str(round(diff['aplevel+'], 1)), (0, 0, 0), font)
-            if diff['result'] == 1:
-                resultpic = Image.open('pics/FullCombo.png')
-                draw.text((259, 24), str(round(diff['fclevel+'], 1)), (255, 255, 255), font)
-                draw.text((370, 24), '→ ' + str(round(fcrank(diff['playLevel'], diff["fclevel+"]), 1)), (0, 0, 0), font)
-        else:
-            if diff["aplevel+"] < 26 or diff["aplevel+"] > 33:
-                draw.text((259, 24), f'  {diff["aplevel+"]}', (255, 255, 255), font)
-            else:
-                draw.text((259, 24), f'{round(diff["fclevel+"], 1)}.?', (255, 255, 255), font)
+        draw.text((259, 24), f'  {diff["aplevel+"]}', (255, 255, 255), font)
 
-            if diff['result'] == 2:
-                resultpic = Image.open('pics/AllPerfect.png')
-                draw.text((370, 24), f'→ {round(diff["aplevel+"], 1)}.0', (0, 0, 0), font)
-            elif diff['result'] == 1:
-                resultpic = Image.open('pics/FullCombo.png')
-                draw.text((370, 24), f'→ {round(fcrank(diff["playLevel"], diff["fclevel+"]), 1)}', (0, 0, 0), font)
+        if diff['result'] == 2:
+            resultpic = Image.open('pics/AllPerfect.png')
+            draw.text((370, 24), f'→ {diff["aplevel+"] + 0.5}', (0, 0, 0), font)
+        elif diff['result'] == 1:
+            resultpic = Image.open('pics/FullCombo.png')
+            draw.text((370, 24), f'→ {round(fcrank(diff["playLevel"], diff["fclevel+"]), 1)}', (0, 0, 0), font)
+        
         r, g, b, mask = resultpic.split()
         pic.paste(resultpic, (238, 154), mask)
+
     pic = pic.resize((310, 120))
     return pic
 
