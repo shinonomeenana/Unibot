@@ -1,1 +1,0 @@
-python diffrank.py gencsv

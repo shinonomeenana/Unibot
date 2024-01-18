@@ -41,7 +41,7 @@ All song alias settings and character alias settings will be publicly displayed 
 > Add `kr` before the command to query Korean server information, e.g., `krbind`, `krsk`, `krpjskcheck`, `krpjskprogress`, `krpjskprofile`.
 
 ::: danger Note
-Due to modifications in the pjsk Japanese server API, only the top 100 rankings can be retrieved. The affected functions in the Japanese server are:
+Due to modifications in the pjsk Japanese, Korean and Traditianal Chinese server API, only the top 100 rankings can be retrieved. The affected functions in the these server are:
 sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 :::
 

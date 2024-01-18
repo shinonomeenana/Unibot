@@ -46,7 +46,7 @@
 > 在命令前加`kr`即可查询韩服信息，如`kr绑定`, `krsk`, `kr逮捕`, `krpjsk进度`, `krpjskprofile`
 
 ::: danger 注意
-由于pjsk日服api做了修改，只能查到前100排名，受影响的日服功能有：
+由于pjsk日服，台服，韩服api做了修改，只能查到前100排名，受影响的功能有：
 sk，pjsk进度，pjsk b30，rk，难度排行
 :::
 
@@ -170,6 +170,5 @@ sk，pjsk进度，pjsk b30，rk，难度排行
 - QQ官方版bot框架：[Hoshinonyaruko/Gensokyo](https://github.com/Hoshinonyaruko/Gensokyo)
 ### 数据来源
 - 预测线: [33Kit](https://3-3.dev/)
-- 歌曲达成率，难度偏差，热度等信息: [Project Sekai Profile](https://profile.pjsekai.moe/)（因为api改了已寄）
 - 谱面预览: [ぷろせかもえ！](https://pjsekai.moe/), [プロセカ譜面保管所](https://sdvx.in/prsk.html)
 - 台服国际服牌子图片：[Sekai Viewer](https://sekai.best/)
