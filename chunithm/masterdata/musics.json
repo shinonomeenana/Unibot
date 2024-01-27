@@ -1,5 +1,53 @@
 [
     {
+        "name": "アイデン貞貞メルトダウン",
+        "id": "2497",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "9db02942734bd7a7.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 5.0,
+            "expert": 9.5,
+            "master": 12.1,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ひめごと＊クライシスターズ",
+        "id": "2498",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "95cceb2d69e05cd0.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 9.5,
+            "master": 13.0,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Stellar Stellar",
+        "id": "2499",
+        "genreNames": [
+            "POPS & ANIME"
+        ],
+        "jaketFile": "b1b2a6153daf67e7.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 10.2,
+            "master": 13.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
         "name": "さくゆいたいそう",
         "id": "2496",
         "genreNames": [
@@ -2188,6 +2236,86 @@
             "expert": 8.5,
             "master": 14.5,
             "ultima": 14.9,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "てらてら",
+        "id": "2513",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "b5b54e8993c437f1.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.0,
+            "expert": 9.0,
+            "master": 12.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "天使のクローバー",
+        "id": "2514",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "7a75a039508675d3.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 6.0,
+            "expert": 9.0,
+            "master": 12.8,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Beat Eater",
+        "id": "2510",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "8088281313c4563b.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 8.5,
+            "master": 13.2,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "Glory Steady Go!",
+        "id": "2511",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "bb0ae6b51e39a419.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 5.0,
+            "expert": 9.0,
+            "master": 12.7,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ロウワー",
+        "id": "2512",
+        "genreNames": [
+            "niconico"
+        ],
+        "jaketFile": "ce27d9e82402811f.jpg",
+        "difficulties": {
+            "basic": 2.0,
+            "advanced": 6.0,
+            "expert": 10.5,
+            "master": 13.7,
+            "ultima": 0.0,
             "world's end": 0.0
         }
     },
@@ -6107,7 +6235,7 @@
             "advanced": 6.0,
             "expert": 8.0,
             "master": 11.7,
-            "ultima": 0,
+            "ultima": 14.1,
             "world's end": 0.0
         }
     },
@@ -11259,6 +11387,22 @@
             "advanced": 7.0,
             "expert": 11.9,
             "master": 14.3,
+            "ultima": 0.0,
+            "world's end": 0.0
+        }
+    },
+    {
+        "name": "ENERGY SYNERGY MATRIX",
+        "id": "2534",
+        "genreNames": [
+            "VARIETY"
+        ],
+        "jaketFile": "8bad62668f599caa.jpg",
+        "difficulties": {
+            "basic": 3.0,
+            "advanced": 7.0,
+            "expert": 14.0,
+            "master": 14.2,
             "ultima": 0.0,
             "world's end": 0.0
         }

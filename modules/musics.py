@@ -7,6 +7,7 @@ import sqlite3
 import time
 import traceback
 import pymysql
+import yaml
 from modules.mysql_config import *
 import aiofiles
 import requests
@@ -28,6 +29,25 @@ def idtoname(musicid):
     for i in musics:
         if i['id'] == musicid:
             return i['title']
+    return ''
+
+
+def idtoname_trans(musicid):
+    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+        musics = json.load(f)
+    with open('yamls/translate.yaml', encoding='utf-8') as f:
+        trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
+    for i in musics:
+        if i['id'] == musicid:
+            title = i['title']
+            try:
+                translate = trans[musicid]
+                if translate == title:
+                    return title
+                else:
+                    return f'{title}({translate})'
+            except KeyError:
+                return title
     return ''
 
 

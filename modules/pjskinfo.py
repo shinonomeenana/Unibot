@@ -20,7 +20,7 @@ from emoji2pic.main import Emoji2Pic
 import Levenshtein as lev
 from modules.config import loghtml, env
 from modules.r2upload import uploadLogR2
-
+from zhconv import convert
 
 class musicinfo(object):
 
@@ -196,9 +196,11 @@ def is_hangul(text):
     return any('\uac00' <= char <= '\ud7a3' for char in text)
 
 
-def get_best_match(alias, data, match, is_translation=False, is_kr=False):
+def get_best_match(alias, data, match, is_translation=False, is_kr=False, is_main_data=False):
     for music in data:
         title = music["infos"][0]["title"] if is_kr else music.get('title', '')
+        if is_main_data:
+            title = convert(title, 'zh-cn')
         fuzzy_match = string_similar(alias.lower(), title.lower())
         exact_match = get_match_rate_sqrt(alias.lower(), title.lower())
         similar = max(exact_match, fuzzy_match)
@@ -221,6 +223,7 @@ def match_trans(alias, trans, match):
 
 
 def matchname(alias):
+    alias = convert(alias, 'zh-cn')
     match = {'musicid': 0, 'match': 0, 'name': '', 'translate': ''}
 
     main_data = load_data('masterdata/musics.json')
@@ -229,7 +232,7 @@ def matchname(alias):
     with open('yamls/translate.yaml', encoding='utf-8') as f:
         trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
 
-    get_best_match(alias, main_data, match)
+    get_best_match(alias, main_data, match, is_main_data=True)
     get_best_match(alias, en_data, match)
     match_trans(alias, trans, match)
     if is_hangul(alias):

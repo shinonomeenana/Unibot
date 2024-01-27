@@ -13,13 +13,13 @@ from ujson import JSONDecodeError
 assetpath = 'data/assets/sekai/assetbundle/resources'
 
 rankmatchgrades = {
-    1: 'ビギナー(初学者)',
-    2: 'ブロンズ(青铜)',
-    3: 'シルバー(白银)',
-    4: 'ゴールド(黄金)',
-    5: 'プラチナ(白金)',
-    6: 'ダイヤモンド(钻石)',
-    7: 'マスター(大师)'
+    1: 'ビギナー(Beginner)',
+    2: 'ブロンズ(Bronze)',
+    3: 'シルバー(Silver)',
+    4: 'ゴールド(Gold)',
+    5: 'プラチナ(Platinum)',
+    6: 'ダイヤモンド(Diamond)',
+    7: 'マスター(Master)'
 }
 
 def idtoname(musicid):
@@ -372,10 +372,10 @@ def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未�
     rankmatchid = currentrankmatch(server)
     print(rankmatchid)
     if rankmatchid is None:
-        return '你查询的服务器当前没有排位'
+        return 'no rank match now'
     if targetid is not None:
         if not verifyid(targetid, server):
-            return '你这ID有问题啊'
+            return 'wrong id, please check'
         data = callapi(f'/user/%7Buser_id%7D/rank-match-season/{rankmatchid}/'
                             f'ranking?targetUserId={targetid}', server)
     else:
@@ -387,7 +387,7 @@ def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未�
         if not recordname(qqnum, data['rankings'][0]['userId'], data['rankings'][0]['name']):
             data['rankings'][0]['name'] = ''
     except IndexError:
-        return '未参加当期排位赛'
+        return 'Not participating in current rank match'
     if grade > 7:
         grade = 7
     gradename = rankmatchgrades[grade]
@@ -406,16 +406,16 @@ def rk(targetid=None, targetrank=None, secret=False, isdaibu=False, qqnum="未�
     else:
         text = ''
     if grade == 7:
-        text = text + f"{gradename}🎵×{ranking['tierPoint']}\n排名：{data['rankings'][0]['rank']}\n"
+        text = text + f"{gradename}🎵×{ranking['tierPoint']}\nrank：{data['rankings'][0]['rank']}\n"
     else:
-        text = text + f"{gradename}Class {kurasu}({ranking['tierPoint']}/5)\n排名：{data['rankings'][0]['rank']}\n"
+        text = text + f"{gradename}Class {kurasu}({ranking['tierPoint']}/5)\nrank：{data['rankings'][0]['rank']}\n"
     text = text + f"Win {ranking['winCount']} | Draw {ranking['drawCount']} | "
     if ranking['penaltyCount'] == 0:
         text = text + f"Lose {ranking['loseCount']}\n"
     else:
         text = text + f"Lose {ranking['loseCount'] - ranking['penaltyCount']}+{ranking['penaltyCount']}\n"
-    text = text + f'胜率(除去平局)：{round(winrate * 100, 2)}%\n'
-    text = text + f"最高连胜：{ranking['maxConsecutiveWinCount']}\n"
+    text = text + f'Winning rate (excluding draws)：{round(winrate * 100, 2)}%\n'
+    text = text + f"Highest winning streak：{ranking['maxConsecutiveWinCount']}\n"
     return text
 
 
@@ -1217,11 +1217,11 @@ def bondsbackground(chara1, chara2, ismain=True):
 
 def fcrank(playlevel, rank):
     if playlevel <= 32:
-        return rank - 1
+        return rank - 1.5
     # elif rank == 33:
     #     return rank - 0.5
     else:
-        return rank - 0.5
+        return rank - 1
 
 
 def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知'):
@@ -1303,7 +1303,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
             except:
                 pass
 
-    with open('masterdata/musicDifficulties.json', 'r', encoding='utf-8') as f:
+    with open('masterdata/realtime/musicDifficulties.json', 'r', encoding='utf-8') as f:
         diff = json.load(f)
     for i in range(0, len(diff)):
         try:
@@ -1342,7 +1342,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         if found:
             if playResult == 'full_perfect':
                 diff[i]['result'] = 2
-                diff[i]['rank'] = diff[i]['aplevel+'] + 0.5
+                diff[i]['rank'] = diff[i]['aplevel+']
             elif playResult == 'full_combo':
                 if diff[i]['result'] < 1:
                     diff[i]['result'] = 1
@@ -1365,13 +1365,10 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     rank = round(rank / 30, 2)
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
-    if server == 'jp':
-        textadd = f'，当前理论值为{highest}'
-    else:
-        textadd = ''
-    draw.text((50, 1722), f'注：33+FC权重减0.5，其他减1，非官方算法，仅供参考娱乐{textadd}', fill='#00CCBB',
+
+    draw.text((50, 1722), f'算法不公开，没有任何参考性，纯属娱乐', fill='#00CCBB',
               font=font_style)
-    draw.text((50, 1752), '使用原曲定数 由于缺少关键完成率数据 仅供参考', fill='#00CCBB',
+    draw.text((50, 1752), 'Calculation method is undisclosed and just for fun, not a reliable reference.', fill='#00CCBB',
               font=font_style)
     
     # 创建一个单独的图层用于绘制rank阴影
@@ -1432,20 +1429,13 @@ def b30single(diff, musics):
         draw.ellipse((242, 32, 286, 76), fill=color[diff['musicDifficulty']])
         draw.rectangle((262, 32, 334, 76), fill=color[diff['musicDifficulty']])
         draw.ellipse((312, 32, 356, 76), fill=color[diff['musicDifficulty']])
-
-
-        draw.text((259, 24), f'  {diff["aplevel+"]}', (255, 255, 255), font)
-
         if diff['result'] == 2:
             resultpic = Image.open('pics/AllPerfect.png')
-            draw.text((370, 24), f'→ {diff["aplevel+"] + 0.5}', (0, 0, 0), font)
-        elif diff['result'] == 1:
+        if diff['result'] == 1:
             resultpic = Image.open('pics/FullCombo.png')
-            draw.text((370, 24), f'→ {round(fcrank(diff["playLevel"], diff["fclevel+"]), 1)}', (0, 0, 0), font)
-        
+        draw.text((259, 24), f'  {diff["playLevel"]}', (255, 255, 255), font)
         r, g, b, mask = resultpic.split()
         pic.paste(resultpic, (238, 154), mask)
-
     pic = pic.resize((310, 120))
     return pic
 
