@@ -8,7 +8,7 @@
 - 如果你有任何意见，可以加入交流群：
   - QQ: `883721511`
   - QQ 频道：[交流 QQ 频道](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)
-  - Discord 反馈群（新开）：https://discord.gg/R74mYeCG
+  - Discord 反馈群（新开）：[https://discord.gg/R74mYeCG](https://discord.gg/R74mYeCG)
 
 
 ## 查询pjsk歌曲信息

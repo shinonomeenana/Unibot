@@ -4,7 +4,7 @@
 
 - UniBot is a functional Discord bot that mainly provides query services related to "Project SEKAI Colorful Stage" Japanese server, international server, Traditional Chinese server and Korean Server.
 - By using this bot, you agree to the [Terms of Use](/en/licence/) and [Privacy Policy](/en/privacy/).
-- If you have any comments, you can join the feedback server (just opened)：https://discord.gg/R74mYeCG
+- If you have any comments, you can join the feedback server (just opened)：[https://discord.gg/R74mYeCG](https://discord.gg/R74mYeCG)
 
 
 ## Query Project Sekai Song Information
