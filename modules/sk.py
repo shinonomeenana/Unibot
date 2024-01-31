@@ -617,7 +617,7 @@ def score_line(server='jp'):
         point = record['score']
         text += f"\n{rank}名：{point/10000}万"
     
-    text += '\n请注意：由于游戏限制，分数线有最大300s的延迟'
+    text += '\n请注意：由于游戏限制，分数线有最大300s\n的延迟，非实时，请留出足够裕度'
     return text
 
 
