@@ -596,7 +596,7 @@ def score_line(server='jp'):
     # TODO: 如果服务端300s缓存，就不使用每次请求的方式，改用1分钟本地缓存一次
     BORDER_SUPPORT_SERVERS = ['jp']
     if server not in BORDER_SUPPORT_SERVERS:
-        raise BorderLineError('您请求的服务器展示不支持档线查询')   
+        raise BorderLineError('您请求的服务器暂时不支持档线查询')   
     event = currentevent(server)
     eventid = event['id']
     status = event['status']
