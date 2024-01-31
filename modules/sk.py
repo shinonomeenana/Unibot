@@ -91,7 +91,7 @@ def currentevent(server):
         else:
             status = 'end'
         return {'id': data[i]['id'], 'status': status, 'remain': remain,
-                 'assetbundleName': assetbundleName, 'eventType': data[i]['eventType']}
+                 'assetbundleName': assetbundleName, 'eventType': data[i]['eventType'], 'detail': data[i]}
 
 
 def eventtrack():
@@ -584,6 +584,42 @@ def getstoptime(targetid=None, targetrank=None, returnjson=False, private=False,
         if returnjson:
             return stop
         return text + '未停车' + "\n仅记录在200名以内时的数据"
+
+
+class BorderLineError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
+def score_line(server='jp'):
+    # TODO: 如果服务端300s缓存，就不使用每次请求的方式，改用1分钟本地缓存一次
+    BORDER_SUPPORT_SERVERS = ['jp']
+    if server not in BORDER_SUPPORT_SERVERS:
+        raise BorderLineError('您请求的服务器展示不支持档线查询')   
+    event = currentevent(server)
+    eventid = event['id']
+    status = event['status']
+    url = callapi(f'/api/event/{eventid}/ranking-border', server)
+    response = requests.get(url)
+    data = response.json()
+    text = f'当前活动为：{event["detail"]["name"]}\n当前时间：' + \
+            datetime.datetime.fromtimestamp(time.time(), datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)') + \
+            '\n结活时间：' + datetime.datetime.fromtimestamp(event['detail']['aggregateAt'] / 1000, datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)')
+    if status == 'going':
+        text += '\n活动还剩' + timeremain(event['remain'])
+    else:
+        text += '\n活动已结束'
+    # 提取排名数据
+    raw_ranking = data['borderRankings']
+    for record in raw_ranking:
+        rank = record['rank']
+        point = record['score']
+        text += f"\n{rank}名：{point/10000}万"
+    
+    text += '\n请注意：由于游戏限制，分数线有最大300s的延迟'
+    return text
+
 
 def getranks():
     time_printer('抓取时速')

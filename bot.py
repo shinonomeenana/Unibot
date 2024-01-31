@@ -38,7 +38,7 @@ from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskin
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
 from modules.sendmail import sendemail
 from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, chafang, \
-    getstoptime, ss, drawscoreline, cheaterFound, cheater_ban_reason
+    getstoptime, ss, drawscoreline, cheaterFound, cheater_ban_reason, score_line
 from modules.texttoimg import texttoimg, ycmimg, blank
 from modules.twitter import newesttwi
 from modules.baiduocr import is_dog
@@ -486,6 +486,10 @@ def sync_handle_msg(event):
             event.message = event.message[2:]
             server = 'kr'
         # -------------------- 多服共用功能区 -----------------------
+        if event.message == "sk线" or event.message == "skline":
+            texttoimg(score_line(server), 540, f'score_line_{server}')
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\score_line_{server}.png,cache=0]")
+            return
         if event.message[:2] == "sk":
             if event.group_id in blacklist['sk'] and server == 'jp':
                 return
