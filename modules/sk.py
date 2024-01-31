@@ -99,10 +99,10 @@ def eventtrack():
     now = int(time.time())
     time_printer('开始抓取冲榜查询id')
     event = currentevent('jp')
-    if event['status'] == 'going':
+    has_ended_recently = (event['status'] == 'end' and 
+                        time.time() * 1000 < event['detail']['aggregateAt'] + 720000)
+    if event['status'] == 'going' or has_ended_recently:
         eventid = event['id']
-        if not os.path.exists(f'yamls/event/{eventid}'):
-            os.makedirs(f'yamls/event/{eventid}')
         try:
             conn = sqlite3.connect('data/events.db')
             c = conn.cursor()
@@ -593,21 +593,52 @@ class BorderLineError(Exception):
 
 
 def score_line(server='jp'):
-    # TODO: 如果服务端300s缓存，就不使用每次请求的方式，改用1分钟本地缓存一次
     BORDER_SUPPORT_SERVERS = ['jp']
     if server not in BORDER_SUPPORT_SERVERS:
         raise BorderLineError('您请求的服务器暂时不支持档线查询')   
     event = currentevent(server)
     eventid = event['id']
     status = event['status']
-    url = callapi(f'/api/event/{eventid}/ranking-border', server)
-    response = requests.get(url)
-    data = response.json()
+    # 检查数据文件是否存在并读取数据
+    if os.path.exists('data/jpborder.json'):
+        with open('data/jpborder.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        # 获取文件的最后修改时间，并转换为 datetime 对象
+        file_mod_time = datetime.datetime.fromtimestamp(os.path.getmtime('data/jpborder.json'))
+        current_time = datetime.datetime.now()
+        time_diff = current_time - file_mod_time  # 计算当前时间与文件修改时间的差
+
+        update_required = True  # 初始化标志，表示是否需要更新数据
+
+        # 检查数据是否在过去五分钟内更新
+        if time_diff.total_seconds() <= 310 or status != 'going':
+            update_required = False  # 如果数据已经是最新的或活动不进行中，则不需要更新
+
+        if update_required:
+            print("数据不是最近五分钟内更新的，正在重试...")
+            try:
+                getranks()  # 尝试获取最新数据
+                # 成功获取后更新文件修改时间
+                file_mod_time = datetime.datetime.fromtimestamp(os.path.getmtime('data/jpborder.json'))
+            except Exception as e:
+                print(f"警告: 在重新获取数据时遇到错误 - {e}")
+
+        # 不论数据是否刚刚更新，都执行下面的代码来设置更新时间
+        nearest_5_min = 5 * (file_mod_time.minute // 5)  # 向下取整到最近的5的倍数
+        rounded_file_mod_time = file_mod_time.replace(minute=nearest_5_min, second=0, microsecond=0)  # 更新分钟数，秒和微秒置为0
+        update_time = rounded_file_mod_time.strftime('%m-%d %H:%M')  # 重新格式化更新时间
+
+        if update_required and 'e' in locals():  # 如果尝试更新且遇到错误
+            update_info = f"榜线更新时间：{update_time}\n警告: 数据已过期{int(time_diff.total_seconds() / 60)}分钟，\n可能是bot网不好或者游戏维护"
+        else:
+            update_info = f"榜线更新时间：{update_time}\n游戏限制，非实时数据，请合理安排"
+
     text = f'当前活动为：{event["detail"]["name"]}\n当前时间：' + \
             datetime.datetime.fromtimestamp(time.time(), datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)') + \
             '\n结活时间：' + datetime.datetime.fromtimestamp(event['detail']['aggregateAt'] / 1000, datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)')
     if status == 'going':
-        text += '\n活动还剩' + timeremain(event['remain'])
+        text += '\n活动还剩' + event['remain']
     else:
         text += '\n活动已结束'
     # 提取排名数据
@@ -617,67 +648,27 @@ def score_line(server='jp'):
         point = record['score']
         text += f"\n{rank}名：{point/10000}万"
     
-    text += '\n请注意：由于游戏限制，分数线有最大300s\n的延迟，非实时，请留出足够裕度'
+    text += '\n' + update_info
     return text
 
 
 def getranks():
-    time_printer('抓取时速')
+    time_printer('抓取榜线')
     event = currentevent('jp')
-    if event['status'] == 'going':
+    has_ended_recently = (event['status'] == 'end' and 
+                        time.time() * 1000 < event['detail']['aggregateAt'] + 900000)
+    if event['status'] == 'going' or has_ended_recently:
         eventid = event['id']
-        if not os.path.exists(f'yamls/event/{eventid}'):
-            os.makedirs(f'yamls/event/{eventid}')
-        try:
-            with open(f'yamls/event/{eventid}/ss.yaml') as f:
-                ss = yaml.load(f, Loader=yaml.FullLoader)
-        except FileNotFoundError:
-            ss = {}
-        now = int(time.time())
-        ss[now] = {}
-        for rank in rankline:
-            if rank != 100000000:
-                try:
-                    ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={rank}', 'jp')
-                    ss[now][rank] = ranking['rankings'][0]['score']
-                except:
-                    traceback.print_exc()
-                    ss[now][rank] = 0
-        with open(f'yamls/event/{eventid}/ss.yaml', 'w', encoding='utf-8') as f:
-            yaml.dump(ss, f)
-        time_printer('时速抓取完成')
+        data = callapi(f'/api/event/{eventid}/ranking-border', 'jp')
+        with open(f'data/jpborder.json', 'w', encoding='utf-8') as f:
+            f.write(json.dumps(data, indent=4, ensure_ascii=False))
+        if has_ended_recently:
+            time_printer('已抓取结活榜线')
     else:
         time_printer('无正在进行的活动')
 
 def ss():
-    event = currentevent('jp')
-    eventid = event['id']
-    if event['status'] == 'going':
-        try:
-            with open(f'yamls/event/{eventid}/ss.yaml') as f:
-                ss = yaml.load(f, Loader=yaml.FullLoader)
-        except FileNotFoundError:
-            return '暂无数据'
-        text = ''
-        hourago = 0
-        for times in ss:
-            lasttime = times
-        for times in ss:
-            if -120 < times - (lasttime - 60 * 60) < 120:
-                hourago = times
-                break
-        if hourago != 0:
-            for rank in rankline:
-                if rank != 100000000:
-                    speed = ss[lasttime][rank] - ss[hourago][rank]
-                    text += f'{rank}: {speed/10000}W\n'
-            Time = datetime.datetime.fromtimestamp(lasttime,
-                                                   pytz.timezone('Asia/Shanghai')).strftime('%m/%d %H:%M:%S')
-            return '一小时内实时时速\n' + text + '数据更新时间\n' + Time
-        else:
-            return '暂无数据'
-    else:
-        return '活动未开始'
+    pass
 
 def gettime(userid, server='jp'):
     if server == 'jp' or server == 'en':
