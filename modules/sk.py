@@ -594,6 +594,7 @@ class BorderLineError(Exception):
 
 def score_line(server='jp'):
     BORDER_SUPPORT_SERVERS = ['jp']
+    error_occurred = False  # 初始化错误标志
     if server not in BORDER_SUPPORT_SERVERS:
         raise BorderLineError('您请求的服务器暂时不支持档线查询')   
     event = currentevent(server)
@@ -622,6 +623,7 @@ def score_line(server='jp'):
                 # 成功获取后更新文件修改时间
                 file_mod_time = datetime.datetime.fromtimestamp(os.path.getmtime('data/jpborder.json'))
             except Exception as e:
+                error_occurred = True  # 设置错误标志
                 print(f"警告: 在重新获取数据时遇到错误 - {e}")
 
         # 不论数据是否刚刚更新，都执行下面的代码来设置更新时间
@@ -629,7 +631,7 @@ def score_line(server='jp'):
         rounded_file_mod_time = file_mod_time.replace(minute=nearest_5_min, second=0, microsecond=0)  # 更新分钟数，秒和微秒置为0
         update_time = rounded_file_mod_time.strftime('%m-%d %H:%M')  # 重新格式化更新时间
 
-        if update_required and 'e' in locals():  # 如果尝试更新且遇到错误
+        if update_required and error_occurred:  # 如果尝试更新且遇到错误
             update_info = f"榜线更新时间：{update_time}\n警告: 数据已过期{int(time_diff.total_seconds() / 60)}分钟，\n可能是bot网不好或者游戏维护"
         else:
             update_info = f"榜线更新时间：{update_time}\n游戏限制，非实时数据，请合理安排"
