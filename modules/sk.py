@@ -626,15 +626,10 @@ def score_line(server='jp'):
                 error_occurred = True  # 设置错误标志
                 print(f"警告: 在重新获取数据时遇到错误 - {e}")
 
-        # 不论数据是否刚刚更新，都执行下面的代码来设置更新时间
-        nearest_5_min = 5 * (file_mod_time.minute // 5)  # 向下取整到最近的5的倍数
-        rounded_file_mod_time = file_mod_time.replace(minute=nearest_5_min, second=0, microsecond=0)  # 更新分钟数，秒和微秒置为0
-        update_time = rounded_file_mod_time.strftime('%m-%d %H:%M')  # 重新格式化更新时间
-
         if update_required and error_occurred:  # 如果尝试更新且遇到错误
             update_info = f"榜线更新时间：{update_time}\n警告: 数据已过期{int(time_diff.total_seconds() / 60)}分钟，\n可能是bot网不好或者游戏维护"
         else:
-            update_info = f"榜线更新时间：{update_time}\n游戏限制，非实时数据，请合理安排"
+            update_info = f"\n请注意：由于服务器缓存，分数线有最大300s\n的延迟，非实时，请留出足够裕度"
 
     text = f'当前活动为：{event["detail"]["name"]}\n当前时间：' + \
             datetime.datetime.fromtimestamp(time.time(), datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S (UTC+8)') + \
