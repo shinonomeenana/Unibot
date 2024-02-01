@@ -53,23 +53,43 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False, chara
         if server == 'jp':
             if '/ranking?targetRank' in url:
                 targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
-                with open('data/jptop100.json', 'r', encoding='utf-8') as f:
-                    jptop100 = json.load(f)
-                updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
-                if chara_id is not None:
-                    for chapter in jptop100['userWorldBloomChapterRankings']:
-                        if chapter['gameCharacterId'] == chara_id:
-                            jptop100 = chapter
-                for single in jptop100["rankings"]:
-                    if single["rank"] == targetRank:
+                
+                if targetRank <= 100:
+                    with open('data/jptop100.json', 'r', encoding='utf-8') as f:
+                        jptop100 = json.load(f)
+                    updatetime = time.localtime(os.path.getmtime('data/jptop100.json'))
+                    if chara_id is not None:
+                        for chapter in jptop100['userWorldBloomChapterRankings']:
+                            if chapter['gameCharacterId'] == chara_id:
+                                jptop100 = chapter
+                    for single in jptop100["rankings"]:
+                        if single["rank"] == targetRank:
+                            return {
+                                "rankings": [single],
+                                'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                            }
+                    else:
                         return {
-                            "rankings": [single],
-                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
-                        }
+                                "rankings": []
+                            }
                 else:
-                    return {
-                            "rankings": []
-                        }
+                    with open('data/jpborder.json', 'r', encoding='utf-8') as f:
+                        jpborder = json.load(f)
+                    updatetime = time.localtime(os.path.getmtime('data/jpborder.json'))
+                    if chara_id is not None:
+                        for chapter in jpborder['userWorldBloomChapterRankingBorders']:
+                            if chapter['gameCharacterId'] == chara_id:
+                                jpborder = chapter
+                    for single in jpborder["borderRankings"]:
+                        if single["rank"] == targetRank:
+                            return {
+                                "rankings": [single],
+                                'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                            }
+                    else:
+                        return {
+                                "rankings": []
+                            }
                     
             if '/ranking?targetUserId=' in url:
                 targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])

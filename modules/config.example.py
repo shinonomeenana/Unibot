@@ -6,7 +6,8 @@ enapiurls = ['https://xxxxx/api']
 twapiurls = ['https://xxxxx/api']
 krapiurls = ['https://xxxxx/api']
 
-rank_query_ban_servers = ['jp']
+rank_query_ban_servers = ['jp', 'tw', 'kr']
+BORDER_SUPPORT_SERVERS = ['jp']
 predicturl = 'https://xxxxxxxx/predict.json'
 # 预测线地址，有需要可找33申请：https://3-3.dev/pjsk-predict
 
