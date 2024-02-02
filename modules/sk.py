@@ -20,7 +20,7 @@ import requests
 import yaml
 from matplotlib import pyplot as plt
 from matplotlib.font_manager import FontProperties
-
+import matplotlib.dates as mdates
 from modules.config import predicturl, proxies, ispredict
 
 rankline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000,
@@ -406,6 +406,8 @@ def chafang(targetid=None, targetrank=None, private=False, server='jp'):
         return '当前没有正在进行的活动'
 
 def drawscoreline(targetid=None, targetrank=None, targetrank2=None, starttime=0, server='jp'):
+    if targetrank is not None and int(targetrank) > 100:
+        return 'piccache/' + plot_rank_trend(targetrank)
     x1 = []
     x2 = []
     k1 = []
@@ -670,13 +672,161 @@ def getranks():
         # 如果数据有变化或文件不存在，则写入新数据
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(json.dumps(data, indent=4, ensure_ascii=False))
+
+        db_path = 'data/border.db'
+        ensure_db_exists(db_path)
+        db_connection = sqlite3.connect(db_path)
+
+        create_table_if_not_exists(db_connection, eventid)
+        insert_data(db_connection, eventid, data['borderRankings'])
+
+        db_connection.close()
+        
         if has_ended_recently:
             time_printer('已抓取结活榜线')
     else:
         time_printer('无正在进行的活动')
 
+
+def ensure_db_exists(db_path):
+    if not os.path.exists(os.path.dirname(db_path)):
+        os.makedirs(os.path.dirname(db_path))
+
+
+def create_table_if_not_exists(db_connection, event_id):
+    table_name = f"jp{event_id}"
+    create_table_sql = f"""
+    CREATE TABLE IF NOT EXISTS {table_name} (
+        timestamp INTEGER,
+        rank INTEGER,
+        score INTEGER,
+        PRIMARY KEY (timestamp, rank)
+    );
+    """
+    db_connection.execute(create_table_sql)
+    db_connection.commit()
+
+
+def insert_data(db_connection, event_id, border_rankings):
+    table_name = f"jp{event_id}"
+    current_time = int(time.time())
+    with db_connection:
+        for ranking in border_rankings:
+            if 'rank' in ranking and 'score' in ranking:  # 确保数据完整
+                db_connection.execute(f"INSERT OR IGNORE INTO {table_name} (timestamp, rank, score) VALUES (?, ?, ?)",
+                                      (current_time, ranking['rank'], ranking['score']))
+
+
 def ss():
-    pass
+    event = currentevent('jp')
+    eventid = event['id']
+    if event['status'] == 'going':
+        db_path = 'data/border.db'
+        db_connection = sqlite3.connect(db_path)
+        table_name = f"jp{eventid}"
+
+        # 查询最新的记录时间
+        latest_time_query = f"SELECT MAX(timestamp) FROM {table_name}"
+        latest_time = db_connection.execute(latest_time_query).fetchone()[0]
+
+        if latest_time is None:
+            return '暂无数据'
+
+        # 寻找一个小时前（正负5分钟内）最接近的记录时间点
+        hour_ago_time = latest_time - 3600
+        closest_hour_ago_query = f"""
+        SELECT timestamp FROM {table_name}
+        WHERE timestamp BETWEEN {hour_ago_time - 300} AND {hour_ago_time + 300}
+        ORDER BY ABS(timestamp - {hour_ago_time}) LIMIT 1
+        """
+        closest_hour_ago_time_row = db_connection.execute(closest_hour_ago_query).fetchone()
+
+        if closest_hour_ago_time_row is None:
+            return '暂无数据'
+
+        closest_hour_ago_time = closest_hour_ago_time_row[0]
+
+        # 对于每个档线计算时速
+        speed_query = f"""
+        SELECT a.rank, (b.score - a.score) AS speed
+        FROM {table_name} a JOIN {table_name} b ON a.rank = b.rank
+        WHERE a.timestamp = {closest_hour_ago_time} AND b.timestamp = {latest_time}
+        """
+        speeds = db_connection.execute(speed_query).fetchall()
+
+        db_connection.close()
+
+        if not speeds:
+            return '暂无数据'
+
+        # 格式化输出
+        text = '一小时内实时时速\n'
+        for rank, speed in speeds:
+            text += f'{rank}: {speed / 10000}W\n'
+
+        time_str = datetime.datetime.fromtimestamp(latest_time, pytz.timezone('Asia/Shanghai')).strftime('%m/%d %H:%M:%S')
+        text += '数据更新时间\n' + time_str
+
+        return text
+    else:
+        return '活动未开始'
+
+
+def plot_rank_trend(rank):
+    event = currentevent('jp')
+    event_id = event['id']
+    db_path = 'data/border.db'
+    db_connection = sqlite3.connect(db_path)
+    table_name = f"jp{event_id}"
+
+    # 查询指定档线的所有记录
+    query = f"SELECT timestamp, score FROM {table_name} WHERE rank = {rank} ORDER BY timestamp ASC"
+    data = db_connection.execute(query).fetchall()
+
+    db_connection.close()
+
+    if not data:
+        print("没有找到数据")
+        return
+
+    # 解析数据，将时间戳转换为UTC+8
+    timestamps, scores = zip(*data)
+    dates = [datetime.datetime.utcfromtimestamp(ts) + datetime.timedelta(hours=8) for ts in timestamps]
+
+    # 绘制折线图
+    plt.figure(figsize=(10, 6))
+    plt.plot(dates, scores, linestyle='-', color='b')
+    plt.title(f'Event {event_id} Rank {rank} Trend')
+    plt.xlabel('Time')
+    plt.ylabel('Score')
+
+    # 设置时间格式和间隔
+    ax = plt.gca()
+    if (dates[-1] - dates[0]).days >= 3:
+        ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d %H:%M'))
+        ax.xaxis.set_minor_locator(mdates.HourLocator(byhour=[0, 12]))
+    else:
+        ax.xaxis.set_major_locator(mdates.HourLocator(interval=1))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d %H:%M'))
+
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.tight_layout()
+
+    # 确保piccache目录存在
+    if not os.path.exists('piccache'):
+        os.makedirs('piccache')
+
+    # 保存图表
+    file_path = f'piccache/event_{event_id}_rank_{rank}_trend.png'
+    plt.savefig(file_path)
+    print(f"图表已保存到 {file_path}")
+
+    # 清除图表，避免重叠
+    plt.clf()
+    return f'event_{event_id}_rank_{rank}_trend.png'
+
 
 def gettime(userid, server='jp'):
     if server == 'jp' or server == 'en':
