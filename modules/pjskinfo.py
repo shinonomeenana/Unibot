@@ -213,13 +213,18 @@ def get_best_match(alias, data, match, is_translation=False, is_kr=False, is_mai
 
 def match_trans(alias, trans, match):
     for id, translate in trans.items():
-        fuzzy_match = string_similar(alias.lower(), translate.lower())
-        exact_match = get_match_rate_sqrt(alias.lower(), translate.lower())
-        similar = max(exact_match, fuzzy_match)
-        if similar > match['match']:
-            match['match'] = similar
-            match['musicid'] = id
-            match['translate'] = translate
+        # 拆分翻译选项，以斜线为分隔符
+        translate_options = translate.split('/')
+        
+        for option in translate_options:
+            fuzzy_match = string_similar(alias.lower(), option.lower())
+            exact_match = get_match_rate_sqrt(alias.lower(), option.lower())
+            similar = max(exact_match, fuzzy_match)
+
+            if similar > match['match']:
+                match['match'] = similar
+                match['musicid'] = id
+                match['translate'] = option  # 保存当前匹配的翻译选项
 
 
 def matchname(alias):
