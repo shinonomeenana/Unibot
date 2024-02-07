@@ -2000,6 +2000,7 @@ def sendmsg(event, msg):
 
     try:
         if event.self_id == guildbot:
+            msg = msg.replace('少女', '少/女')
             for i in range(0, 3):
                 try:
                     bot.sync.send_group_msg(self_id=event.self_id, group_id=event.group_id, message=f'[CQ:reply,id={event.message_id}]' + msg)
