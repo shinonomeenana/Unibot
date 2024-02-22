@@ -189,6 +189,17 @@ def eventtrack():
     else:
         time_printer('韩服无正在进行的活动')
 
+    time_printer('开始抓取国际服冲榜查询id')
+    event = currentevent('en')
+    if event['status'] == 'going':
+        eventid = event['id']
+        ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?rankingViewType=top100', 'en')
+        
+        with open('data/entop100.json', 'w', encoding='utf-8') as f:
+            f.write(json.dumps(ranking, sort_keys=True, indent=4))
+    else:
+        time_printer('国际服无正在进行的活动')
+
 
 class Error(Exception):
    pass
@@ -962,12 +973,12 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
             'score_rank': 'Score {score}, Rank {rank}',
             'upper_score': 'Score of Rank {upper}: {linescore}  ↑{deviation}',
             'lower_score': 'Score of Rank {lower}: {linescore}  ↓{deviation}',
-            'update_time': 'Updated at {updateTime}(UTC+8)',
+            'update_time': '{updateTime}(UTC+8) update',
             'event_remain': 'Event remaining: {remain}',
             'counting': "Calculating event scores",
             'no_bind': 'Can not find',
             'private': 'Can not find it, might be set to private',
-            'query_ban': ''
+            'query_ban': 'Due to restrictions on the score checking API on international servers, only the top 100 can use this feature'
         },
         'kr': {
             'msg': '{name}{userId}\n{teamname} 점수 {score}만, 순위 {rank}',

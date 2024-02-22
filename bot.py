@@ -1954,7 +1954,7 @@ def sync_handle_msg(event):
     except QueryBanned as e:
         if e.server == 'jp':
             sendmsg(event, '由于日服限制，数据已无法抓取，该功能已停用')
-        elif e.server == 'en':  # 之后会用上的
+        elif e.server == 'en':  # 这不就用上了
             sendmsg(event, 'Due to limitations on the international server API, data can no longer be retrieved. This feature has been disabled.')
         elif e.server == 'tw':
             sendmsg(event, '由於台服API限制，資料已無法抓取，該功能已停用。')

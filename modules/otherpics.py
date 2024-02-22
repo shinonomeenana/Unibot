@@ -282,7 +282,7 @@ def gachacardthumnail(cardid, istrained=False, cards=None):
 
 def charabonuspic(unitid, attr, cards, gameCharacterUnits, endtime):
     charaid, unit, charapicname = analysisunitid(unitid, gameCharacterUnits)
-    img = Image.new('RGBA', (2000, 125), color=(0, 0, 0, 0))
+    img = Image.new('RGBA', (2500, 125), color=(0, 0, 0, 0))
 
     charapic = Image.open(f'{botpath}/chara/{charapicname}')
     charapic = charapic.resize((80, 80))
@@ -381,6 +381,11 @@ def drawevent(event):
     for chara in event.bonusechara:
         bonuspic = charabonuspic(chara, event.bonuseattr, cards, gameCharacterUnits, event.aggregateAtorin)
         if bonuspic is not None:
+            # 检查并调整过宽的bonuspic
+            if bonuspic.size[0] > max_width:
+                scale_factor = max_width / bonuspic.size[0]
+                new_height = int(bonuspic.size[1] * scale_factor)
+                bonuspic = bonuspic.resize((max_width, new_height))
             if offest_size[0] + bonuspic.size[0] > max_width:
                 offest_size[0] = 0
                 offest_size[1] += bonuspic.size[1] + 15

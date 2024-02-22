@@ -186,7 +186,40 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False, chara
             if '/profile' in url and query_type != 'daibu' and not is_force_update:
                 if query_type in ['b30', 'jindu', 'rank']:
                     raise QueryBanned(server)
-    
+        elif server == 'en':
+            if '/ranking?targetRank' in url:
+                targetRank = int(url[url.find('targetRank=') + len('targetRank='):])
+                with open('data/entop100.json', 'r', encoding='utf-8') as f:
+                    jptop100 = json.load(f)
+                updatetime = time.localtime(os.path.getmtime('data/entop100.json'))
+                for single in jptop100["rankings"]:
+                    if single["rank"] == targetRank:
+                        return {
+                            "rankings": [single],
+                            'updateTime': datetime.fromtimestamp(time.mktime(updatetime), pytz.timezone('UTC')).astimezone(pytz.timezone('Asia/Tokyo')).strftime('%m-%d %H:%M:%S')
+                        }
+                else:
+                    return {
+                            "rankings": []
+                        }
+            if '/ranking?targetUserId=' in url:
+                targetUserId = int(url[url.find('targetUserId=') + len('targetUserId='):])
+                with open('data/entop100.json', 'r', encoding='utf-8') as f:
+                    jptop100 = json.load(f)
+                updatetime = time.localtime(os.path.getmtime('data/entop100.json'))
+                for single in jptop100["rankings"]:
+                    if single["userId"] == targetUserId:
+                        return {
+                            "rankings": [single],
+                            'updateTime': time.strftime("%m-%d %H:%M:%S", updatetime)
+                        }
+                else:
+                    return {
+                            "rankings": []
+                        }
+            if '/profile' in url and query_type != 'daibu' and not is_force_update:
+                if query_type in ['b30', 'jindu', 'rank']:
+                    raise QueryBanned(server)
     if server == 'tw':
         urlroots = twapiurls
         urlroot = urlroots[current_api_index['tw']]
