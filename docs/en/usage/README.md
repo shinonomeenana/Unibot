@@ -42,16 +42,10 @@ All song alias settings and character alias settings will be publicly displayed 
 
 > Add `kr` before the command to query Korean server information, e.g., `krbind`, `krsk`, `krpjskcheck`, `krpjskprogress`, `krpjskprofile`.
 
-::: danger Note
-Due to modifications in the pjsk Japanese, Korean and Traditianal Chinese server API, only the top 100 rankings can be retrieved. The affected functions in the these server are:
-sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
-:::
-
 - `bind+id` to bind an ID.
 ### Event Query
-- > Due to conflicts with other bot commands, the functionalities of `sk`, `pjskcheck`, `pjskpeek`, `stoptime` can be enabled or disabled by group administrators using the commands `关闭sk` and `开启sk`.
-- `sk+id` to query rankings (this command does not bind an ID).
-- `sk+rank` to query the score corresponding to the ranking.
+- `sk+id` to query rankings if you are in top 100 ranking.
+- `sk+rank` to query the score corresponding to the ranking in top 100 (jp server supports specific ranking lines).
 - `pjskpredict` to view the prediction line, prediction information is sourced from [3-3.dev](https://3-3.dev/) (Japanese server only).
 - `pjskpeek+id` or `pjskpeek+rank` to query the weekly play count, speed, average points, etc. for the top 100 players (Japanese server, Traditional Chinese server).
 - `stoptime+id` or `stoptime+rank` to query the parking situation for the top 100 players (Japanese server, Traditional Chinese server).
@@ -60,9 +54,7 @@ sk, pjsk progress, pjsk b30, rk, and difficulty rankings.
 ### User Query
 - `pjskcheck+id` to view the FC and AP count, as well as ranking information for the EX and Master difficulties of the corresponding ID.
 - `pjskcheck` to view the FC and AP count, as well as ranking information for the EX and Master difficulties of the bound ID.
-- `pjskprogress` to generate a progress image of master songs for the bound ID (FC/AP/Clear/All).
 - `pjskprofile` to generate a profile image for the bound ID
-- `pjsk b30` to generate a best 30 image for the bound ID.
 ### Privacy-related
 - `pjskprivate` Your ID will not be displayed when checking scores or `pjskcheck` yourself.
 - `pjskpublic` to allow others to see.

@@ -1242,7 +1242,7 @@ def sync_handle_msg(event):
                 return
         
         def handle_bind(event, command, server=None):
-            userid = event.message.replace(f"{command} 绑定", "").strip()
+            userid = event.message.replace(' ', '').replace(f"{command}绑定", "").strip()
             try:
                 int(userid)
             except ValueError:
@@ -1269,7 +1269,7 @@ def sync_handle_msg(event):
                      ("na", 'na'), ("lee", 'na'), ("lin", 'lin'), ("rin", "rin"), ("mai", "mobi"), ('mobi', 'mobi')]
 
         for command, server in commands:
-            if event.message.startswith(f"{command} 绑定"):
+            if event.message.startswith(f"{command} 绑定") or event.message.startswith(f"{command}绑定"):
                 handle_bind(event, command, server)
                 return
             elif re.match(f'^{command} *b30$', event.message):
