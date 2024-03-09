@@ -109,6 +109,8 @@ def calculate_rating(constant, score):
         return constant - 5.0 + 2.0 * (score - 900000) / 25000
     elif 800000 <= score < 900000:
         return (constant - 5.0) / 2 + (constant - 5.0) / 2 * (score - 800000) / 100000
+    elif 500000 <= score < 800000:
+        return ((constant - 5.0) / 2) * (score - 500000) / 300000
     else:
         return 0
 
@@ -527,9 +529,10 @@ def chunib30(userid, server='aqua', version='2.15'):
     draw.text(text_position, text, fill=(255, 255, 255), font=font_style, align='right')
 
     pic = pic.convert("RGB")
-    pic.save(f'piccache/{hashlib.sha256(userid.encode()).hexdigest()}b30.jpg')
-    if env != 'prod':
-        pic.show()
+    uuid_str = str(uuid.uuid4())
+    pic.save(f'piccache/{uuid_str}b30.jpg')
+    # pic.show()
+    return f'piccache/{uuid_str}b30.jpg'
 
 
 def b30single(single_data, version):

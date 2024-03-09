@@ -60,7 +60,7 @@ def official_id_to_sdvx_id(official_id):
             break
 
     if song_title is None:
-        return None
+        raise ChuChartError("找不到你说的歌曲")
 
     # 使用之前定义的查找方法找到对应的sdvxin_chuni.json中的ID
     return find_song_id(song_title)
@@ -142,7 +142,11 @@ def get_chunithm_chart(alias, difficulty):
         raise ChuChartError("暂不支持World's end 谱面生成")
     local_path = os.path.join("charts", "chunithm", str(musicid), f"{difficulty}.jpg")
     
-    sdvxid, title = official_id_to_sdvx_id(musicid)
+    info = official_id_to_sdvx_id(musicid)
+    if info is not None:
+        sdvxid, title = info
+    else:
+        raise ChuChartError('无法生成谱面图片，可能谱面保管所还没更新或bot更新不及时')
     if os.path.exists(local_path):
         return (title, ) + (local_path,) + (resp['match'], )
     if sdvxid is not None:

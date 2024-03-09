@@ -17,6 +17,7 @@ from chunithm.alias import chualias, chudel, chuset
 from chunithm.daily_bonus import chuni_signin, chuni_signin_lin
 from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel, aliastocharaid, get_card, cardidtopic, \
     findcard, getvits, getcardinfo
+from chunithm.qiu import getqiubind, qiu_bind_aimeid, qiub30
 from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
 from modules.blacklist import *
 from modules.cyo5000 import cyo5000
@@ -1240,7 +1241,26 @@ def sync_handle_msg(event):
             if (msg := qidong33(event.user_id, event.group_id)) is not None:
                 sendmsg(event, msg)
                 return
-        
+        if event.message.startswith('qiu 绑定') or event.message.startswith('qiu绑定'):
+            userid = event.message.replace(' ', '').replace(f"qiu绑定", "").strip()
+            try:
+                int(userid)
+            except ValueError:
+                sendmsg(event, '卡号应为20位纯数字')
+                return
+            if len(userid) != 20:
+                sendmsg(event, '卡号应为20位纯数字')
+                return
+            sendmsg(event, qiu_bind_aimeid(event.user_id, userid))
+            return
+        if event.message in ['qiu b30', 'qiub30', 'qiu b30 lmn', 'qiub30 lmn']:
+            bind = getqiubind(event.user_id)
+            if bind is None:
+                sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：qiu 绑定xxxxx')
+                return
+            qiu_dir = qiub30(userid=bind)
+            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{qiu_dir},cache=0]")
+            return
         def handle_bind(event, command, server=None):
             userid = event.message.replace(' ', '').replace(f"{command}绑定", "").strip()
             try:
@@ -1259,11 +1279,11 @@ def sync_handle_msg(event):
             if bind is None:
                 sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：{command} 绑定xxxxx')
                 return
-            chunib30(userid=bind, server=server, version=version)
+            b30_dir = chunib30(userid=bind, server=server, version=version)
             if re.match(f'^{command} *b30 sunp$', event.message):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]" + '\n查sunp定数已无需添加sunp')
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{b30_dir},cache=0]" + '\n查sunp定数已无需添加sunp')
             else:
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{hashlib.sha256(bind.encode()).hexdigest()}b30.jpg,cache=0]")
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{b30_dir},cache=0]")
 
         commands = [("aqua", "aqua"), ("Super", 'super'), ("super", 'super'), ("林先生", 'lin'),
                      ("na", 'na'), ("lee", 'na'), ("lin", 'lin'), ("rin", "rin"), ("mai", "mobi"), ('mobi', 'mobi')]
