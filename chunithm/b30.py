@@ -30,6 +30,8 @@ def process_user_music_list(user_music_list):
 
 
 def truncate_two_decimal_places(number):
+    if int(number) == 0:
+        return 0
     str_number = str(number + 0.00000002)
     decimal_index = str_number.find('.')
     if decimal_index != -1:
@@ -93,6 +95,8 @@ def get_user_recent(userid, server):
 
 
 def calculate_rating(constant, score):
+    if constant == 0:
+        return 0
     if score >= 1009000:
         return constant + 2.15
     elif 1007500 <= score < 1009000:
@@ -251,7 +255,10 @@ def get_user_info_pic(user_full_data, team_data):
     if ddsImage is None:
         ddsImage = get_chuni_asset('ddsImage/CHU_UI_Character_0000_00_02.png')
     ddsImage = ddsImage.resize((82, 82))
-    img.paste(ddsImage, (471, 89), ddsImage.split()[3])
+    try:
+        img.paste(ddsImage, (471, 89), ddsImage.split()[3])
+    except IndexError:
+        img.paste(ddsImage, (471, 89))
     rating = create_rating_image(int(user_full_data["userData"]["playerRating"]))
     rating = rating.resize((int(rating.size[0] / 1.25), int(rating.size[1] / 1.25)))
     img.paste(rating, (222, 147), rating.split()[3])
@@ -328,7 +335,6 @@ def process_r10(userid, server, version='2.15', sort=True):
         "2": "expert",
         "3": "master",
         "4": "ultima",
-        "5": "worldsend"
     }
 
     # 读取歌曲信息
@@ -358,7 +364,10 @@ def process_r10(userid, server, version='2.15', sort=True):
                 isdeleted = True
             except KeyError:
                 continue
-        difficulty_level = difficulty_mapping[difficult_id]
+        try:
+            difficulty_level = difficulty_mapping[difficult_id]
+        except KeyError:
+            continue
         if difficulty_level in music['difficulties']:
             difficulty = music['difficulties'][difficulty_level]
             if version == '2.20':
@@ -400,7 +409,7 @@ def process_b30(userid, server, version='2.15'):
     for data in user_data:
         music_id = str(data['musicId'])
         level_index = int(data['level'])
-        level_dict = {0: "basic", 1: "advanced", 2: "expert", 3: "master", 4: "ultima", 5: "world's end"}
+        level_dict = {0: "basic", 1: "advanced", 2: "expert", 3: "master", 4: "ultima"}
         isdeleted = False
         try:
             music_info = music_dict[music_id]
@@ -541,7 +550,7 @@ def b30single(single_data, version):
         'expert': (238, 67, 102),
         'advanced': (254, 170, 0),
         'ultima': (0, 0, 0),
-        'basic': (102, 221, 17),
+        'basic': (102, 221, 17)
     }
     musictitle = single_data['musicName']
     
