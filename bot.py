@@ -1280,8 +1280,8 @@ def sync_handle_msg(event):
                 sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：{command} 绑定xxxxx')
                 return
             b30_dir = chunib30(userid=bind, server=server, version=version)
-            if re.match(f'^{command} *b30 sunp$', event.message):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{b30_dir},cache=0]" + '\n查sunp定数已无需添加sunp')
+            if re.match(f'^{command} *b30 lmn$', event.message):
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{b30_dir},cache=0]" + '\n查Luminous定数已无需添加lmn')
             else:
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{b30_dir},cache=0]")
 
@@ -1295,12 +1295,12 @@ def sync_handle_msg(event):
             elif re.match(f'^{command} *b30$', event.message):
                 handle_b30(event, command, server, version='2.15')
                 return
-            elif re.match(f'^{command} *b30 sunp$', event.message):
-                handle_b30(event, command, server, version='2.15')
-                return
-            elif re.match(f'^{command} *b30 (lmn|阿米诺斯|啊米诺斯|[Ll]uminous)$', event.message):
+            elif re.match(f'^{command} *b30 lmn$', event.message):
                 handle_b30(event, command, server, version='2.20')
                 return
+            # elif re.match(f'^{command} *b30 lmnp$', event.message):
+            #     handle_b30(event, command, server, version='2.20')
+            #     return
     
         if event.message in ['aqua 中二签到', 'knd 中二签到']:
             bind = getchunibind(event.user_id)
