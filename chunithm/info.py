@@ -71,9 +71,12 @@ def song_details(alias):
     with open('chunithm/masterdata/musics.json', 'r', encoding='utf-8') as f:
         data_musics = json.load(f)
         
+    with open('chunithm/music-ex.json', 'r', encoding='utf-8') as f:
+        data_music_ex = json.load(f)
     # 根据id找到歌曲
     song_music = next((song for song in data_music if song["id"] == song_id), None)
     song_musics = next((song for song in data_musics if song["id"] == song_id), None)
+    song_music_ex = next((song for song in data_music_ex if song["id"] == song_id), None)
 
     if not song_music or not song_musics:
         return "没有找到该歌曲", None
@@ -120,12 +123,19 @@ def song_details(alias):
         title += f"【{song_music['we_kanji']}】"
         final_str = f"WORLD'S END {'★'*int(int(song_music['we_star'])/2)}"
 
-    # 格式化输出信息
     info = f"{song_music['id']}: {title}\n"\
-           f"匹配度: {round(resp['match'], 4)}\n"\
-           f"类型：{song_music['catname']}\n"\
-           f"艺术家：{song_music['artist']}\n"\
-           f"难度：{final_str}\n"
+        f"匹配度: {round(resp['match'], 4)}\n"\
+        f"类型：{song_music['catname']}\n"\
+        f"艺术家：{song_music['artist']}\n"
+
+    # 如果song_music_ex不是None，添加版本和上线时间信息
+    if song_music_ex is not None:
+        date_str = song_music_ex['date_added']
+        info += f"版本：{song_music_ex['version'].replace('+', ' PLUS').replace('×', ' LOST')}\n"\
+                f"上线时间：{date_str[:4]}/{date_str[4:6]}/{date_str[6:]}\n"
+
+    # 添加难度信息
+    info += f"难度：{final_str}\n"
 
     # 图片地址
     image_url = f"/chunithm/jackets/{song_musics['jaketFile']}"

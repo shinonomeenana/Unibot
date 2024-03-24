@@ -72,7 +72,7 @@ def cache_music_data(A000_dir, option_dir):
 
 def download_image(image_id):
     url = f'https://new.chunithm-net.com/chuni-mobile/html/mobile/img/{image_id}'
-    path = f'chunithm/jackets/{image_id}'
+    path = f'jackets/{image_id}'
 
     if not os.path.exists(path):
         for i in range(3):  # try 3 times
@@ -94,11 +94,11 @@ def process_difficulty(value):
 
 
 # Load json
-with open("chunithm/music.json", 'r', encoding='utf-8') as f:
+with open("music.json", 'r', encoding='utf-8') as f:
     musics = json.load(f)
 
 # Load csv
-csv_path = "chunithm/music_difficulties.csv"
+csv_path = "music_difficulties.csv"
 if not os.path.exists(csv_path):
     with open(csv_path, 'w', newline='', encoding='utf-8-sig') as file:
         writer = csv.writer(file)
@@ -115,8 +115,8 @@ with open(csv_path, 'r', encoding='utf-8-sig') as file:
             'ultima': float(row['ultima']) if row['ultima'] else 0,
         }
 
-A000_dir = 'F:/SDHD2.16/data/A000'
-option_dir = 'F:/SDHD2.16/bin/option'
+A000_dir = 'C:/BaiduNetdiskDownload/SDHD2.20/data/A000'
+option_dir = 'C:/BaiduNetdiskDownload/SDHD2.20/bin/option'
 output_data = []
 music_data_cache = cache_music_data(A000_dir, option_dir)
 
@@ -159,5 +159,5 @@ for music in tqdm(musics):
     download_image(music['image'])
 
 # Save output json
-with io.open("chunithm/masterdata/musics.json", 'w', encoding='utf-8') as f:
+with io.open("masterdata/musics.json", 'w', encoding='utf-8') as f:
     f.write(json.dumps(output_data, indent=4, ensure_ascii=False))
