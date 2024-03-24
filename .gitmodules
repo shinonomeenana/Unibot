@@ -1,0 +1,3 @@
+[submodule "chunithm"]
+	path = chunithm
+	url = https://github.com/watagashi-uni/chunithm.git
