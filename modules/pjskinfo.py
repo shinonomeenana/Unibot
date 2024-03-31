@@ -558,7 +558,7 @@ def vocalimg(musicid, alpha):
                 elif vocal['musicVocalType'] == "virtual_singer":
                     text = 'V版'
                 elif vocal['musicVocalType'] == "april_fool_2022":
-                    text = '2022愚人节版'
+                    text = '愚人节版'
                 elif vocal['musicVocalType'] == "another_vocal":
                     text = '其他'
                 elif vocal['musicVocalType'] == "instrumental":
