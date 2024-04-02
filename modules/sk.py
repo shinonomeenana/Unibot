@@ -480,6 +480,8 @@ def drawscoreline(targetid=None, targetrank=None, targetrank2=None, starttime=0,
     cursor = c.execute(f'SELECT * from names where userid=?', (targetid,))
     for raw in cursor:
         name = raw[1]
+        if not recordname('分数线', targetid, name):
+            name = ''
     
     if targetrank2 is not None:
         ranking = callapi(f'/user/%7Buser_id%7D/event/{eventid}/ranking?targetRank={targetrank2}', server)
@@ -491,6 +493,8 @@ def drawscoreline(targetid=None, targetrank=None, targetrank2=None, starttime=0,
         cursor = c.execute(f'SELECT * from names where userid=?', (targetid2,))
         for raw in cursor:
             name2 = raw[1]
+            if not recordname('分数线', targetid, name2):
+                name2 = ''
         conn.close()
         for times in userscores2:
             if times > starttime:
