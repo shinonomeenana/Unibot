@@ -1258,7 +1258,7 @@ def sync_handle_msg(event):
             if bind is None:
                 sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：qiu 绑定xxxxx')
                 return
-            qiu_dir = qiub30(userid=bind)
+            qiu_dir = qiub30(userid=bind, qqnum=event.user_id)
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{qiu_dir},cache=0]")
             return
         def handle_bind(event, command, server=None):
@@ -1279,7 +1279,7 @@ def sync_handle_msg(event):
             if bind is None:
                 sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：{command} 绑定xxxxx')
                 return
-            b30_dir = chunib30(userid=bind, server=server, version=version)
+            b30_dir = chunib30(userid=bind, server=server, version=version, qqnum=event.user_id)
             if re.match(f'^{command} *b30 lmn$', event.message):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}\{b30_dir},cache=0]" + '\n查Luminous定数已无需添加lmn')
             else:

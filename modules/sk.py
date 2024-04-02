@@ -209,6 +209,8 @@ class cheaterFound(Error):
 
 
 def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, server='jp'):
+    if name == '':
+        return True
     # return True
     if env != 'prod':
         return True
