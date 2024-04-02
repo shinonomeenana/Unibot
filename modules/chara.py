@@ -14,6 +14,7 @@ from modules.gacha import getcharaname
 from modules.otherpics import cardthumnail
 from modules.pjskinfo import isSingleEmoji, writelog
 from modules.cardinfo import CardInfo
+from modules.sk import recordname
 from modules.texttoimg import texttoimg
 
 
@@ -274,7 +275,8 @@ def charaset(newalias, oldalias, qqnum, username, qun, is_hide=False):
     if resp[0] == 0:
         return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"
     charaid = resp[0]
-
+    if not recordname(qqnum, 'charaset', newalias):
+        return "该昵称可能不合规，如果判断错误请联系bot主添加"
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
                            database='pjsk', charset='utf8mb4')
     mycursor = mydb.cursor()

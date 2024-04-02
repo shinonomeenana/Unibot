@@ -1975,6 +1975,8 @@ def sync_handle_msg(event):
         pass
     except maintenanceIn:
         sendmsg(event, '查不到捏，可能啤酒烧烤在维护')
+    except ValueError:
+        sendmsg(event, 'ValueError，可能是输入错误')
     except userIdBan:
         sendmsg(event, '该玩家因违反bot使用条款（包括但不限于开挂）已被bot拉黑')
     except QueryBanned as e:

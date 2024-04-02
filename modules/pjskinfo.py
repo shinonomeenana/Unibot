@@ -22,6 +22,8 @@ from modules.config import loghtml, env
 from modules.r2upload import uploadLogR2
 from zhconv import convert
 
+from modules.sk import recordname
+
 class musicinfo(object):
 
     def __init__(self):
@@ -649,7 +651,8 @@ def pjskset(newalias, oldalias, qqnum, username, qun, is_hide=False):
     if resp['musicid'] == 0:
         return "找不到你要设置的歌曲，请使用正确格式：pjskset新昵称to旧昵称"
     musicid = resp['musicid']
-
+    if not recordname(qqnum, 'pjskset', newalias):
+        return "该昵称可能不合规，如果判断错误请联系bot主添加"
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
                            database='pjsk', charset='utf8mb4')
     mycursor = mydb.cursor()
