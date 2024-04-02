@@ -396,6 +396,9 @@ def sync_handle_msg(event):
                 sendmsg(event, resp)
             return
         if event.message[:9] == 'pjskalias':
+            if event.self_id == guildbot:
+                sendmsg(event, '频道bot不支持此功能')
+                return
             event.message = event.message[9:]
             resp = pjskalias(event.message)
             sendmsg(event, resp)
@@ -1018,6 +1021,9 @@ def sync_handle_msg(event):
                 sendmsg(event, grcharadel(event.message, event.group_id))
             return
         if event.message[:9] == 'charainfo':
+            if event.self_id == guildbot:
+                sendmsg(event, '频道bot不支持此功能')
+                return
             event.message = event.message[9:]
             if event.self_id == guildbot:
                 sendmsg(event, charainfo(event.message, event.guild_id))
