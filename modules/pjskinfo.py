@@ -641,7 +641,7 @@ def get_random_character(music_id):
 
 
 
-def pjskset(newalias, oldalias, qqnum, username, qun):
+def pjskset(newalias, oldalias, qqnum, username, qun, is_hide=False):
     newalias = newalias.strip()
     if isSingleEmoji(newalias):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
@@ -671,7 +671,10 @@ def pjskset(newalias, oldalias, qqnum, username, qun):
     timeArray = time.localtime(time.time())
     Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     writelog(f'[{Time}] {qun} {username}({qqnum}): {newalias}->{title}')
-    return f"设置成功！{newalias}->{title}\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
+    if is_hide:
+        return f"设置成功！\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
+    else:
+        return f"设置成功！{newalias}->{title}\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
 
 
 def pjskdel(alias, qqnum, username, qun):

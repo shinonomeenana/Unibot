@@ -266,7 +266,7 @@ def aliastocharaid(alias, qunnum=''):
     return charaid, name
 
 
-def charaset(newalias, oldalias, qqnum, username, qun):
+def charaset(newalias, oldalias, qqnum, username, qun, is_hide=False):
     if isSingleEmoji(newalias):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastocharaid(oldalias)
@@ -289,10 +289,13 @@ def charaset(newalias, oldalias, qqnum, username, qun):
     timeArray = time.localtime(time.time())
     Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     writelog(f'[{Time}] {qun} {username}({qqnum}): {newalias}->{resp[1]}')
-    return f"设置成功！(全群可用)\n{newalias}->{resp[1]}\n已记录bot文档中公开的实时日志，如全群昵称添加不相关/不友好/无关联的首字母拼词等请立刻删除，否则一旦发现立刻拉黑\n可用grcharaset设置仅当前群可用的昵称）"
+    if is_hide:
+        return f"设置成功！(全群可用)\n已记录bot文档中公开的实时日志，如全群昵称添加不相关/不友好/无关联的首字母拼词等请立刻删除，否则一旦发现立刻拉黑\n可用grcharaset设置仅当前群可用的昵称）"
+    else:
+        return f"设置成功！(全群可用)\n{newalias}->{resp[1]}\n已记录bot文档中公开的实时日志，如全群昵称添加不相关/不友好/无关联的首字母拼词等请立刻删除，否则一旦发现立刻拉黑\n可用grcharaset设置仅当前群可用的昵称）"
 
 
-def grcharaset(newalias, oldalias, qunnum):
+def grcharaset(newalias, oldalias, qunnum, is_hide):
     if isSingleEmoji(newalias):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastocharaid(oldalias)
@@ -309,7 +312,10 @@ def grcharaset(newalias, oldalias, qunnum):
     mydb.commit()
     mycursor.close()
     mydb.close()
-    return f"设置成功！(仅本群可用)\n{newalias}->{resp[1]}"
+    if is_hide:
+        return f"设置成功！(仅本群可用)"
+    else:
+        return f"设置成功！(仅本群可用)\n{newalias}->{resp[1]}"
 
 def get_card(charaid):
     with open('masterdata/cards.json', 'r', encoding='utf-8') as f:

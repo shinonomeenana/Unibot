@@ -369,7 +369,7 @@ def sync_handle_msg(event):
             if event.self_id == guildbot:
                 resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
                 qun = resp.json()
-                resp = pjskset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内")
+                resp = pjskset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内", is_hide=True)
                 sendmsg(event, resp)
             else:
                 qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
@@ -975,7 +975,7 @@ def sync_handle_msg(event):
                 resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
                 qun = resp.json()
                 sendmsg(event,
-                        charaset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内"))
+                        charaset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内", is_hide=True))
             else:
                 qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
                 sendmsg(event, charaset(para[0], para[1], event.user_id, username, f"{qun['group_name']}({event.group_id})内"))
@@ -988,7 +988,7 @@ def sync_handle_msg(event):
             event.message = event.message[10:]
             para = event.message.split('to')
             if event.self_id == guildbot:
-                sendmsg(event, grcharaset(para[0], para[1], event.guild_id))
+                sendmsg(event, grcharaset(para[0], para[1], event.guild_id, is_hide=True))
             else:
                 sendmsg(event, grcharaset(para[0], para[1], event.group_id))
             return
@@ -1349,7 +1349,7 @@ def sync_handle_msg(event):
                 if userid is None:
                     sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：{server} 绑定xxxxx')
                     return
-                output_dir = chu_level_rank(diff, userid, server)
+                output_dir = chu_level_rank(diff, userid, server, qqnum=event.user_id)
             else:
                 # 如果没有第二个参数，像之前一样调用函数
                 output_dir = chu_level_rank(diff)

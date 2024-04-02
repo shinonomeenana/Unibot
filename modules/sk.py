@@ -391,6 +391,8 @@ def chafang(targetid=None, targetrank=None, private=False, server='jp'):
         for raw in cursor:
             username = raw[1]
         conn.close()
+        if not recordname('查房', targetid, username):
+            username = ''
         if private:
             text = f'{username}\n'
         else:
@@ -588,6 +590,8 @@ def getstoptime(targetid=None, targetrank=None, returnjson=False, private=False,
     for raw in cursor:
         username = raw[1]
     conn.close()
+    if not recordname('查水表', targetid, username):
+        username = ''
     lastupdate = 0
     count = 0
     stop = {}
