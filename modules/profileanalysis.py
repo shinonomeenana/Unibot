@@ -6,7 +6,7 @@ from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import requests
 from modules.config import proxies, env, rank_query_ban_servers, suite_uploader_path
 from modules.getdata import QueryBanned, callapi
-from modules.sk import verifyid, recordname, currentevent
+from modules.sk import verifyid, recordname, currentevent, recordhitokoto
 from modules.texttoimg import texttoimg
 from ujson import JSONDecodeError
 
@@ -600,6 +600,8 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
     new_profile_servers = ['jp']
     profile = userprofile()
     profile.getprofile(userid, server, qqnum, is_force_update=is_force_update)
+    if not recordhitokoto(qqnum, userid, profile.word):
+        profile.word = ''
     if private:
         id = '保密'
     else:

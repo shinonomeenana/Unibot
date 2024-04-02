@@ -297,6 +297,39 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
     return result
 
 
+def recordhitokoto(qqnum, userid, name):
+    # return True
+    if env != 'prod':
+        return True
+    try:
+        mydb = pymysql.connect(host=host, port=port, user='username', password=password,
+                            database='username', charset='utf8mb4')
+    except pymysql.err.OperationalError:
+        return True
+    mycursor = mydb.cursor()
+
+    # 审核自我介绍
+    try:
+        resp = requests.get(f'http://127.0.0.1:5000/exam/{quote(name.replace("/", " "), "utf-8")}')
+        sql_add = 'insert into hitokoto (name, result) values(%s, %s)'
+        result = resp.json()['conclusion']
+    except:
+        traceback.print_exc()
+        result = True
+
+    # 记录自我介绍
+    mycursor.execute('SELECT * from names where qqnum=%s and userid=%s and name=%s', (str(qqnum), str(userid), name))
+    data = mycursor.fetchone()
+    if data is None:
+        sql_add = f'insert into hitokoto (userid, name, qqnum, result) values(%s, %s, %s, %s)'
+        text = '合规' if result else '不合规'
+        mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    return result
+
+
 def cheater_ban_reason(userid):
     from imageutils import text2image
     mydb = pymysql.connect(host=host, port=port, user='username', password=password,
