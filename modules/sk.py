@@ -1147,6 +1147,8 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
 
 
 def teamcount(server='jp'):
+    if server in ['tw']:
+        return f'{server}服已删除该api，无法查看人数'
     server_directories = {
         'jp': 'masterdata',
         'en': '../enapi/masterdata',
