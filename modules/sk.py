@@ -300,6 +300,8 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
 
 
 def recordhitokoto(qqnum, userid, name):
+    if name == '':
+        return True
     # return True
     if env != 'prod':
         return True
