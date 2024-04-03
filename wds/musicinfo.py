@@ -11,6 +11,7 @@ from modules.pjskinfo import isSingleEmoji, writelog
 from wds.api import get_asset
 from wds.config import PROXY
 from modules.mysql_config import *
+from modules.sk import recordname
 
 roman_numerals = {
         1: 'I',
@@ -241,7 +242,7 @@ def wds_match_name(alias):
     return match
 
 
-def wdsset(newalias, oldalias, qqnum, username, qun):
+def wdsset(newalias, oldalias, qqnum, username, qun, is_hide=False):
     newalias = newalias.strip()
     if isSingleEmoji(newalias):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
@@ -249,7 +250,8 @@ def wdsset(newalias, oldalias, qqnum, username, qun):
     if resp['musicid'] == 0:
         return "找不到你要设置的歌曲，请使用正确格式：wdsset新昵称to旧昵称"
     musicid = resp['musicid']
-
+    if not recordname(qqnum, 'wdsset', newalias):
+        return "该昵称可能不合规，如果判断错误请联系bot主添加"
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
                            database='pjsk', charset='utf8mb4')
     mycursor = mydb.cursor()
@@ -271,7 +273,10 @@ def wdsset(newalias, oldalias, qqnum, username, qun):
     timeArray = time.localtime(time.time())
     Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     writelog(f'[WDS][{Time}] {qun} {username}({qqnum}): {newalias}->{title}')
-    return f"设置成功！{newalias}->{title}\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
+    if is_hide:
+        return f"设置成功！\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
+    else:
+        return f"设置成功！{newalias}->{title}\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
 
 
 def wdsdel(alias, qqnum, username, qun):

@@ -1398,7 +1398,7 @@ def sync_handle_msg(event):
             if event.self_id == guildbot:
                 resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
                 qun = resp.json()
-                resp = chuset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内")
+                resp = chuset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内", is_hide=True)
                 sendmsg(event, resp)
             else:
                 qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
@@ -1425,6 +1425,9 @@ def sync_handle_msg(event):
                 sendmsg(event, resp)
             return
         if event.message[:8] == 'chualias':
+            if event.self_id == guildbot:
+                sendmsg(event, '频道bot不支持此功能')
+                return
             event.message = event.message[8:]
             resp = chualias(event.message)
             sendmsg(event, resp)
@@ -1456,7 +1459,7 @@ def sync_handle_msg(event):
             if event.self_id == guildbot:
                 resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
                 qun = resp.json()
-                resp = wdsset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内")
+                resp = wdsset(para[0], para[1], event.user_id, username, f"{qun['name']}({event.guild_id})内", is_hide=True)
                 sendmsg(event, resp)
             else:
                 qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
@@ -1483,6 +1486,9 @@ def sync_handle_msg(event):
                 sendmsg(event, resp)
             return
         if event.message[:8] == 'wdsalias':
+            if event.self_id == guildbot:
+                sendmsg(event, '频道bot不支持此功能')
+                return
             event.message = event.message[8:]
             resp = wdsalias(event.message)
             sendmsg(event, resp)
