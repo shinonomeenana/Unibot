@@ -297,7 +297,7 @@ def charaset(newalias, oldalias, qqnum, username, qun, is_hide=False):
         return f"设置成功！(全群可用)\n{newalias}->{resp[1]}\n已记录bot文档中公开的实时日志，如全群昵称添加不相关/不友好/无关联的首字母拼词等请立刻删除，否则一旦发现立刻拉黑\n可用grcharaset设置仅当前群可用的昵称）"
 
 
-def grcharaset(newalias, oldalias, qunnum, is_hide):
+def grcharaset(newalias, oldalias, qunnum, is_hide=False):
     if isSingleEmoji(newalias):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastocharaid(oldalias)
