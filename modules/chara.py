@@ -178,6 +178,8 @@ def findcardsingle(card, allcards, skills, resourcebox_index, exchange_summary_i
     return pic
 
 def charainfo(alias, qunnum=''):
+    if alias == '':
+        return '请输入值'
     resp = aliastocharaid(alias, qunnum)
     qunalias = ''
     allalias = ''
@@ -211,6 +213,8 @@ async def getvits(chara, word):
         return False, result
 
 def charadel(alias, qqnum, username, qun):
+    if alias == '':
+        return '请输入值'
     resp = aliastocharaid(alias)
     if resp[0] == 0:
         return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"
@@ -231,6 +235,8 @@ def charadel(alias, qqnum, username, qun):
 
 
 def grcharadel(alias, qunnum=''):
+    if alias == '':
+        return '请输入值'
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
                            database='pjsk', charset='utf8mb4')
     mycursor = mydb.cursor()
@@ -245,6 +251,8 @@ def grcharadel(alias, qunnum=''):
 
 
 def aliastocharaid(alias, qunnum=''):
+    if alias == '':
+        return 0, ''
     charaid = 0
     name = ''
     mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
@@ -268,6 +276,8 @@ def aliastocharaid(alias, qunnum=''):
 
 
 def charaset(newalias, oldalias, qqnum, username, qun, is_hide=False):
+    if newalias == '':
+        return '请输入值'
     if isSingleEmoji(newalias):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastocharaid(oldalias)
@@ -298,6 +308,8 @@ def charaset(newalias, oldalias, qqnum, username, qun, is_hide=False):
 
 
 def grcharaset(newalias, oldalias, qunnum, is_hide=False):
+    if newalias == '':
+        return '请输入值'
     if isSingleEmoji(newalias):
         return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
     resp = aliastocharaid(oldalias)

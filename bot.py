@@ -1248,6 +1248,8 @@ def sync_handle_msg(event):
                 sendmsg(event, msg)
                 return
         if event.message.startswith('qiu 绑定') or event.message.startswith('qiu绑定'):
+            sendmsg(event, 'qiu盘api维护中')
+            return
             userid = event.message.replace(' ', '').replace(f"qiu绑定", "").strip()
             try:
                 int(userid)
@@ -1260,6 +1262,8 @@ def sync_handle_msg(event):
             sendmsg(event, qiu_bind_aimeid(event.user_id, userid))
             return
         if event.message in ['qiu b30', 'qiub30', 'qiu b30 lmn', 'qiub30 lmn']:
+            sendmsg(event, 'qiu盘api维护中')
+            return
             bind = getqiubind(event.user_id)
             if bind is None:
                 sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：qiu 绑定xxxxx')
