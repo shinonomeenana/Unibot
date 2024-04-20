@@ -1248,8 +1248,6 @@ def sync_handle_msg(event):
                 sendmsg(event, msg)
                 return
         if event.message.startswith('qiu 绑定') or event.message.startswith('qiu绑定'):
-            sendmsg(event, 'qiu盘api维护中')
-            return
             userid = event.message.replace(' ', '').replace(f"qiu绑定", "").strip()
             try:
                 int(userid)
@@ -1262,8 +1260,6 @@ def sync_handle_msg(event):
             sendmsg(event, qiu_bind_aimeid(event.user_id, userid))
             return
         if event.message in ['qiu b30', 'qiub30', 'qiu b30 lmn', 'qiub30 lmn']:
-            sendmsg(event, 'qiu盘api维护中')
-            return
             bind = getqiubind(event.user_id)
             if bind is None:
                 sendmsg(event, f'查不到捏，可能是没绑定，绑定命令：qiu 绑定xxxxx')
@@ -1312,20 +1308,20 @@ def sync_handle_msg(event):
             #     handle_b30(event, command, server, version='2.20')
             #     return
     
-        if event.message in ['aqua 中二签到', 'knd 中二签到']:
-            bind = getchunibind(event.user_id)
-            if bind is None:
-                sendmsg(event, '签到不了捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
-                return
-            sendmsg(event, chuni_signin(str(event.user_id), str(bind)))
-            return
-        if event.message in ['lin 中二签到']:
-            bind = getchunibind(event.user_id, server='lin')
-            if bind is None:
-                sendmsg(event, '签到不了捏，可能是没绑定，绑定命令：lin 绑定xxxxx')
-                return
-            sendmsg(event, chuni_signin_lin(str(event.user_id), str(bind)))
-            return
+        # if event.message in ['aqua 中二签到', 'knd 中二签到']:
+        #     bind = getchunibind(event.user_id)
+        #     if bind is None:
+        #         sendmsg(event, '签到不了捏，可能是没绑定，绑定命令：aqua 绑定xxxxx')
+        #         return
+        #     sendmsg(event, chuni_signin(str(event.user_id), str(bind)))
+        #     return
+        # if event.message in ['lin 中二签到']:
+        #     bind = getchunibind(event.user_id, server='lin')
+        #     if bind is None:
+        #         sendmsg(event, '签到不了捏，可能是没绑定，绑定命令：lin 绑定xxxxx')
+        #         return
+        #     sendmsg(event, chuni_signin_lin(str(event.user_id), str(bind)))
+        #     return
         if msg := re.match('(?:chusearch)(.*)', event.message):
             query = msg.group(1).strip()
             # 使用查询字符串搜索歌曲
@@ -1376,7 +1372,7 @@ def sync_handle_msg(event):
                 difficulty = "ultima"
             # 提取musicid
             musicid = re.sub(r"chuchart|\s+", "", event.message, flags=re.I)
-            musicid = re.sub(r"ma|master|expert|ex|ultima|ult$", "", musicid, flags=re.I)
+            musicid = re.sub(r"(ma|master|expert|ex|ultima|ult)$", "", musicid, flags=re.I)
 
             # 获取图像并发送
             result = get_chunithm_chart(musicid, difficulty)
