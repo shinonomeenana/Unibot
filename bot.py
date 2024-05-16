@@ -445,6 +445,13 @@ def sync_handle_msg(event):
             texttoimg(ss(), 300, 'ss')
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\ss.png,cache=0]")
             return
+        if event.message.startswith("时速"):
+            charaname = event.message[2:].strip()
+            charaid = aliastocharaid(charaname, event.group_id)
+            if charaid[0] != 0:
+                texttoimg(ss(charaid[0]), 300, 'ss')
+                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\ss.png,cache=0]")
+                return
         if event.message == "sk预测":
             texttoimg(skyc(), 540, 'skyc')
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\skyc.png,cache=0]")

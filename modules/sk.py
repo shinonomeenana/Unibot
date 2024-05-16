@@ -691,10 +691,27 @@ def getranks():
         ensure_db_exists(db_path)
         db_connection = sqlite3.connect(db_path)
 
-        create_table_if_not_exists(db_connection, eventid)
-        insert_data(db_connection, eventid, data['borderRankings'])
+        create_table_if_not_exists(db_connection, f"jp{eventid}")
+        insert_data(db_connection, f"jp{eventid}", data['borderRankings'])
 
         db_connection.close()
+        
+        # 处理 userWorldBloomChapterRankingBorders 数据
+        if 'userWorldBloomChapterRankingBorders' in data and data['userWorldBloomChapterRankingBorders']:
+            world_db_path = 'data/worldlinkborder.db'
+            ensure_db_exists(world_db_path)
+            world_db_connection = sqlite3.connect(world_db_path)
+
+            for world_bloom_data in data['userWorldBloomChapterRankingBorders']:
+                world_event_id = world_bloom_data['eventId']
+                game_character_id = world_bloom_data['gameCharacterId']
+                world_border_rankings = world_bloom_data['borderRankings']
+                world_table_name = f"jp{world_event_id}_{game_character_id}"
+                
+                create_table_if_not_exists(world_db_connection, world_table_name)
+                insert_data(world_db_connection, world_table_name, world_border_rankings)
+
+            world_db_connection.close()
         
         if has_ended_recently:
             time_printer('已抓取结活榜线')
@@ -707,8 +724,7 @@ def ensure_db_exists(db_path):
         os.makedirs(os.path.dirname(db_path))
 
 
-def create_table_if_not_exists(db_connection, event_id):
-    table_name = f"jp{event_id}"
+def create_table_if_not_exists(db_connection, table_name):
     create_table_sql = f"""
     CREATE TABLE IF NOT EXISTS {table_name} (
         timestamp INTEGER,
@@ -721,8 +737,7 @@ def create_table_if_not_exists(db_connection, event_id):
     db_connection.commit()
 
 
-def insert_data(db_connection, event_id, border_rankings):
-    table_name = f"jp{event_id}"
+def insert_data(db_connection, table_name, border_rankings):
     current_time = int(time.time())
     with db_connection:
         for ranking in border_rankings:
@@ -731,17 +746,27 @@ def insert_data(db_connection, event_id, border_rankings):
                                       (current_time, ranking['rank'], ranking['score']))
 
 
-def ss():
+def ss(world_link_chara_id=None):
     event = currentevent('jp')
     eventid = event['id']
     if event['status'] == 'going':
-        db_path = 'data/border.db'
+        if world_link_chara_id is None:
+            db_path = 'data/border.db'
+            table_name = f"jp{eventid}"
+        else:
+            if event['eventType'] != 'world_bloom':
+                return('当前活动不是World Link')
+            db_path = 'data/worldlinkborder.db'
+            table_name = f"jp{eventid}_{world_link_chara_id}"
+
         db_connection = sqlite3.connect(db_path)
-        table_name = f"jp{eventid}"
 
         # 查询最新的记录时间
         latest_time_query = f"SELECT MAX(timestamp) FROM {table_name}"
-        latest_time = db_connection.execute(latest_time_query).fetchone()[0]
+        try:
+            latest_time = db_connection.execute(latest_time_query).fetchone()[0]
+        except:
+            return '暂无数据'
 
         if latest_time is None:
             return '暂无数据'
@@ -774,7 +799,10 @@ def ss():
             return '暂无数据'
 
         # 格式化输出
-        text = '一小时内实时时速\n'
+        if world_link_chara_id is not None:
+            text = f'{getcharaname(world_link_chara_id)}单榜一小时内实时时速\n'
+        else:
+            text = '一小时内实时时速\n'
         for rank, speed in speeds:
             text += f'{rank}: {speed / 10000}W\n'
 

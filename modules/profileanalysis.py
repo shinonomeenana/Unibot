@@ -602,6 +602,8 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
     profile.getprofile(userid, server, qqnum, is_force_update=is_force_update)
     if not recordhitokoto(qqnum, userid, profile.word):
         profile.word = ''
+    if not recordname(qqnum, userid, profile.twitterId):
+        profile.twitterId = ''
     if private:
         id = '保密'
     else:
