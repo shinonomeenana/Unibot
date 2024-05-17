@@ -25,7 +25,7 @@ from modules.getdata import apiCallError, maintenanceIn, userIdBan, QueryBanned
 from modules.kk import kkwhitelist, kankan, uploadkk
 from modules.lighthouse import add_RDP_port, delete_RDP_port
 from modules.novelai import self_stable_diffusion, AIcutcard
-
+from modules.getdata import LeakContent
 from modules.findevent import findevent
 from modules.opencv import matchjacket
 from modules.otherpics import geteventpic
@@ -1992,6 +1992,8 @@ def sync_handle_msg(event):
         sendmsg(event, 'ValueError，可能是输入错误')
     except userIdBan:
         sendmsg(event, '该玩家因违反bot使用条款（包括但不限于开挂）已被bot拉黑')
+    except LeakContent:
+        sendmsg(event, '你要查询的内容还没有实装')
     except QueryBanned as e:
         if e.server == 'jp':
             sendmsg(event, '由于日服限制，数据已无法抓取，该功能已停用')

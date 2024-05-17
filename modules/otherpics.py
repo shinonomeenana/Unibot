@@ -6,6 +6,7 @@ import time
 import pytz
 from PIL import Image, ImageFont, ImageDraw
 from modules.config import env
+from modules.getdata import LeakContent
 from modules.sk import currentevent
 
 botpath = os.path.abspath(os.path.join(path.dirname(__file__), ".."))
@@ -40,6 +41,8 @@ class event(object):
                 self.eventType = events['eventType']
                 self.name = events['name']
                 self.assetbundleName = events['assetbundleName']
+                if events['startAt'] / 1000 - 3 * 60 * 60 > time.time():
+                    raise LeakContent
                 self.startAt = datetime.datetime.fromtimestamp(events['startAt'] / 1000,
                                                     pytz.timezone('Asia/Shanghai')).strftime('%Y/%m/%d %H:%M:%S')
                 self.aggregateAtorin = events['aggregateAt']

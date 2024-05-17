@@ -5,6 +5,7 @@ import sqlite3
 import time
 from urllib.parse import quote
 import pymysql
+from modules.getdata import LeakContent
 from modules.mysql_config import *
 import aiohttp
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
@@ -35,6 +36,8 @@ def cardidtopic(cardid):
     assetbundleName = ''
     for card in allcards:
         if card['id'] == cardid:
+            if card["releaseAt"] / 1000 > time.time():
+                raise LeakContent
             assetbundleName = card['assetbundleName']
     if assetbundleName == '':
         return []
@@ -114,6 +117,11 @@ def findcard(charaid, cardRarityType=None):
     resourcebox_index = create_resourcebox_index(resourceBoxes)
     exchange_summary_index = create_exchange_summary_index(gachaCeilExchangeSummaries)
     allcards.sort(key=lambda x: x["releaseAt"], reverse=True)
+    current_time = time.time()
+    for card in allcards[:]:
+        release_time = card["releaseAt"] / 1000
+        if release_time > current_time:
+            allcards.remove(card)
     pic = Image.new('RGB', (1500, 5000), (235, 235, 235))
     count = 0
     for card in allcards:

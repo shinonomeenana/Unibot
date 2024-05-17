@@ -8,6 +8,7 @@ import time
 import traceback
 import pymysql
 import yaml
+from modules.getdata import LeakContent
 from modules.mysql_config import *
 import aiofiles
 import requests
@@ -505,6 +506,8 @@ def parse_chart_new(music_id, difficulty, theme, savepng=True, jacketdir=None, s
 
 
 def getchart(musicid, difficulty, theme='white'):
+    if isleak(musicid):
+        raise LeakContent
     if musicid == 131 and difficulty == 'append':
         musicid = 388  # 激唱append
     path = f'charts/moe/{theme}/{musicid}/{difficulty}.jpg'

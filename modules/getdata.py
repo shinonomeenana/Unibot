@@ -24,6 +24,9 @@ class apiCallError(Exception):
 class serverNotSupported(Exception):
     pass
 
+class LeakContent(Exception):
+    pass
+
 
 class QueryBanned(Exception):
     def __init__(self, server="jp"):

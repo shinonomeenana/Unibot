@@ -1,5 +1,6 @@
 import os
 import re
+import time
 
 import pytz
 import ujson as json
@@ -167,6 +168,14 @@ def findevent(msg: str = '') -> str:
     # 检查本地活动图鉴是否需要更新
     with open(masterdatadir + 'events.json', 'r', encoding='utf-8') as f:
         events = json.load(f)
+    current_time = time.time()
+
+    for event in events[:]:
+        start_time = event["startAt"] - 3 * 3600 * 1000
+        start_time_seconds = start_time / 1000
+        if start_time_seconds > current_time:
+            events.remove(event)
+
     count = len(events)
     # 变化图片路径格式
     _event_charas_id = params['event_charas_id'].copy()

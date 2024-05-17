@@ -10,6 +10,7 @@ import difflib
 import time
 import pymysql
 
+from modules.getdata import LeakContent
 from modules.mysql_config import *
 import requests
 from mutagen.mp3 import MP3
@@ -344,6 +345,7 @@ def drawpjskinfo(musicid):
         alpha = False
         color = (67, 70, 101)
         if now < info.publishedAt:
+            raise LeakContent
             img = Image.open('pics/leak.png')
             leak = True
         else:

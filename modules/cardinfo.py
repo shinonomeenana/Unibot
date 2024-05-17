@@ -1,11 +1,13 @@
 import math
 import os
+import time
 import yaml
 import pytz
 import datetime
 from os import path
 from PIL import Image, ImageDraw, ImageFilter
 from typing import List, Dict, Union, Optional
+from modules.getdata import LeakContent
 from modules.texttoimg import t2i, union
 from modules.pjskinfo import musicinfo as MusicInfo
 from modules.gacha import gachainfo as GachaInfo
@@ -269,6 +271,8 @@ class CardInfo(object):
                 if each_card["gachaPhrase"] != '-':  # 初始卡无招募语
                     self.gachaPhrase['JP'] = each_card["gachaPhrase"]  # 招募语
                 self.cardSkillName['JP'] = each_card["cardSkillName"]  # 技能名称
+                if each_card['releaseAt'] / 1000 > time.time():
+                    raise LeakContent
                 self.releaseAt = datetime.datetime.fromtimestamp(
                     each_card['releaseAt'] / 1000, pytz.timezone('Asia/Shanghai')
                 ).strftime('%Y/%m/%d %H:%M:%S')  # 发布时间
