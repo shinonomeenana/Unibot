@@ -104,8 +104,8 @@ def cardtype(cardid, resourcebox_index, exchange_summary_index):
 
 
 def findcard(charaid, cardRarityType=None):
-    if os.path.exists(f"piccache/cardinfo/{charaid}{cardRarityType}.jpg") and env == 'prod':
-        return f"cardinfo/{charaid}{cardRarityType}.jpg"
+    # if os.path.exists(f"piccache/cardinfo/{charaid}{cardRarityType}.jpg") and env == 'prod':
+    #     return f"cardinfo/{charaid}{cardRarityType}.jpg"
     with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
         allcards = json.load(f)
     with open(f'masterdata/skills.json', 'r', encoding='utf-8') as f:
@@ -116,12 +116,9 @@ def findcard(charaid, cardRarityType=None):
         gachaCeilExchangeSummaries = json.load(f)
     resourcebox_index = create_resourcebox_index(resourceBoxes)
     exchange_summary_index = create_exchange_summary_index(gachaCeilExchangeSummaries)
-    allcards.sort(key=lambda x: x["releaseAt"], reverse=True)
     current_time = time.time()
-    for card in allcards[:]:
-        release_time = card["releaseAt"] / 1000
-        if release_time > current_time:
-            allcards.remove(card)
+    allcards = (card for card in allcards if card["releaseAt"] / 1000 <= current_time)
+    allcards.sort(key=lambda x: x["releaseAt"], reverse=True)
     pic = Image.new('RGB', (1500, 5000), (235, 235, 235))
     count = 0
     for card in allcards:

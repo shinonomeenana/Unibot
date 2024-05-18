@@ -169,13 +169,7 @@ def findevent(msg: str = '') -> str:
     with open(masterdatadir + 'events.json', 'r', encoding='utf-8') as f:
         events = json.load(f)
     current_time = time.time()
-
-    for event in events[:]:
-        start_time = event["startAt"] - 3 * 3600 * 1000
-        start_time_seconds = start_time / 1000
-        if start_time_seconds > current_time:
-            events.remove(event)
-
+    events = [event for event in events if (event["startAt"] - 3 * 3600 * 1000) / 1000 <= current_time]
     count = len(events)
     # 变化图片路径格式
     _event_charas_id = params['event_charas_id'].copy()
