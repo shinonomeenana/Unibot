@@ -1056,11 +1056,14 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
         rank = ranking['rankings'][0]['rank']
         score = ranking['rankings'][0]['score']
         userId = str(ranking['rankings'][0]['userId'])
+        if targetid is not None or int(targetrank) <= 100:
+            if not recordname(qqnum, userId, name):
+                name = ''
+        else:
+            name = f'{targetrank}榜线'
         targetid = userId
         if server in rank_query_ban_servers:
             updateTime = ranking['updateTime']
-        if not recordname(qqnum, userId, name):
-            name = ''
     except IndexError:
         if server in rank_query_ban_servers:
             return translation_dict[server]['query_ban']
