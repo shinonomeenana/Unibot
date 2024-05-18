@@ -117,7 +117,7 @@ def findcard(charaid, cardRarityType=None):
     resourcebox_index = create_resourcebox_index(resourceBoxes)
     exchange_summary_index = create_exchange_summary_index(gachaCeilExchangeSummaries)
     current_time = time.time()
-    allcards = (card for card in allcards if card["releaseAt"] / 1000 <= current_time)
+    allcards = [card for card in allcards if card["releaseAt"] / 1000 <= current_time]
     allcards.sort(key=lambda x: x["releaseAt"], reverse=True)
     pic = Image.new('RGB', (1500, 5000), (235, 235, 235))
     count = 0
