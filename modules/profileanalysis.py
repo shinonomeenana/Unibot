@@ -1334,6 +1334,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         highest = round(highest / 30, 2)
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         musics = json.load(f)
+    publish_map = {music["id"]: music["publishedAt"] for music in musics}
     for music in data['userMusicResults']:
         playResult = music['playResult']
         musicId = music['musicId']
@@ -1345,6 +1346,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
                 found = True
                 break
         if found:
+            diff[i]["publishedAt"] = publish_map[musicId]
             if playResult == 'full_perfect':
                 diff[i]['result'] = 2
                 diff[i]['rank'] = diff[i]['aplevel+']
@@ -1360,7 +1362,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     rank = round(rank / 30, 2)
     
     diff = diff[:30]
-    diff.sort(key=lambda x: (int(x["rank"]), random.random()), reverse=True)
+    diff.sort(key=lambda x: (int(x["rank"]), x["publishedAt"]), reverse=True)
     shadow = Image.new("RGBA", (320, 130), (0, 0, 0, 0))
     shadow.paste(Image.new("RGBA", (310, 120), (0, 0, 0, 50)), (5, 5))
     shadow = shadow.filter(ImageFilter.GaussianBlur(3))
@@ -1375,7 +1377,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
 
-    draw.text((50, 1722), f'算法不公开，没有任何参考性，纯属娱乐。同等级下顺序随机，排序与难度没有关系。', fill='#00CCBB',
+    draw.text((50, 1722), f'算法不公开，没有任何参考性，纯属娱乐。同等级下按实装时间排序。', fill='#00CCBB',
               font=font_style)
     draw.text((50, 1752), 'Calculation method is undisclosed and just for fun, not a reliable reference.', fill='#00CCBB',
               font=font_style)
