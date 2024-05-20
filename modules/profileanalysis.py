@@ -1,4 +1,5 @@
 import io
+import random
 import ujson as json
 import os.path
 import time
@@ -1354,6 +1355,12 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
 
     diff.sort(key=lambda x: x["rank"], reverse=True)
     rank = 0
+    for i in range(0, 30):
+        rank = rank + diff[i]['rank']
+    rank = round(rank / 30, 2)
+    
+    diff = diff[:30]
+    diff.sort(key=lambda x: (int(x["rank"]), random.random()), reverse=True)
     shadow = Image.new("RGBA", (320, 130), (0, 0, 0, 0))
     shadow.paste(Image.new("RGBA", (310, 120), (0, 0, 0, 50)), (5, 5))
     shadow = shadow.filter(ImageFilter.GaussianBlur(3))
@@ -1361,16 +1368,14 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         with open('../enapi/masterdata/musics.json', 'r', encoding='utf-8') as f:
             musics = json.load(f)
     for i in range(0, 30):
-        rank = rank + diff[i]['rank']
         single = b30single(diff[i], musics)
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(52 + (i % 3) * 342)), int(307 + int(i / 3) * 142)), mask)
         pic.paste(single, ((int(53+(i%3)*342)), int(309+int(i/3)*142)))
-    rank = round(rank / 30, 2)
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
 
-    draw.text((50, 1722), f'算法不公开，没有任何参考性，纯属娱乐', fill='#00CCBB',
+    draw.text((50, 1722), f'算法不公开，没有任何参考性，纯属娱乐。同等级下顺序随机，排序与难度没有关系。', fill='#00CCBB',
               font=font_style)
     draw.text((50, 1752), 'Calculation method is undisclosed and just for fun, not a reliable reference.', fill='#00CCBB',
               font=font_style)
