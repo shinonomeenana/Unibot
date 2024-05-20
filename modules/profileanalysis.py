@@ -1362,7 +1362,7 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     rank = round(rank / 30, 2)
     
     diff = diff[:30]
-    diff.sort(key=lambda x: (int(x["rank"]), x["publishedAt"]), reverse=True)
+    diff.sort(key=lambda x: (int(x.get("rank", 0)), x.get("publishedAt", 0)), reverse=True)
     shadow = Image.new("RGBA", (320, 130), (0, 0, 0, 0))
     shadow.paste(Image.new("RGBA", (310, 120), (0, 0, 0, 50)), (5, 5))
     shadow = shadow.filter(ImageFilter.GaussianBlur(3))
