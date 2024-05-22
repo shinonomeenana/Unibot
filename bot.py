@@ -667,7 +667,7 @@ def sync_handle_msg(event):
                 sendmsg(event, '查不到捏，可能是没绑定')
                 return
             pjskb30(userid=bind[1], private=bind[2], server=server, qqnum=event.user_id)
-            sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{bind[1]}b30.jpg,cache=0]")
+            sendmsg(event, fr"同等级下已按实装顺序排序[CQ:image,file=file:///{botdir}\piccache\{bind[1]}b30.jpg,cache=0]")
             return
         if msg := re.match('^pjsk *r30(.*)', event.message):
             # 给冲色段的朋友打5v5看对手情况用的 不冲5v5色段看这个没用
