@@ -4,7 +4,7 @@
 
 - UniBot is a functional Discord bot that mainly provides query services related to "Project SEKAI Colorful Stage" Japanese server, international server, Traditional Chinese server and Korean Server.
 - By using this bot, you agree to the [Terms of Use](/en/licence/) and [Privacy Policy](/en/privacy/).
-- If you have any comments, you can join the feedback server (just opened)：[https://discord.gg/R74mYeCG](https://discord.gg/R74mYeCG)
+- If you have any comments, you can join the feedback server：[https://discord.gg/yvwBaDc7x8](https://discord.gg/yvwBaDc7x8)
 
 
 ## Query Project Sekai Song Information
@@ -112,6 +112,7 @@ The card pool ID can be found by visiting <https://sekai.best/gacha> and checkin
 
 ## About
 - Developer: [綿菓子ウニ](https://space.bilibili.com/622551112)
+- Contect me: `1103479519[at]qq.com` (`[at]`→`@`)
 ### Framework Used
 - [discord.py](https://discordpy.readthedocs.io/en/stable)
 ### Data Sources

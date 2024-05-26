@@ -341,7 +341,7 @@ def chafang(targetid=None, targetrank=None, private=False, server='jp'):
             userscores[raw[0]] = raw[1]
         if userscores == {}:
             conn.close()
-            return '你要查询的玩家未进入前200，暂无数据'
+            return '你要查询的玩家未进入前100，暂无数据'
         lasttime = 0
         twentybefore = 0
         hourbefore = 0

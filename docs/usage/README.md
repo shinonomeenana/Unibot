@@ -6,10 +6,9 @@
 - 该Bot不提供私聊服务
 - 使用该Bot，即意味着你同意[使用条款](/licence/)及[隐私条款](/privacy/)
 - 如果你有任何意见，可以加入交流群：
-  - QQ: `883721511`
+  - QQ 群: `883721511`
   - QQ 频道：[交流 QQ 频道](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)
-  - Discord 反馈群（新开）：[https://discord.gg/R74mYeCG](https://discord.gg/R74mYeCG)
-
+  - Discord 反馈服务器：[https://discord.gg/yvwBaDc7x8](https://discord.gg/yvwBaDc7x8)
 
 ## 查询pjsk歌曲信息
 
@@ -22,8 +21,6 @@
 - `谱面预览 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[ぷろせかもえ！](https://pjsekai.moe/)
   - `难度`支持的输入: `easy`, `normal`, `hard`, `expert`, `master`, `append`, `ez`, `nm`, `hd`, `ex`, `ma`, `ap`, `apd`
   - 如果查询`master`可省略难度
-- `谱面预览2 曲名 难度` 查询对应曲名，难度的谱面预览（来源：[プロセカ譜面保管所](https://sdvx.in/prsk.html)）
-
 
 ### 昵称设置
 
@@ -43,11 +40,11 @@
 
 ## 查询玩家信息
 
-> 在命令前加`en`即可查询国际服信息，如`en绑定`, `ensk`, `en逮捕`, `enpjsk进度`, `enpjskprofile`
+> 在命令前加`en`即可查询国际服信息，如`en绑定`, `ensk`, `en逮捕`, `enpjskprofile`
 
-> 在命令前加`tw`即可查询台服信息，如`tw绑定`, `twsk`, `tw逮捕`, `twpjsk进度`, `twpjskprofile`
+> 在命令前加`tw`即可查询台服信息，如`tw绑定`, `twsk`, `tw逮捕`, `twpjskprofile`
 
-> 在命令前加`kr`即可查询韩服信息，如`kr绑定`, `krsk`, `kr逮捕`, `krpjsk进度`, `krpjskprofile`
+> 在命令前加`kr`即可查询韩服信息，如`kr绑定`, `krsk`, `kr逮捕`, `krpjskprofile`
 
 - `绑定+id` 绑定id
 ### 活动查询
@@ -55,7 +52,6 @@
 - `sk+排名` 查询对应排名分数（仅支持前100，日服另外支持查询特定榜线）
 - `sk线` 查询榜线分数
 - `sk预测` 查看预测线，预测信息来自[3-3.dev](https://3-3.dev/)（仅日服）
-- `5v5人数` 可查看5v5实时人数（日服由于api限制，现改为预测胜率）
 - `查房+id`,`查房+排名` 可查询前100周回情况，时速，平均pt等（日服，台服）
 - `查水表+id`,`查水表+排名` 可查询前100停车情况（日服，台服）
 - `分数线+id`,`分数线+排名` 可绘制前100活动分数随时间增长的折线图（日服，台服）
@@ -158,7 +154,8 @@
 
 ## 关于
 - 开发者: [綿菓子ウニ](https://space.bilibili.com/622551112)
-- 交流群:`883721511`
+- 联系我: `1103479519[at]qq.com`（`[at]`更改为`@`）
+- 交流群: `883721511`
 - Unibot频道: [点击进入](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)
 ### 使用框架
 - QQbot框架: [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
