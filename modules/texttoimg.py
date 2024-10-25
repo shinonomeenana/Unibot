@@ -2,27 +2,7 @@ import datetime
 from typing import Optional, Tuple, Union, List
 
 from emoji2pic import Emoji2Pic
-from modules.twitter import connect_to_endpoint
 from PIL import Image, ImageDraw, ImageFont
-
-def ycmimg():
-    c = ''
-    search_url = "https://api.twitter.com/2/tweets/search/recent"
-    query_params = {'query': '#プロセカ協力', 'tweet.fields': 'created_at'}
-    json_response = connect_to_endpoint(search_url, query_params)
-    count = 0
-    for datas in json_response['data']:
-        count = count + 1
-        utc_date = datetime.datetime.strptime(datas['created_at'], "%Y-%m-%dT%H:%M:%S.000Z")
-        local_date = utc_date + datetime.timedelta(hours=8)
-        c = c + str((datetime.datetime.now() - local_date).seconds) + '秒前' + '\n'
-        c = c + datas['text'].replace("　", "  ") + '\n——————————————————————\n'
-        if count == 6:
-            break
-    c = '由于推特API(编程接口)会在将来的某一天改为收费使用，届时该命令将不可用\n' + c
-    instance = Emoji2Pic(text=c, font='fonts\SourceHanSansCN-Medium.otf', emoji_folder='AppleEmoji')
-    img = instance.make_img()
-    img.save('piccache/ycm.png')
 
 def texttoimg(text, width, savefilename):
     IMG_SIZE = (width, 40 + (text.count('\n') + 1) * 50)

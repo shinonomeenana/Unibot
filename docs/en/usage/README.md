@@ -4,8 +4,12 @@
 
 - UniBot is a functional Discord bot that mainly provides query services related to "Project SEKAI Colorful Stage" Japanese server, international server, Traditional Chinese server and Korean Server.
 - By using this bot, you agree to the [Terms of Use](/en/licence/) and [Privacy Policy](/en/privacy/).
-- If you have any comments, you can join the feedback server：[https://discord.gg/yvwBaDc7x8](https://discord.gg/yvwBaDc7x8)
 
+::: warning
+Unibot will end all services by November
+
+This Bot will retain only the public game information query functions similar to a wiki, including chart lookup, song lookup, card lookup, and event lookup. All other functions will be disabled.
+:::
 
 ## Query Project Sekai Song Information
 ### pjskinfo
@@ -33,31 +37,6 @@
 All song alias settings and character alias settings will be publicly displayed daily on the [Real-time Log](/dailylog/) page.
 :::
 
-
-## Query Player Information
-
-> Add `en` before the command to query international server information, e.g., `enbind`, `ensk`, `enpjskcheck`, `enpjskprogress`, `enpjskprofile`.
-
-> Add `tw` before the command to query Traditional Chinese server information, e.g., `twbind`, `twsk`, `twpjskcheck`, `twpjskprogress`, `twpjskprofile`.
-
-> Add `kr` before the command to query Korean server information, e.g., `krbind`, `krsk`, `krpjskcheck`, `krpjskprogress`, `krpjskprofile`.
-
-- `bind+id` to bind an ID.
-### Event Query
-- `sk+id` to query rankings if you are in top 100 ranking.
-- `sk+rank` to query the score corresponding to the ranking in top 100 (jp server supports specific ranking lines).
-- `pjskpredict` to view the prediction line, prediction information is sourced from [3-3.dev](https://3-3.dev/) (Japanese server only).
-- `pjskpeek+id` or `pjskpeek+rank` to query the weekly play count, speed, average points, etc. for the top 100 players (Japanese server, Traditional Chinese server).
-- `stoptime+id` or `stoptime+rank` to query the parking situation for the top 100 players (Japanese server, Traditional Chinese server).
-- `scoreline+id` or `scoreline+rank` to plot the score trend for the top 100 players over time (Japanese server, Traditional Chinese server).
-
-### User Query
-- `pjskcheck+id` to view the FC and AP count, as well as ranking information for the EX and Master difficulties of the corresponding ID.
-- `pjskcheck` to view the FC and AP count, as well as ranking information for the EX and Master difficulties of the bound ID.
-- `pjskprofile` to generate a profile image for the bound ID
-### Privacy-related
-- `pjskprivate` Your ID will not be displayed when checking scores or `pjskcheck` yourself.
-- `pjskpublic` to allow others to see.
 
 ### Card and Event Information Query
 > The `findcard/event` functionalities were written by [Yozora](https://github.com/cYanosora). Many thanks.

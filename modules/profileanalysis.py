@@ -597,8 +597,8 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
     img.save(f'piccache/{userid}jindu.png')
 
 
-def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_update=False):
-    new_profile_servers = ['jp']
+def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_update=False, group_id=None):
+    new_profile_servers = ['jp', 'tw', 'kr']
     profile = userprofile()
     profile.getprofile(userid, server, qqnum, is_force_update=is_force_update)
     if not recordhitokoto(qqnum, userid, profile.word):
@@ -833,7 +833,7 @@ def generatehonor(honor, ismain=True, server='jp', userHonorMissions=None):
     elif server == 'en':
         masterdatadir = '../enapi/masterdata'
     elif server == 'tw':
-        masterdatadir = '../twapi/masterdata'
+        masterdatadir = 'masterdata'
     if honor['profileHonorType'] == 'normal':
         # 普通牌子
         with open(f'{masterdatadir}/honors.json', 'r', encoding='utf-8') as f:
@@ -1228,7 +1228,6 @@ def fcrank(playlevel, rank):
     else:
         return rank - 1
 
-
 def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知'):
     if server in ['tw', 'kr']:
         raise QueryBanned(server)
@@ -1334,7 +1333,6 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         highest = round(highest / 30, 2)
     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
         musics = json.load(f)
-    publish_map = {music["id"]: music["publishedAt"] for music in musics}
     for music in data['userMusicResults']:
         playResult = music['playResult']
         musicId = music['musicId']
@@ -1346,7 +1344,6 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
                 found = True
                 break
         if found:
-            diff[i]["publishedAt"] = publish_map[musicId]
             if playResult == 'full_perfect':
                 diff[i]['result'] = 2
                 diff[i]['rank'] = diff[i]['aplevel+']
@@ -1357,12 +1354,6 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
 
     diff.sort(key=lambda x: x["rank"], reverse=True)
     rank = 0
-    for i in range(0, 30):
-        rank = rank + diff[i]['rank']
-    rank = round(rank / 30, 2)
-    
-    diff = diff[:30]
-    diff.sort(key=lambda x: (int(x.get("rank", 0)), x.get("publishedAt", 0)), reverse=True)
     shadow = Image.new("RGBA", (320, 130), (0, 0, 0, 0))
     shadow.paste(Image.new("RGBA", (310, 120), (0, 0, 0, 50)), (5, 5))
     shadow = shadow.filter(ImageFilter.GaussianBlur(3))
@@ -1370,16 +1361,21 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
         with open('../enapi/masterdata/musics.json', 'r', encoding='utf-8') as f:
             musics = json.load(f)
     for i in range(0, 30):
+        rank = rank + diff[i]['rank']
         single = b30single(diff[i], musics)
         r, g, b, mask = shadow.split()
         pic.paste(shadow, ((int(52 + (i % 3) * 342)), int(307 + int(i / 3) * 142)), mask)
         pic.paste(single, ((int(53+(i%3)*342)), int(309+int(i/3)*142)))
+    rank = round(rank / 30, 2)
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Medium.otf", 16)
-
-    draw.text((50, 1722), f'算法不公开，没有任何参考性，纯属娱乐。同等级下按实装时间排序。', fill='#00CCBB',
+    if server == 'jp':
+        textadd = f'，当前理论值为{highest}'
+    else:
+        textadd = ''
+    draw.text((50, 1722), f'注：33+FC权重减1，其他减1.5，非官方算法，仅供参考娱乐{textadd}', fill='#00CCBB',
               font=font_style)
-    draw.text((50, 1752), 'Calculation method is undisclosed and just for fun, not a reliable reference.', fill='#00CCBB',
+    draw.text((50, 1752), '定数非官方，可能在之后会有改变', fill='#00CCBB',
               font=font_style)
     
     # 创建一个单独的图层用于绘制rank阴影
@@ -1436,15 +1432,38 @@ def b30single(diff, musics):
         jacket = jacket.resize((186, 186))
         pic.paste(jacket, (32, 28))
 
+        draw.ellipse((5, 5, 5+60, 5+60), fill=color[diff['musicDifficulty']])
         font = ImageFont.truetype('fonts/SourceHanSansCN-Bold.otf', 38)
+        text_width = font.getsize(str(diff['playLevel']))
+        text_coordinate = (int(36 - text_width[0] / 2), int(28 - text_width[1] / 2))
+        draw.text(text_coordinate, str(diff['playLevel']), (255, 255, 255), font)
+
         draw.ellipse((242, 32, 286, 76), fill=color[diff['musicDifficulty']])
         draw.rectangle((262, 32, 334, 76), fill=color[diff['musicDifficulty']])
         draw.ellipse((312, 32, 356, 76), fill=color[diff['musicDifficulty']])
-        if diff['result'] == 2:
-            resultpic = Image.open('pics/AllPerfect.png')
-        if diff['result'] == 1:
-            resultpic = Image.open('pics/FullCombo.png')
-        draw.text((259, 24), f'  {diff["playLevel"]}', (255, 255, 255), font)
+
+
+        if diff['playLevelAdjust'] is not None:
+            if diff['result'] == 2:
+                resultpic = Image.open('pics/AllPerfect.png')
+                draw.text((259, 24), str(round(diff['aplevel+'], 1)), (255, 255, 255), font)
+                draw.text((370, 24), '→ ' + str(round(diff['aplevel+'], 1)), (0, 0, 0), font)
+            if diff['result'] == 1:
+                resultpic = Image.open('pics/FullCombo.png')
+                draw.text((259, 24), str(round(diff['fclevel+'], 1)), (255, 255, 255), font)
+                draw.text((370, 24), '→ ' + str(round(fcrank(diff['playLevel'], diff["fclevel+"]), 1)), (0, 0, 0), font)
+        else:
+            if diff["aplevel+"] < 26 or diff["aplevel+"] > 33:
+                draw.text((259, 24), f'  {diff["aplevel+"]}', (255, 255, 255), font)
+            else:
+                draw.text((259, 24), f'{round(diff["fclevel+"], 1)}.?', (255, 255, 255), font)
+
+            if diff['result'] == 2:
+                resultpic = Image.open('pics/AllPerfect.png')
+                draw.text((370, 24), f'→ {round(diff["aplevel+"], 1)}.0', (0, 0, 0), font)
+            elif diff['result'] == 1:
+                resultpic = Image.open('pics/FullCombo.png')
+                draw.text((370, 24), f'→ {round(fcrank(diff["playLevel"], diff["fclevel+"]), 1)}', (0, 0, 0), font)
         r, g, b, mask = resultpic.split()
         pic.paste(resultpic, (238, 154), mask)
     pic = pic.resize((310, 120))

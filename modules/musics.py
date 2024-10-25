@@ -122,9 +122,9 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
 
     if error:
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
-        draw.text((215, 65), '数据已无法获取', fill=(0, 0, 0), font=font_style)
+        draw.text((215, 65), '宵崎奏', fill=(0, 0, 0), font=font_style)
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
-        draw.text((218, 114), '由于日服api限制，详细打歌数据已停用', fill=(0, 0, 0), font=font_style)
+        draw.text((218, 114), '', fill=(0, 0, 0), font=font_style)
     elif profile is not None:
         with open('masterdata/cards.json', 'r', encoding='utf-8') as f:
             cards = json.load(f)
@@ -186,9 +186,9 @@ def levelRankPic(level, difficulty, fcap=0, userid=None, isprivate=False, server
         draw.text((218, 114), '发送"给看"可查看歌曲成绩', fill=(0, 0, 0), font=font_style)
     else:
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 35)
-        draw.text((215, 65), '数据已无法获取', fill=(0, 0, 0), font=font_style)
+        draw.text((215, 65), '宵崎奏', fill=(0, 0, 0), font=font_style)
         font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 15)
-        draw.text((218, 114), '由于日服api限制，详细打歌数据已停用', fill=(0, 0, 0), font=font_style)
+        draw.text((218, 114), '', fill=(0, 0, 0), font=font_style)
 
 
     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 27)

@@ -11,7 +11,8 @@ from os import path
 import pymysql
 from locale import format_string
 from modules.config import BORDER_SUPPORT_SERVERS, env, rank_query_ban_servers
-from modules.getdata import QueryBanned, callapi
+from modules.getdata import MasterStructureChange, QueryBanned, callapi
+from modules.masterhelper import events_master_helper
 from modules.mysql_config import *
 from PIL import Image, ImageFont, ImageDraw
 import matplotlib
@@ -70,12 +71,14 @@ def currentevent(server):
     elif server == 'tw':
         with open('../twapi/masterdata/events.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
+        data = events_master_helper(data)
     elif server == 'en':
         with open('../enapi/masterdata/events.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
     elif server == 'kr':
         with open('../krapi/masterdata/events.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
+        data = events_master_helper(data)
     for i in range(0, len(data)):
         startAt = data[i]['startAt']
         endAt = data[i]['closedAt']
@@ -1035,9 +1038,9 @@ def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, 
     elif server == 'en':
         masterdatadir = '../enapi/masterdata'
     elif server == 'tw':
-        masterdatadir = '../twapi/masterdata'
+        masterdatadir = 'masterdata'
     elif server == 'kr':
-        masterdatadir = '../krapi/masterdata'
+        masterdatadir = 'masterdata'
     if targetid is not None:
         if not verifyid(targetid, server):
             bind = getqqbind(targetid, server)

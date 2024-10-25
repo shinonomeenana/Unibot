@@ -27,6 +27,11 @@ class serverNotSupported(Exception):
 class LeakContent(Exception):
     pass
 
+class MasterStructureChange(Exception):
+    def __init__(self, message="Master data structure update, operation failed."):
+        self.message = message
+        super().__init__(self.message)
+
 
 class QueryBanned(Exception):
     def __init__(self, server="jp"):

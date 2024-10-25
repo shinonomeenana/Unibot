@@ -23,7 +23,6 @@ from modules.blacklist import *
 from modules.cyo5000 import cyo5000
 from modules.getdata import apiCallError, maintenanceIn, userIdBan, QueryBanned
 from modules.kk import kkwhitelist, kankan, uploadkk
-from modules.lighthouse import add_RDP_port, delete_RDP_port
 from modules.novelai import self_stable_diffusion, AIcutcard
 from modules.getdata import LeakContent
 from modules.findevent import findevent
@@ -40,9 +39,7 @@ from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, 
 from modules.sendmail import sendemail
 from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, chafang, \
     getstoptime, ss, drawscoreline, cheaterFound, cheater_ban_reason, score_line
-from modules.texttoimg import texttoimg, ycmimg, blank
-from modules.twitter import newesttwi
-from modules.baiduocr import is_dog
+from modules.texttoimg import texttoimg, blank
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from imageutils import text2image
 import hashlib
@@ -437,10 +434,6 @@ def sync_handle_msg(event):
         #             result = gacha(targetgacha)
         #     sendmsg(event, result)
         #     return
-        if event.group_id in [883721511, msggroup] and '[CQ:image,' in event.message:
-            image_url = event.message[event.message.find(',url=') + 5: event.message.find(',cache=0')]
-            if is_dog(image_url):
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}/pics/dog{random.randint(1, 4)}.png,cache=0]")
         if event.message == "时速":
             texttoimg(ss(), 300, 'ss')
             sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\ss.png,cache=0]")
@@ -1040,14 +1033,6 @@ def sync_handle_msg(event):
         # if event.message == '看33':
         #     sendmsg(event, f"[CQ:image,file=file:///{botdir}/pics/33{random.randint(0, 1)}.gif,cache=0]")
         #     return
-        if event.message == '推车':
-            try:
-                ycmimg()
-            except:
-                sendmsg(event, "获取错误，疑似因为推特API已转为付费，免费用户无法继续使用推特搜索API")
-                return
-            sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/ycm.png,cache=0]")
-            return
         if event.message[:4] == 'homo':
             if event.self_id not in mainbot and event.self_id != guildbot:
                 return
@@ -1089,27 +1074,6 @@ def sync_handle_msg(event):
             if len(para) < 5:
                 return
             sendmsg(event, tasseiritsu(para))
-            return
-        if event.message[:2] == '机翻' and event.message[-2:] == '推特':
-            if event.user_id not in whitelist and event.group_id not in whitelist:
-                return
-            if '最新' in event.message:
-                event.message = event.message.replace('最新', '')
-            twiid = event.message[2:-2]
-            try:
-                twiid = newesttwi(twiid, True)
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache/{twiid}.png,cache=0]")
-            except:
-                sendmsg(event, '查不到捏，可能是你id有问题或者bot卡了')
-            return
-        if event.message[-4:] == '最新推特':
-            if event.user_id not in whitelist and event.group_id not in whitelist:
-                return
-            try:
-                twiid = newesttwi(event.message.replace('最新推特', '').replace(' ', ''))
-                sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache/{twiid}.png,cache=0]")
-            except:
-                sendmsg(event, '查不到捏，可能是你id有问题或者bot卡了')
             return
         if event.message[:4] == '封面匹配':
             global opencvmatch
@@ -1154,12 +1118,6 @@ def sync_handle_msg(event):
                     filename = f'{event.user_id}_{int(time.time()*100)}.jpg'
                     uploadkk(url, filename, foldername)
                     sendmsg(event, "上传成功")
-        if event.message == '放行端口' and event.user_id == 1103479519:  # 自用功能
-            sendmsg(event, add_RDP_port())
-            return
-        if event.message == '关闭端口' and event.user_id == 1103479519:  # 自用功能
-            sendmsg(event, delete_RDP_port())
-            return
         if event.message[-3:] == '排行榜':
             if event.message.startswith('pjsk猜曲'):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(1, 'pjsk猜曲', event.user_id)},cache=0]")

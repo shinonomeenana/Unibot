@@ -5,10 +5,14 @@
 - UniBot是一款功能型机器人, 主要提供《世界计划 多彩舞台》相关查询服务。
 - 该Bot不提供私聊服务
 - 使用该Bot，即意味着你同意[使用条款](/licence/)及[隐私条款](/privacy/)
-- 如果你有任何意见，可以加入交流群：
-  - QQ 群: `883721511`
-  - QQ 频道：[交流 QQ 频道](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=7Pe26&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5)
-  - Discord 反馈服务器：[https://discord.gg/yvwBaDc7x8](https://discord.gg/yvwBaDc7x8)
+
+
+::: warning 注意
+Unibot 将在 11 月停止所有服务
+
+Bot 仅保留类似 wiki 的游戏公开信息查询功能，包括查谱、查歌、查卡、查活动，其他功能停用
+:::
+
 
 ## 查询pjsk歌曲信息
 
@@ -36,32 +40,6 @@
 ::: warning 注意
 所有歌曲昵称设置，角色昵称设置的日志内容将会在[实时日志](/dailylog/)页面按日公示
 :::
-
-
-## 查询玩家信息
-
-> 在命令前加`en`即可查询国际服信息，如`en绑定`, `ensk`, `en逮捕`, `enpjskprofile`
-
-> 在命令前加`tw`即可查询台服信息，如`tw绑定`, `twsk`, `tw逮捕`, `twpjskprofile`
-
-> 在命令前加`kr`即可查询韩服信息，如`kr绑定`, `krsk`, `kr逮捕`, `krpjskprofile`
-
-- `绑定+id` 绑定id
-### 活动查询
-- `sk+id` 如果你在前100，可以用该命令查询排名和分数
-- `sk+排名` 查询对应排名分数（仅支持前100，日服另外支持查询特定榜线）
-- `sk线` 查询榜线分数
-- `sk预测` 查看预测线，预测信息来自[3-3.dev](https://3-3.dev/)（仅日服）
-- `查房+id`,`查房+排名` 可查询前100周回情况，时速，平均pt等（日服，台服）
-- `查水表+id`,`查水表+排名` 可查询前100停车情况（日服，台服）
-- `分数线+id`,`分数线+排名` 可绘制前100活动分数随时间增长的折线图（日服，台服）
-### 打歌情况查询
-- `逮捕@[xxx]` 如果此人绑定过id，就可以看TA的ex与master难度fc，ap数，排位信息
-- `逮捕+id` 查看对应id的ex与master难度fc，ap数，排位信息
-- `pjskprofile` 生成绑定id的profile图片（可使用`个人信息`）
-### 隐私相关
-- `不给看` 不允许他人逮捕自己，但自己还是可以逮捕自己，使用sk查分和逮捕自己时不会显示id
-- `给看`
 
 
 ### 查询卡牌及活动信息

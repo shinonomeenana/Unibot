@@ -15,7 +15,7 @@ features:
 - title: 多平台
   details: QQ群/频道/Discord内均可使用
 - title: 游戏数据查询
-  details: 可通过精确/模糊匹配查询歌曲详细信息、卡牌信息、活动信息，可查询个人游戏信息等
+  details: 可通过精确/模糊匹配查询歌曲详细信息、卡牌信息、活动信息等
 - title: 猜曲游戏
   details: 可游玩多种猜曲游戏
 - title: 社群维护的别名数据库
