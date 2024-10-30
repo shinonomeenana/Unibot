@@ -63,22 +63,25 @@ def cardskill(skillid, skills, description=None):
             for i in range(0, count):
                 para = description[description.find('{{') + 2:description.find('}}')].split(';')
                 for effect in skill['skillEffects']:
-                    if effect['id'] == int(para[0]):
-                        detail = effect['skillEffectDetails']
-                        if para[1] == 'd':
-                            replace = '/'.join(str(i["activateEffectDuration"]) for i in detail)
-                        elif para[1] == 'e':
-                            replace = str(effect['skillEnhance']['activateEffectValue'])
-                        elif para[1] == 'm':
-                            replace = '/'.join(
-                                str(i["activateEffectValue"] + 5*effect['skillEnhance']['activateEffectValue']) for i in detail
-                            )
-                        else:
-                            replace = '/'.join(str(i["activateEffectValue"]) for i in detail)
-                        # 全等级效果相同
-                        if len(set(replace.split('/'))) == 1:
-                            replace = replace.split('/')[0]
-                        description = description.replace('{{' + para[0] + ';' + para[1] + '}}', replace, 1)
+                    try:
+                        if effect['id'] == int(para[0]):
+                            detail = effect['skillEffectDetails']
+                            if para[1] == 'd':
+                                replace = '/'.join(str(i["activateEffectDuration"]) for i in detail)
+                            elif para[1] == 'e':
+                                replace = str(effect['skillEnhance']['activateEffectValue'])
+                            elif para[1] == 'm':
+                                replace = '/'.join(
+                                    str(i["activateEffectValue"] + 5*effect['skillEnhance']['activateEffectValue']) for i in detail
+                                )
+                            else:
+                                replace = '/'.join(str(i["activateEffectValue"]) for i in detail)
+                            # 全等级效果相同
+                            if len(set(replace.split('/'))) == 1:
+                                replace = replace.split('/')[0]
+                            description = description.replace('{{' + para[0] + ';' + para[1] + '}}', replace, 1)
+                    except:
+                        pass
             return description
     return ''
 
