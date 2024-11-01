@@ -20,23 +20,18 @@ from modules.chara import charaset, grcharaset, charadel, charainfo, grcharadel,
 from chunithm.qiu import getqiubind, qiu_bind_aimeid, qiub30
 from modules.config import whitelist, msggroup, groupban, asseturl, verifyurl, distributedurl
 from modules.blacklist import *
-from modules.cyo5000 import cyo5000
 from modules.getdata import apiCallError, maintenanceIn, userIdBan, QueryBanned
-from modules.kk import kkwhitelist, kankan, uploadkk
-from modules.novelai import self_stable_diffusion, AIcutcard
 from modules.getdata import LeakContent
 from modules.findevent import findevent
 from modules.opencv import matchjacket
 from modules.otherpics import geteventpic
 from modules.gacha import getcharaname, getcurrentgacha, fakegacha
-from modules.homo import generate_homo
 from modules.musics import parse_bpm, aliastochart, idtoname, notecount, tasseiritsu, findbpm, \
     getcharttheme, setcharttheme, getPlayLevel, levelRankPic
 from modules.pjskguess import get_two_lines, getrandomjacket, cutjacket, getrandomchart, cutchartimg, getrandomcard, cutcard, random_lyrics,\
     getrandommusic, cutmusic, getrandomchartold, cutchartimgold, recordGuessRank, guessRank, getRandomSE, cutSE
 from modules.pjskinfo import aliastomusicid, pjskset, pjskdel, pjskalias, pjskinfo, writelog
 from modules.profileanalysis import daibu, rk, pjskjindu, pjskprofile, pjskb30, r30
-from modules.sendmail import sendemail
 from modules.sk import sk, getqqbind, bindid, setprivate, skyc, verifyid, gettime, teamcount, chafang, \
     getstoptime, ss, drawscoreline, cheaterFound, cheater_ban_reason, score_line
 from modules.texttoimg import texttoimg, blank
@@ -99,42 +94,6 @@ async def handle_msg(event: Event):
     if event.user_id in block:
         # print('黑名单成员已拦截')
         return
-    if event.message == '想和镜音铃谈恋爱' and event.user_id == 3025139027:
-        await bot.send(event, '1/1')
-        return
-    if event.message == '/delete unibot':
-        info = await bot.get_group_member_info(self_id=event.self_id, group_id=event.group_id, user_id=event.user_id)
-        if info['role'] == 'owner' or info['role'] == 'admin':
-            await bot.send(event, 'Bye~')
-            await bot.set_group_leave(self_id=event.self_id, group_id=event.group_id)
-        else:
-            await bot.send(event, '你没有权限，该命令需要群主/管理员')
-    if event.raw_message == '关闭娱乐':
-        info = await bot.get_group_member_info(self_id=event.self_id, group_id=event.group_id, user_id=event.user_id)
-        if info['role'] == 'owner' or info['role'] == 'admin':
-            if event.group_id in blacklist['ettm']:  # 如果在黑名单
-                await bot.send(event, '已经关闭过了')
-                return
-            blacklist['ettm'].append(event.group_id)  # 加到黑名单
-            with open('yamls/blacklist.yaml', "w") as f:
-                yaml.dump(blacklist, f)
-            await bot.send(event, '关闭成功')
-        else:
-            await bot.send(event, '此命令需要群主或管理员权限')
-        return
-    if event.raw_message == '开启娱乐':
-        info = await bot.get_group_member_info(self_id=event.self_id, group_id=event.group_id, user_id=event.user_id)
-        if info['role'] == 'owner' or info['role'] == 'admin':
-            if event.group_id not in blacklist['ettm']:  # 如果不在黑名单
-                await bot.send(event, '已经开启过了')
-                return
-            blacklist['ettm'].remove(event.group_id)  # 从黑名单删除
-            with open('yamls/blacklist.yaml', "w") as f:
-                yaml.dump(blacklist, f)
-            await bot.send(event, '开启成功')
-        else:
-            await bot.send(event, '此命令需要群主或管理员权限')
-        return
     if event.raw_message == '关闭sk':
         info = await bot.get_group_member_info(self_id=event.self_id, group_id=event.group_id, user_id=event.user_id)
         if info['role'] == 'owner' or info['role'] == 'admin':
@@ -167,131 +126,7 @@ async def handle_msg(event: Event):
     if event.raw_message == '关闭debug' and event.user_id in admin:
         botdebug = False
         await bot.send(event, '关闭成功')
-    if event.raw_message[:6] == 'verify' and event.group_id == 467602419 and event.self_id in mainbot:
-        verify = event.message[event.message.find("verify") + len("verify"):].strip()
-        resp = await geturl(f'{verifyurl}verify?qq={event.user_id}&verify={verify}')
-        if resp == 'token验证成功':
-            await geturl(f'{distributedurl}refresh')
-        await bot.send(event, resp)
-    if event.message == '随机老婆':
-        if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
-            return
-        try:
-            # 这里面有两种个情况 一种是之前随机过 一种是今天已经随机过了
-            # 今天已经随机过的就返回 剩下的都是今天需要重新随机的
-            today = f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}"
-            if today == wife[event.group_id][event.user_id]['date']:
-                yourWife = wife[event.group_id][event.user_id]['QQ']
-                wifeName = wife[event.group_id][event.user_id]['name']
-                await bot.send(event, f"[CQ:at,qq={event.user_id}] 你今天已经有老婆啦!\n"
-                                      f"[CQ:image,file=http://q1.qlogo.cn/g?b=qq&nk={yourWife}&s=640,cache=0]\n"
-                                      f"{wifeName}({yourWife})")
-                return
-        except KeyError:
-            pass
-        try:
-            if menberLists[event.group_id]['date'] == f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}":
-                memberList = menberLists[event.group_id]['list']
-                print('从内存读取')
-            else:
-                memberList = await bot.get_group_member_list(self_id=event.self_id, group_id=event.group_id)
-                menberLists[event.group_id]['list'] = memberList
-                menberLists[event.group_id]['date'] = f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}"
-        except KeyError:
-            memberList = await bot.get_group_member_list(self_id=event.self_id, group_id=event.group_id)
-            menberLists[event.group_id] = {}
-            menberLists[event.group_id]['list'] = memberList
-            menberLists[event.group_id]['date'] = f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}"
-        randomMenber = random.choice(memberList)
-        try:
-            wife[event.group_id]
-        except KeyError:
-            wife[event.group_id] = {}
-        try:
-            wife[event.group_id][event.user_id]
-        except KeyError:
-            wife[event.group_id][event.user_id] = {}
-        wife[event.group_id][event.user_id]['QQ'] = randomMenber['user_id']
-        wife[event.group_id][event.user_id]['name'] = randomMenber['nickname'] if randomMenber['card'] == '' else randomMenber['card']
-        today = f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}"
-        wife[event.group_id][event.user_id]['date'] = today
-        wife[event.group_id][event.user_id]['count'] = 1
-        await bot.send(event, f"[CQ:at,qq={event.user_id}] 你今天的老婆是\n"
-                              f"[CQ:image,file=http://q1.qlogo.cn/g?b=qq&nk={randomMenber['user_id']}&s=640,cache=0]\n"
-                              f"{wife[event.group_id][event.user_id]['name']}({randomMenber['user_id']})")
-    if event.message == '换个老婆':
-        if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
-            return
-        try:
-            if menberLists[event.group_id]['date'] == f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}":
-                memberList = menberLists[event.group_id]['list']
-                print('从内存读取')
-            else:
-                memberList = await bot.get_group_member_list(self_id=event.self_id, group_id=event.group_id)
-                menberLists[event.group_id]['list'] = memberList
-                menberLists[event.group_id]['date'] = f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}"
-        except KeyError:
-            memberList = await bot.get_group_member_list(self_id=event.self_id, group_id=event.group_id)
-            menberLists[event.group_id] = {}
-            menberLists[event.group_id]['list'] = memberList
-            menberLists[event.group_id]['date'] = f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}"
-        try:
-            # 如果今天没有随机过 先让随机 防止更麻烦的重新计数
-            if menberLists[event.group_id]['date'] != f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}":
-                await bot.send(event, f"[CQ:at,qq={event.user_id}] 你今天还没有随机老婆哦")
-                return
-            # 今天随机过不用管他
-        except KeyError:
-            # KeyError 肯定是没数据了 先让随机
-            await bot.send(event, f"[CQ:at,qq={event.user_id}] 你今天还没有随机老婆哦")
-            return
-        
-        try:
-            wife[event.group_id][event.user_id]['count'] += 1
-        except:
-            await bot.send(event, f"[CQ:at,qq={event.user_id}] 你今天还没有随机老婆哦")
-            return
-        
-        if wife[event.group_id][event.user_id]['count'] > 7:
-            await bot.send(event, f"[CQ:at,qq={event.user_id}] 你今天换老婆次数满了！不要花心！")
-            return
 
-        randomMenber = random.choice(memberList)
-        wife[event.group_id][event.user_id]['QQ'] = randomMenber['user_id']
-        wife[event.group_id][event.user_id]['name'] = randomMenber['nickname'] if randomMenber['card'] == '' else \
-        randomMenber['card']
-        today = f"{str(datetime.now().month).zfill(2)}{str(datetime.now().day).zfill(2)}"
-        wife[event.group_id][event.user_id]['date'] = today
-        await bot.send(event, f"[CQ:at,qq={event.user_id}] 你今天的新老婆是\n"
-                              f"[CQ:image,file=http://q1.qlogo.cn/g?b=qq&nk={randomMenber['user_id']}&s=640,cache=0]\n"
-                              f"{wife[event.group_id][event.user_id]['name']}({randomMenber['user_id']})\n"
-                              f"你还有{7-wife[event.group_id][event.user_id]['count']}次机会")
-    if event.message[:5] == '/vits':
-        if event.self_id not in mainbot:
-            return
-        global vitslimit
-        nowtime = f"{str(datetime.now().hour).zfill(2)}{str(datetime.now().minute).zfill(2)}"
-        lasttime = vitslimit['lasttime']
-        count = vitslimit['count']
-        if nowtime == lasttime and count >= 7:
-            print(vitslimit)
-            await bot.send(event, '达到每分钟调用上限')
-            return
-        if nowtime != lasttime:
-            count = 0
-        vitslimit['lasttime'] = nowtime
-        vitslimit['count'] = count + 1
-        print(vitslimit)
-        para = event.message[event.message.find("/vits") + len("/vits"):].strip().split(' ')
-        wavdir = await getvits(para[0], para[1])
-        if wavdir[0]:
-            await bot.send(event, fr"[CQ:record,file={wavdir[1]},cache=0]")
-        else:
-            if wavdir[1] != '':
-                await bot.send(event, wavdir[1])
-            else:
-                await bot.send(event, '疑似内存占用太高自动结束了')
-        return
 
 @bot.on_message('group')
 def sync_handle_msg(event):
@@ -1030,39 +865,6 @@ def sync_handle_msg(event):
             else:
                 sendmsg(event, charainfo(event.message, event.group_id))
             return
-        # if event.message == '看33':
-        #     sendmsg(event, f"[CQ:image,file=file:///{botdir}/pics/33{random.randint(0, 1)}.gif,cache=0]")
-        #     return
-        if event.message[:4] == 'homo':
-            if event.self_id not in mainbot and event.self_id != guildbot:
-                return
-            if event.group_id in blacklist['ettm']:
-                return
-            event.message = event.message[event.message.find("homo") + len("homo"):].strip()
-            try:
-                sendmsg(event, event.message + '=' + generate_homo(event.message))
-            except ValueError:
-                return
-            return
-        # if "生成" in event.message:
-        #     if event.message[:2] == "生成":
-        #         rainbow = False
-        #     elif event.message[:4] == "彩虹生成":
-        #         rainbow = True
-        #     else:
-        #         return
-        #     if event.group_id in blacklist['ettm']:
-        #         return
-        #     event.message = event.message[event.message.find("生成") + len("生成"):].strip()
-        #     para = event.message.split(" ")
-        #     now = int(time.time() * 1000)
-        #     if len(para) < 2:
-        #         para = event.message.split("/")
-        #         if len(para) < 2:
-        #             return
-        #     cyo5000(para[0], para[1], f"piccache/{now}.png", rainbow)
-        #     sendmsg(event, fr"[CQ:image,file=file:///{botdir}\piccache\{now}.png,cache=0]")
-        #     return
         if event.message[:5] == "白名单添加" and event.user_id in whitelist:
             event.message = event.message[event.message.find("白名单添加") + len("白名单添加"):].strip()
             requestwhitelist.append(int(event.message))
@@ -1103,21 +905,6 @@ def sync_handle_msg(event):
         if event.message[:4] == '查bpm':
             sendmsg(event, findbpm(int(event.message[4:])))
             return
-        if event.message[:2] == '看看':  # 自用功能
-            if event.group_id in kkwhitelist:
-                url = kankan(event.message[event.message.find('看看') + len('看看'):].strip())
-                if url is not None:
-                    sendmsg(event, f"[CQ:image,file={url},cache=1]")
-            return
-        if event.message[:2] == '上传':  # 自用功能
-            if event.group_id in kkwhitelist:
-                if '[CQ:image' in event.message:
-                    foldername = event.message[event.message.find('上传') + len('上传'):].strip()
-                    foldername = foldername[:foldername.find('[CQ:image')]
-                    url = event.message[event.message.find('url=') + len('url='):event.message.find(']')]
-                    filename = f'{event.user_id}_{int(time.time()*100)}.jpg'
-                    uploadkk(url, filename, foldername)
-                    sendmsg(event, "上传成功")
         if event.message[-3:] == '排行榜':
             if event.message.startswith('pjsk猜曲'):
                 sendmsg(event, fr"[CQ:image,file=file:///{botdir}/{guessRank(1, 'pjsk猜曲', event.user_id)},cache=0]")
@@ -1207,11 +994,6 @@ def sync_handle_msg(event):
             writelog()
             sendmsg(event, '更新成功')
             return
-        if event.message == '33启动' or event.message == '33，启动！':
-            from modules.api import qidong33
-            if (msg := qidong33(event.user_id, event.group_id)) is not None:
-                sendmsg(event, msg)
-                return
         if event.message.startswith('qiu 绑定') or event.message.startswith('qiu绑定'):
             userid = event.message.replace(' ', '').replace(f"qiu绑定", "").strip()
             try:
@@ -1560,67 +1342,6 @@ def sync_handle_msg(event):
             sendmsg(event, 'PJSK谱面竞猜（随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲'
                     + fr"[CQ:image,file=file:///{botdir}\piccache/{event.group_id}.png,cache=0]")
             return
-
-        if event.message == 'ai猜曲' or event.message == 'AI猜曲':
-            if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
-                return
-            try:
-                isgoing = charaguess[event.group_id]['isgoing']
-                if isgoing:
-                    sendmsg(event, '已经开启猜卡面！')
-                    return
-            except KeyError:
-                pass
-
-            try:
-                isgoing = pjskguess[event.group_id]['isgoing']
-                if isgoing:
-                    sendmsg(event, '已经开启猜曲！')
-                    return
-                else:
-                    musicid = getrandomjacket()
-                    pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 7,
-                                                 'starttime': int(time.time()), 'selfid': event.self_id}
-            except KeyError:
-                musicid = getrandomjacket()
-                pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 7,
-                                             'starttime': int(time.time()), 'selfid': event.self_id}
-            sendmsg(event, '生成中请稍后')
-            self_stable_diffusion(r'data\assets\sekai\assetbundle\resources\startapp\thumbnail\music_jacket\jacket_s_%03d.png' % musicid, f'piccache/{event.group_id}.png')
-            sendmsg(event, 'PJSK AI画图封面竞猜（随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲'
-                    + fr"[CQ:image,file=file:///{botdir}\piccache/{event.group_id}.png,cache=0]")
-            return
-
-        if event.message == 'ai阴间猜曲' or event.message == 'AI阴间猜曲':
-            if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
-                return
-            try:
-                isgoing = charaguess[event.group_id]['isgoing']
-                if isgoing:
-                    sendmsg(event, '已经开启猜卡面！')
-                    return
-            except KeyError:
-                pass
-
-            try:
-                isgoing = pjskguess[event.group_id]['isgoing']
-                if isgoing:
-                    sendmsg(event, '已经开启猜曲！')
-                    return
-                else:
-                    musicid = getrandomjacket()
-                    pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 9,
-                                                 'starttime': int(time.time()), 'selfid': event.self_id}
-            except KeyError:
-                musicid = getrandomjacket()
-                pjskguess[event.group_id] = {'isgoing': True, 'musicid': musicid, 'type': 9,
-                                             'starttime': int(time.time()), 'selfid': event.self_id}
-            sendmsg(event, '生成中请稍后')
-            self_stable_diffusion(r'data\assets\sekai\assetbundle\resources\startapp\thumbnail\music_jacket\jacket_s_%03d.png' % musicid, f'piccache/{event.group_id}.png', isbw=True)
-            sendmsg(event, 'PJSK AI画图封面竞猜（随机裁切）\n艾特我+你的答案以参加猜曲（不要使用回复）\n\n你有50秒的时间回答\n可手动发送“结束猜曲”来结束猜曲'
-                    + fr"[CQ:image,file=file:///{botdir}\piccache/{event.group_id}.png,cache=0]")
-            return
-
         if event.message == 'pjsk猜卡面' or event.message == 'pjsk猜曲 4':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
                 return
@@ -1653,41 +1374,6 @@ def sync_handle_msg(event):
             sendmsg(event, 'PJSK猜卡面\n你有30秒的时间回答\n艾特我+你的答案（只猜角色）以参加猜曲（不要使用回复）\n发送「结束猜卡面」可退出猜卡面模式'
                     + fr"[CQ:image,file=file:///{botdir}\piccache/{event.group_id}.png,cache=0]")
             return
-
-        if event.message == 'ai猜卡面' or event.message == 'AI猜卡面':
-            if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
-                return
-            try:
-                isgoing = pjskguess[event.group_id]['isgoing']
-                if isgoing:
-                    sendmsg(event, '已经开启猜曲！')
-                    return
-            except KeyError:
-                pass
-            # getrandomcard() return characterId, assetbundleName, prefix, cardRarityType
-            try:
-                isgoing = charaguess[event.group_id]['isgoing']
-                if isgoing:
-                    sendmsg(event, '已经开启猜曲！')
-                    return
-                else:
-                    cardinfo = getrandomcard()
-                    charaguess[event.group_id] = {'isgoing': True, 'charaid': cardinfo[0],
-                                                  'assetbundleName': cardinfo[1], 'prefix': cardinfo[2],
-                                                  'starttime': int(time.time()) + 50, 'selfid': event.self_id, 'type': 2}
-            except KeyError:
-                cardinfo = getrandomcard()
-                charaguess[event.group_id] = {'isgoing': True, 'charaid': cardinfo[0],
-                                              'assetbundleName': cardinfo[1],
-                                              'prefix': cardinfo[2], 'starttime': int(time.time()) + 50,
-                                               'selfid': event.self_id, 'type': 2}
-            sendmsg(event, '生成中请稍后')
-            charaguess[event.group_id]['istrained'] = AIcutcard(cardinfo[1], cardinfo[3], event.group_id)
-            charaguess[event.group_id]['starttime'] = int(time.time())
-            sendmsg(event, 'PJSK猜卡面\n你有30秒的时间回答\n艾特我+你的答案（只猜角色）以参加猜曲（不要使用回复）\n发送「结束猜卡面」可退出猜卡面模式'
-                    + fr"[CQ:image,file=file:///{botdir}\piccache/{event.group_id}.png,cache=0]")
-            return
-
         if (event.message[-2:] == '猜曲' or event.message[-4:-2] == '猜曲') and event.message[:4] == 'pjsk':
             if event.user_id not in whitelist and event.group_id not in whitelist and event.self_id != guildbot:
                 return
@@ -1961,22 +1647,6 @@ def sync_handle_msg(event):
             sendmsg(event, '由於台服API限制，資料已無法抓取，該功能已停用。')
         elif e.server == 'kr':
             sendmsg(event, '한국 서버 API 제한으로 인해 데이터를 더 이상 가져올 수 없습니다. 이 기능은 사용 중지되었습니다.')
-        
-    except cheaterFound as a:
-        text = repr(a)[14:-2].replace('、', '\n')
-        infopic = text2image(text=text, max_width=1000)
-        now = time.time()
-        infopic.save(f'piccache/{now}.png')
-        sendmsg(event, f"[CQ:image,file=file:///{botdir}/piccache/{now}.png,cache=0]")
-        if event.self_id == guildbot:
-            resp = requests.get(f'http://127.0.0.1:{guildhttpport}/get_guild_info?guild_id={event.guild_id}')
-            qun = resp.json()
-            sendemail(botname.get(event.self_id, "测试bot") + '检测到挂哥',
-                      f"{qun['name']}({event.guild_id}) {event.user_id} 发送{event.message}\n" + repr(a))
-        else:
-            qun = bot.sync.get_group_info(self_id=event.self_id, group_id=event.group_id)
-            sendemail(botname.get(event.self_id, "测试bot") + '检测到挂哥',
-                      f"{qun['group_name']}({event.group_id}) {event.user_id} 发送{event.message}\n" + repr(a))
     except Exception as a:
         traceback.print_exc()
         if repr(a) == "KeyError('status')":
@@ -1999,41 +1669,6 @@ def sendmsg(event, msg):
         print(Time, '测试bot收到命令', event.group_id, event.user_id, event.message.replace('\n', ''))
         print('测试bot发送群消息', event.group_id, msg.replace('\n', ''))
 
-    try:
-        if event.self_id == guildbot:
-            msg = msg.replace('少女', '少/女')
-            for i in range(0, 3):
-                try:
-                    bot.sync.send_group_msg(self_id=event.self_id, group_id=event.group_id, message=f'[CQ:reply,id={event.message_id}]' + msg)
-                    break
-                except KeyError as a:
-                    if repr(a) == "KeyError('status')":
-                        print(f'图片发送失败，重试{i + 1}/3')
-                    else:
-                        break
-        else:
-            bot.sync.send_group_msg(self_id=event.self_id, group_id=event.group_id, message=msg)
-        if event.self_id == 1513705608:
-            send1 = False
-        elif event.self_id == 3506606538:
-            send3 = False
-    except aiocqhttp.exceptions.ActionFailed:
-        if event.self_id == 1513705608:
-            print('一号机发送失败')
-            if send1 is not True:
-                print('即将发送告警邮件')
-                sendemail(botname[event.self_id] + '群消息发送失败', str(event.group_id) + msg)
-                send1 = True
-            else:
-                print('告警邮件发过了')
-        elif event.self_id == 3506606538:
-            print('三号机发送失败')
-            if send3 is not True:
-                print('即将发送告警邮件')
-                sendemail(botname[event.self_id] + '群消息发送失败', str(event.group_id) + msg)
-                send3 = True
-            else:
-                print('告警邮件发过了')
 
 
 @bot.on_notice('group_increase')  # 群人数增加事件
@@ -2066,34 +1701,6 @@ async def handle_group_request(event: Event):
                                             approve=False)
             await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
                                      message=f'{event.user_id}邀请我加入群{event.group_id}，已自动拒绝')
-    elif event.sub_type == 'add':  # 有人加群
-        if event.group_id == 883721511 or event.group_id == 647347636:
-            answer = event.comment[event.comment.find("答案：") + len("答案："):].strip()
-            if 'sega' in answer.lower() or 'sbga' in answer.lower() or '彩盘' in answer or 'cp' in answer.lower() or 'palette' in answer.lower():
-                await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                approve=True)
-                await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n已自动通过')
-                await bot.send_group_msg(self_id=event.self_id, group_id=883721511,
-                                         message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n已自动通过')
-            else:
-                await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'{event.user_id}申请加群\n{event.comment}')
-                await bot.send_group_msg(self_id=event.self_id, group_id=883721511,
-                                         message=f'{event.user_id}申请加群\n{event.comment}')
-        elif event.group_id == 467602419:
-            answer = event.comment[event.comment.find("答案：") + len("答案："):].strip()
-            if 'Mrs4s/go-cqhttp' in answer:
-                await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                approve=True)
-                await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'自动通过\n{event.user_id}申请加群\n{event.comment}\n已自动通过')
-            else:
-                await bot.set_group_add_request(self_id=event.self_id, flag=event.flag, sub_type=event.sub_type,
-                                                    approve=False,
-                                                    reason=f'回答错误，请回答对应GitHub链接')
-                await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
-                                         message=f'自动拒绝\n{event.user_id}申请加群\n{event.comment}\n，已自动拒绝')
 
 
 @bot.on_notice('group_ban')
@@ -2105,33 +1712,6 @@ async def handle_group_ban(event: Event):
         await bot.set_group_leave(self_id=event.self_id, group_id=event.group_id)
         await bot.send_group_msg(self_id=event.self_id, group_id=msggroup,
                                  message=f'我在群{event.group_id}内被{event.operator_id}禁言{event.duration / 60}分钟，已自动退群')
-
-# @bot.on_notice()
-# async def handle_poke(event: Event):
-#     if event.self_id == guildbot:
-#         return
-#     if event.sub_type == 'poke' and event.target_id == event.self_id:
-#         if event.self_id in mainbot:
-#             global pokelimit
-#             nowtime = f"{str(datetime.now().hour).zfill(2)}{str(datetime.now().minute).zfill(2)}"
-#             lasttime = pokelimit['lasttime']
-#             count = pokelimit['count']
-#             if nowtime == lasttime and count >= 5:
-#                 print(pokelimit)
-#                 print('达到每分钟戳一戳发语音上限')
-#                 return
-#             if nowtime != lasttime:
-#                 count = 0
-#             pokelimit['lasttime'] = nowtime
-#             pokelimit['count'] = count + 1
-#             print(pokelimit)
-#             voiceDir = 'data/assets/sekai/assetbundle/resources/additionalvoice/sound/system_live2d/voice/voicepack_17'
-#             voiceList = os.listdir(voiceDir)
-#             voiceList.remove('soundbundlebuilddata.json')
-#             voiceList.remove('voicepack_17.acb')
-#             print(f'{voiceDir}/{random.choice(voiceList)}')
-#             await bot.send_group_msg(self_id=event.self_id, group_id=event.group_id,
-#                                  message=fr"[CQ:record,file=file:///{botdir}/{voiceDir}/{random.choice(voiceList)},cache=0]")
 
 async def autopjskguess():
     global pjskguess

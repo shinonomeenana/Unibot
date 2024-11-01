@@ -974,7 +974,8 @@ def getcharaname(characterid):
             except KeyError:
                 return i['givenName']
 
-
+# 由于该函数经历过日服先修改API，其他服慢慢跟上的过程，每个API修改的时间点都为了不改动逻辑做出了很多适应性修改
+# 现在所有服务器已经完成API修改，不再需要适应性，但是代码未直接按照新API重写，会比较晦涩难懂，请勿参考。
 def sk(targetid=None, targetrank=None, secret=False, server='jp', simple=False, qqnum='未知', world_link_chara_id=None):
     translation_dict = {
         'jp': {

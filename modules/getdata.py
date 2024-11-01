@@ -57,6 +57,9 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False, chara
     else:
         raise serverNotSupported
     
+    # 由于该函数经历过日服先修改API，其他服慢慢跟上的过程，每个API修改的时间点都为了不改动逻辑做出了很多适应性修改
+    # 现在所有服务器已经完成API修改，不再需要适应性，但是代码未直接按照新API重写，会比较晦涩难懂，请勿参考。
+    # 以下都是为了不改动逻辑代码而在数据获取时做出的适应性改动。
     if server in rank_query_ban_servers:
         if server == 'jp':
             if '/ranking?targetRank' in url:
