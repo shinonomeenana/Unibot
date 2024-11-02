@@ -5,8 +5,8 @@ import sqlite3
 import time
 from urllib.parse import quote
 import pymysql
-from modules.getdata import LeakContent
-from modules.mysql_config import *
+# from modules.getdata import LeakContent
+# from modules.mysql_config import *
 import aiohttp
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 
@@ -18,16 +18,19 @@ from modules.cardinfo import CardInfo
 from modules.sk import recordname
 from modules.texttoimg import texttoimg
 
+botpath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+charaalistxt = os.path.join(botpath, 'gamealias', 'chara.txt')
 
-def getcardinfo(cardid):
+
+def getcardinfo(cardid, groupid: 0):
     savepath = f'piccache/cardinfo/cardinfo_{cardid}.jpg'
     if not os.path.exists(savepath):
         cardinfo = CardInfo()
-        cardinfo.getinfo(cardid)
-        pic = cardinfo.toimg()
+        cardinfo.getinfo(cardid, groupid)
+        pic = cardinfo.toimg(groupid)
         pic = pic.convert("RGB")
         pic.save(savepath, quality=85)
-    return f'cardinfo_{cardid}.jpg'
+    return savepath
 
 
 def cardidtopic(cardid):
@@ -36,8 +39,8 @@ def cardidtopic(cardid):
     assetbundleName = ''
     for card in allcards:
         if card['id'] == cardid:
-            if card["releaseAt"] / 1000 > time.time():
-                raise LeakContent
+            # if card["releaseAt"] / 1000 > time.time():
+            #     raise LeakContent
             assetbundleName = card['assetbundleName']
     if assetbundleName == '':
         return []
@@ -132,8 +135,8 @@ def findcard(charaid, cardRarityType=None):
             pic.paste(single, pos)
     pic = pic.crop((0, 0, 1500, (int((count - 1) / 3) + 1) * 310 + 60))
     pic.save(f'piccache/cardinfo/{charaid}{cardRarityType}.jpg')
-    if env != 'prod':
-        pic.show()
+    # if env != 'prod':
+    #     pic.show()
     return f'cardinfo/{charaid}{cardRarityType}.jpg'
 
 
@@ -155,18 +158,18 @@ def findcardsingle(card, allcards, skills, resourcebox_index, exchange_summary_i
         pic.paste(thumnail, (132, 15), mask)
 
     draw = ImageDraw.Draw(pic)
-    font = ImageFont.truetype(r'fonts\SourceHanSansCN-Medium.otf', 28)
+    font = ImageFont.truetype(r'fonts/SourceHanSansCN-Medium.otf', 28)
     text_width = font.getsize(card["prefix"])
 
     if text_width[0] > 420:
-        font = ImageFont.truetype(r'fonts\SourceHanSansCN-Medium.otf', int(28 / (text_width[0] / 420)))
+        font = ImageFont.truetype(r'fonts/SourceHanSansCN-Medium.otf', int(28 / (text_width[0] / 420)))
         text_width = font.getsize(card["prefix"])
 
     text_coordinate = ((210 - text_width[0] / 2), int(195 - text_width[1] / 2))
     draw.text(text_coordinate, card["prefix"], '#000000', font)
 
     name = getcharaname(card['characterId'])
-    font = ImageFont.truetype(r'fonts\SourceHanSansCN-Medium.otf', 18)
+    font = ImageFont.truetype(r'fonts/SourceHanSansCN-Medium.otf', 18)
     text_width = font.getsize(f'id:{card["id"]}  {name}')
     text_coordinate = ((210 - text_width[0] / 2), int(230 - text_width[1] / 2))
     draw.text(text_coordinate, f'id:{card["id"]}  {name}', '#505050', font)
@@ -183,29 +186,7 @@ def findcardsingle(card, allcards, skills, resourcebox_index, exchange_summary_i
     return pic
 
 def charainfo(alias, qunnum=''):
-    if alias == '':
-        return '请输入值'
-    resp = aliastocharaid(alias, qunnum)
-    qunalias = ''
-    allalias = ''
-    if resp[0] == 0:
-        return "找不到你说的角色哦"
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * from qunalias where charaid=%s AND qunnum=%s", (resp[0], qunnum))
-    data = mycursor.fetchall()
-    for row in data:
-        qunalias = qunalias + row[2] + "，"
-
-    mycursor.execute("SELECT * from charaalias where charaid=%s", (resp[0],))
-    data = mycursor.fetchall()
-    for row in data:
-        allalias = allalias + row[1] + "，"
-
-    mycursor.close()
-    mydb.close()
-    return f"{resp[1]}\n全群昵称：{allalias[:-1]}\n本群昵称：{qunalias[:-1]}"
+    return ''
 
 async def getvits(chara, word):
     # 因为某些库Window水土不服装不了所以弄成api部署在linux上了
@@ -218,123 +199,29 @@ async def getvits(chara, word):
         return False, result
 
 def charadel(alias, qqnum, username, qun):
-    if alias == '':
-        return '请输入值'
-    resp = aliastocharaid(alias)
-    if resp[0] == 0:
-        return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute("DELETE from charaalias where alias=%s", (alias,))
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    timeArray = time.localtime(time.time())
-    Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-    if str(qqnum) == '1103479519':
-        writelog(f'[{Time}] 管理员删除了{resp[1]}的昵称:{alias}')
-        return "删除成功！"
-    writelog(f'[{Time}] {qun} {username}({qqnum}): 删除了{resp[1]}的昵称:{alias}')
-    return "删除成功！\n已记录bot文档中公开的实时日志，乱删将被拉黑"
+    return ''
 
 
 def grcharadel(alias, qunnum=''):
-    if alias == '':
-        return '请输入值'
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    count = mycursor.execute("DELETE from qunalias where alias=%s AND qunnum=%s", (alias, qunnum))
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    if count == 0:
-        return "找不到你说的角色哦，如删除全群可用昵称请使用charadel"
-    else:
-        return "删除成功！"
+    return ''
 
 
 def aliastocharaid(alias, qunnum=''):
-    if alias == '':
-        return 0, ''
-    charaid = 0
-    name = ''
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * from qunalias where alias=%s AND qunnum=%s", (alias, qunnum))
-    raw = mycursor.fetchone()
-    if raw is not None:
-        charaid = raw[3]
-        name = getcharaname(charaid)
-    else:
-        mycursor.execute("SELECT * from charaalias where alias=%s", (alias,))
-        raw = mycursor.fetchone()
-        if raw is not None:
-            charaid = raw[2]
-            name = getcharaname(charaid)
-
-    mycursor.close()
-    mydb.close()
-    return charaid, name
+    with open(charaalistxt, mode='r', encoding='utf-8') as f:
+        lines = f.readlines()
+        for line in lines:
+            rows = line.strip().split(':')
+            if rows[0] == alias:
+                return int(rows[1]), rows[0]
+    return 0, 'unknown'
 
 
 def charaset(newalias, oldalias, qqnum, username, qun, is_hide=False):
-    if newalias == '':
-        return '请输入值'
-    if isSingleEmoji(newalias):
-        return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
-    resp = aliastocharaid(oldalias)
-    print(resp)
-    if resp[0] == 0:
-        return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"
-    charaid = resp[0]
-    if not recordname(qqnum, 'charaset', newalias):
-        return "该昵称可能不合规，如果判断错误请联系bot主添加"
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    sql = f"insert into charaalias(ALIAS,CHARAID) values (%s, %s) " \
-          f"on duplicate key update charaid=%s"
-    val = (newalias, charaid, charaid)
-    mycursor.execute(sql, val)
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-
-    timeArray = time.localtime(time.time())
-    Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-    writelog(f'[{Time}] {qun} {username}({qqnum}): {newalias}->{resp[1]}')
-    if is_hide:
-        return f"设置成功！(全群可用)\n已记录bot文档中公开的实时日志，如全群昵称添加不相关/不友好/无关联的首字母拼词等请立刻删除，否则一旦发现立刻拉黑\n可用grcharaset设置仅当前群可用的昵称）"
-    else:
-        return f"设置成功！(全群可用)\n{newalias}->{resp[1]}\n已记录bot文档中公开的实时日志，如全群昵称添加不相关/不友好/无关联的首字母拼词等请立刻删除，否则一旦发现立刻拉黑\n可用grcharaset设置仅当前群可用的昵称）"
+    return ''
 
 
 def grcharaset(newalias, oldalias, qunnum, is_hide=False):
-    if newalias == '':
-        return '请输入值'
-    if isSingleEmoji(newalias):
-        return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
-    resp = aliastocharaid(oldalias)
-    if resp[0] == 0:
-        return "找不到你说的角色哦，如删除仅本群可用昵称请使用grcharadel"
-    charaid = resp[0]
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    sql = f"insert into qunalias(QUNNUM,ALIAS,CHARAID) values(%s, %s, %s) " \
-          f"on duplicate key update charaid=%s"
-    val = (str(qunnum), newalias, charaid, charaid)
-    mycursor.execute(sql, val)
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    if is_hide:
-        return f"设置成功！(仅本群可用)"
-    else:
-        return f"设置成功！(仅本群可用)\n{newalias}->{resp[1]}"
+    return ''
 
 def get_card(charaid):
     with open('masterdata/cards.json', 'r', encoding='utf-8') as f:

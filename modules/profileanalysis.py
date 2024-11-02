@@ -5,7 +5,7 @@ import os.path
 import time
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import requests
-from modules.config import proxies, env, rank_query_ban_servers, suite_uploader_path
+from modules.config import proxies, env, rank_query_ban_servers
 from modules.getdata import QueryBanned, callapi
 from modules.sk import verifyid, recordname, currentevent, recordhitokoto
 from modules.texttoimg import texttoimg
@@ -587,11 +587,11 @@ def pjskjindu(userid, private=False, diff='master', server='jp', qqnum='未知')
         img.paste(chart, (280 - int(chart.size[0] / 2), 824), mask)
         
 
-    if server in rank_query_ban_servers and not profile.isNewData:
-        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
-        updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
-        draw.text((68, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
-                   fill=(100, 100, 100), font=font_style)
+    # if server in rank_query_ban_servers and not profile.isNewData:
+    #     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+    #     updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
+    #     draw.text((68, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
+    #                fill=(100, 100, 100), font=font_style)
     if env != 'prod':
         img.show()
     img.save(f'piccache/{userid}jindu.png')
@@ -805,11 +805,11 @@ def pjskprofile(userid, private=False, server='jp', qqnum='未知', is_force_upd
                 img.paste(honorpic, (508, 228), mask)
             except:
                 pass
-    if server in rank_query_ban_servers and not profile.isNewData:
-        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
-        updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
-        draw.text((118, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime) + '  实时数据可使用“pjskprofile2”',
-                   fill=(100, 100, 100), font=font_style)
+    # if server in rank_query_ban_servers and not profile.isNewData:
+    #     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+    #     updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
+    #     draw.text((118, 10), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime) + '  实时数据可使用“pjskprofile2”',
+    #                fill=(100, 100, 100), font=font_style)
     img = img.convert('RGB')
     if env != 'prod':
         img.show()
@@ -1391,12 +1391,12 @@ def pjskb30(userid, private=False, returnpic=False, server='jp', qqnum='未知')
     r, g, b, mask = rankimg.split()
     pic.paste(rankimg, (565, 142), mask)
 
-    if server in rank_query_ban_servers and not profile.isNewData:
-        draw = ImageDraw.Draw(pic)
-        font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
-        updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
-        draw.text((68, 20), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
-                   fill=(100, 100, 100), font=font_style)
+    # if server in rank_query_ban_servers and not profile.isNewData:
+    #     draw = ImageDraw.Draw(pic)
+    #     font_style = ImageFont.truetype("fonts/SourceHanSansCN-Bold.otf", 25)
+    #     updatetime = time.localtime(os.path.getmtime(f'{suite_uploader_path}{userid}.json'))
+    #     draw.text((68, 20), '数据上传时间：' + time.strftime("%Y-%m-%d %H:%M:%S", updatetime),
+    #                fill=(100, 100, 100), font=font_style)
 
     pic = pic.convert("RGB")
     if returnpic:

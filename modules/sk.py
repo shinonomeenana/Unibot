@@ -13,7 +13,7 @@ from locale import format_string
 from modules.config import BORDER_SUPPORT_SERVERS, env, rank_query_ban_servers
 from modules.getdata import MasterStructureChange, QueryBanned, callapi
 from modules.masterhelper import events_master_helper
-from modules.mysql_config import *
+# from modules.mysql_config import *
 from PIL import Image, ImageFont, ImageDraw
 import matplotlib
 import pytz
@@ -23,7 +23,7 @@ from matplotlib import pyplot as plt
 from matplotlib.font_manager import FontProperties
 import matplotlib.dates as mdates
 from modules.config import predicturl, proxies, ispredict
-from modules.sendmail import sendemail
+# from modules.sendmail import sendemail
 
 rankline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000,
             10000, 20000, 30000, 40000, 50000, 100000, 100000000]
@@ -219,45 +219,45 @@ def recordname(qqnum, userid, name, userMusicResults=None, masterscore=None, ser
     if env != 'prod':
         return True
 
-    try:
-        with pymysql.connect(host=host, port=port, user='username', password=password,
-                             database='username', charset='utf8mb4') as mydb:
-            with mydb.cursor() as mycursor:
-                # 审核游戏昵称
-                mycursor.execute('SELECT * from examresult where name=%s', (name,))
-                data = mycursor.fetchone()
-                if data is not None:
-                    result = bool(data[2])
-                else:
-                    try:
-                        resp = requests.get(f'http://127.0.0.1:5000/exam/{quote(name.replace("/", " "), "utf-8")}')
-                        resp.raise_for_status()  # 检查HTTP请求是否成功
-                        result = resp.json()['conclusion']
-                        sql_add = 'INSERT INTO examresult (name, result) VALUES (%s, %s)'
-                        mycursor.execute(sql_add, (name, int(result)))
-                    except requests.RequestException:
-                        traceback.print_exc()
-                        result = False
-                        sendemail('审核失败', f'qq:{qqnum}\nuserid:{userid}\nname:{name}')
-                        # HTTP请求失败时不将结果存入数据库
-                        return False
-                # 检查是否已存在相同记录
-                check_sql = 'SELECT 1 FROM names WHERE userid=%s AND name=%s AND qqnum=%s'
-                mycursor.execute(check_sql, (str(userid), name, str(qqnum)))
-                if not mycursor.fetchone():
-                    # 记录游戏昵称
-                    sql_add = 'INSERT INTO names (userid, name, qqnum, result) VALUES (%s, %s, %s, %s)'
-                    text = '合规' if result else '不合规'
-                    mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
-                    mydb.commit()
-    except pymysql.err.OperationalError as e:
-        sendemail('数据库连接失败', f'qq:{qqnum}\nuserid:{userid}\nname:{name}')
-        return False
-    except Exception as e:
-        traceback.print_exc()
-        return False
-
-    return result
+    # try:
+    #     with pymysql.connect(host=host, port=port, user='username', password=password,
+    #                          database='username', charset='utf8mb4') as mydb:
+    #         with mydb.cursor() as mycursor:
+    #             # 审核游戏昵称
+    #             mycursor.execute('SELECT * from examresult where name=%s', (name,))
+    #             data = mycursor.fetchone()
+    #             if data is not None:
+    #                 result = bool(data[2])
+    #             else:
+    #                 try:
+    #                     resp = requests.get(f'http://127.0.0.1:5000/exam/{quote(name.replace("/", " "), "utf-8")}')
+    #                     resp.raise_for_status()  # 检查HTTP请求是否成功
+    #                     result = resp.json()['conclusion']
+    #                     sql_add = 'INSERT INTO examresult (name, result) VALUES (%s, %s)'
+    #                     mycursor.execute(sql_add, (name, int(result)))
+    #                 except requests.RequestException:
+    #                     traceback.print_exc()
+    #                     result = False
+    #                     sendemail('审核失败', f'qq:{qqnum}\nuserid:{userid}\nname:{name}')
+    #                     # HTTP请求失败时不将结果存入数据库
+    #                     return False
+    #             # 检查是否已存在相同记录
+    #             check_sql = 'SELECT 1 FROM names WHERE userid=%s AND name=%s AND qqnum=%s'
+    #             mycursor.execute(check_sql, (str(userid), name, str(qqnum)))
+    #             if not mycursor.fetchone():
+    #                 # 记录游戏昵称
+    #                 sql_add = 'INSERT INTO names (userid, name, qqnum, result) VALUES (%s, %s, %s, %s)'
+    #                 text = '合规' if result else '不合规'
+    #                 mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
+    #                 mydb.commit()
+    # except pymysql.err.OperationalError as e:
+    #     sendemail('数据库连接失败', f'qq:{qqnum}\nuserid:{userid}\nname:{name}')
+    #     return False
+    # except Exception as e:
+    #     traceback.print_exc()
+    #     return False
+    #
+    # return result
 
 
 def recordhitokoto(qqnum, userid, name):
@@ -266,60 +266,37 @@ def recordhitokoto(qqnum, userid, name):
     # return True
     if env != 'prod':
         return True
-    try:
-        mydb = pymysql.connect(host=host, port=port, user='username', password=password,
-                            database='username', charset='utf8mb4')
-    except pymysql.err.OperationalError:
-        return True
-    mycursor = mydb.cursor()
-
-    # 审核自我介绍
-    try:
-        resp = requests.get(f'http://127.0.0.1:5000/exam/{quote(name.replace("/", " "), "utf-8")}')
-        sql_add = 'insert into hitokoto (name, result) values(%s, %s)'
-        result = resp.json()['conclusion']
-    except:
-        traceback.print_exc()
-        result = True
-
-    # 记录自我介绍
-    mycursor.execute('SELECT * from names where qqnum=%s and userid=%s and name=%s', (str(qqnum), str(userid), name))
-    data = mycursor.fetchone()
-    if data is None:
-        sql_add = f'insert into hitokoto (userid, name, qqnum, result) values(%s, %s, %s, %s)'
-        text = '合规' if result else '不合规'
-        mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    return result
+    # try:
+    #     mydb = pymysql.connect(host=host, port=port, user='username', password=password,
+    #                         database='username', charset='utf8mb4')
+    # except pymysql.err.OperationalError:
+    #     return True
+    # mycursor = mydb.cursor()
+    #
+    # # 审核自我介绍
+    # try:
+    #     resp = requests.get(f'http://127.0.0.1:5000/exam/{quote(name.replace("/", " "), "utf-8")}')
+    #     sql_add = 'insert into hitokoto (name, result) values(%s, %s)'
+    #     result = resp.json()['conclusion']
+    # except:
+    #     traceback.print_exc()
+    #     result = True
+    #
+    # # 记录自我介绍
+    # mycursor.execute('SELECT * from names where qqnum=%s and userid=%s and name=%s', (str(qqnum), str(userid), name))
+    # data = mycursor.fetchone()
+    # if data is None:
+    #     sql_add = f'insert into hitokoto (userid, name, qqnum, result) values(%s, %s, %s, %s)'
+    #     text = '合规' if result else '不合规'
+    #     mycursor.execute(sql_add, (str(userid), name, str(qqnum), text))
+    # mydb.commit()
+    # mycursor.close()
+    # mydb.close()
+    # return result
 
 
 def cheater_ban_reason(userid):
-    from imageutils import text2image
-    mydb = pymysql.connect(host=host, port=port, user='username', password=password,
-                        database='username', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute('SELECT * from suspicious where userid=%s', (str(userid), ))
-    data = mycursor.fetchall()
-    if data is None:
-        return '挂哥数据库未找到该账号'
-    try:
-        text = f'{data[0][1]} - {data[0][2]}\n'
-    except IndexError:
-        return '挂哥数据库未找到该账号'
-    found = False
-    for reason in data:
-        if reason[5] != '36+FC/AP':
-            text += reason[5] + '\n'
-            found = True
-    if not found:
-        return '挂哥数据库未找到该账号'
-    text += '由于监测到打歌数据有高度开挂嫌疑，该账号与已被bot拉黑、如有异议可在群883721511内用充足的证据（账号交易记录，自证手元等）对上述成绩做出合理的解释'
-    infopic = text2image(text=text, max_width=1000)
-    now = time.time()
-    infopic.save(f'piccache/{now}.png')
-    return f"[CQ:image,file=file:///{botpath}/piccache/{now}.png,cache=0]"
+    return None
 
 
 def chafang(targetid=None, targetrank=None, private=False, server='jp'):
@@ -1255,78 +1232,81 @@ def teamcount(server='jp'):
 
 
 def getqqbind(qqnum, server):
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    if server == 'jp':
-        mycursor.execute('SELECT * from bind where qqnum=%s', (qqnum,))
-    elif server == 'tw':
-        mycursor.execute('SELECT * from twbind where qqnum=%s', (qqnum,))
-    elif server == 'en':
-        mycursor.execute('SELECT * from enbind where qqnum=%s', (qqnum,))
-    elif server == 'kr':
-        mycursor.execute('SELECT * from krbind where qqnum=%s', (qqnum,))
-    mycursor.close()
-    mydb.close()
-    data = mycursor.fetchone()
-    try:
-        return data[1:]
-    except:
-        return None
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #                        database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    # if server == 'jp':
+    #     mycursor.execute('SELECT * from bind where qqnum=%s', (qqnum,))
+    # elif server == 'tw':
+    #     mycursor.execute('SELECT * from twbind where qqnum=%s', (qqnum,))
+    # elif server == 'en':
+    #     mycursor.execute('SELECT * from enbind where qqnum=%s', (qqnum,))
+    # elif server == 'kr':
+    #     mycursor.execute('SELECT * from krbind where qqnum=%s', (qqnum,))
+    # mycursor.close()
+    # mydb.close()
+    # data = mycursor.fetchone()
+    # try:
+    #     return data[1:]
+    # except:
+    #     return None
+    return None
 
 def getIdOwner(userid, server):
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    if server == 'jp':
-        mycursor.execute('SELECT * from bind where userid=%s', (userid,))
-    elif server == 'tw':
-        mycursor.execute('SELECT * from twbind where userid=%s', (userid,))
-    elif server == 'en':
-        mycursor.execute('SELECT * from enbind where userid=%s', (userid,))
-    elif server == 'kr':
-        mycursor.execute('SELECT * from krbind where userid=%s', (userid,))
-    mycursor.close()
-    mydb.close()
-    data = mycursor.fetchall()
-    if data is not None:
-        return ','.join([raw[1] for raw in data])
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #                        database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    # if server == 'jp':
+    #     mycursor.execute('SELECT * from bind where userid=%s', (userid,))
+    # elif server == 'tw':
+    #     mycursor.execute('SELECT * from twbind where userid=%s', (userid,))
+    # elif server == 'en':
+    #     mycursor.execute('SELECT * from enbind where userid=%s', (userid,))
+    # elif server == 'kr':
+    #     mycursor.execute('SELECT * from krbind where userid=%s', (userid,))
+    # mycursor.close()
+    # mydb.close()
+    # data = mycursor.fetchall()
+    # if data is not None:
+    #     return ','.join([raw[1] for raw in data])
     return ''
 
 
 def bindid(qqnum, userid, server):
-    if not verifyid(userid, server):
-        return '你这ID有问题啊'
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-        database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-
-    if server == 'jp':
-        sqlname = 'bind'
-    elif server == 'tw':
-        sqlname = 'twbind'
-    elif server == 'en':
-        sqlname = 'enbind'
-    elif server == 'kr':
-        sqlname = 'krbind'
-
-    sql = f"insert into {sqlname} (qqnum, userid, isprivate) values (%s, %s, %s) " \
-          f"on duplicate key update userid=%s"
-    val = (str(qqnum), str(userid), 0, str(userid))
-    mycursor.execute(sql, val)
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    return "绑定成功！"
+    # if not verifyid(userid, server):
+    #     return '你这ID有问题啊'
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #     database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    #
+    # if server == 'jp':
+    #     sqlname = 'bind'
+    # elif server == 'tw':
+    #     sqlname = 'twbind'
+    # elif server == 'en':
+    #     sqlname = 'enbind'
+    # elif server == 'kr':
+    #     sqlname = 'krbind'
+    #
+    # sql = f"insert into {sqlname} (qqnum, userid, isprivate) values (%s, %s, %s) " \
+    #       f"on duplicate key update userid=%s"
+    # val = (str(qqnum), str(userid), 0, str(userid))
+    # mycursor.execute(sql, val)
+    # mydb.commit()
+    # mycursor.close()
+    # mydb.close()
+    # return "绑定成功！"
+    return None
 
 def setprivate(qqnum, isprivate, server):
-    if server == 'jp':
-        server = ''
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute(f'UPDATE {server}bind SET isprivate=%s WHERE qqnum=%s', (isprivate, qqnum))
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    return True
+    # if server == 'jp':
+    #     server = ''
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #                        database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    # mycursor.execute(f'UPDATE {server}bind SET isprivate=%s WHERE qqnum=%s', (isprivate, qqnum))
+    # mydb.commit()
+    # mycursor.close()
+    # mydb.close()
+    # return True
+    return None

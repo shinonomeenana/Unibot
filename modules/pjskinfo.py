@@ -2,7 +2,7 @@ import datetime
 import math
 import random
 import re
-import emoji
+# import emoji
 import ujson as json
 import os
 import sqlite3
@@ -11,7 +11,7 @@ import time
 import pymysql
 
 from modules.getdata import LeakContent
-from modules.mysql_config import *
+# from modules.mysql_config import *
 import requests
 from mutagen.mp3 import MP3
 import pytz
@@ -20,7 +20,7 @@ import yaml
 from emoji2pic.main import Emoji2Pic
 import Levenshtein as lev
 from modules.config import loghtml, env
-from modules.r2upload import uploadLogR2
+# from modules.r2upload import uploadLogR2
 from zhconv import convert
 
 from modules.sk import recordname
@@ -49,8 +49,8 @@ def isSingleEmoji(content):
         return False
     if not content:
         return False
-    if emoji.is_emoji(content):
-        return True
+    # if emoji.is_emoji(content):
+    #     return True
     return False
 
 
@@ -159,35 +159,36 @@ def parse_bpm(music_id):
 
 
 def aliastomusicid(alias):
-    alias = alias.strip()
-    if alias == '':
-        return {'musicid': 0, 'match': 0, 'name': '', 'translate': ''}
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute('SELECT * from pjskalias where alias=%s', (alias,))
-    raw = mycursor.fetchone()
-    mycursor.close()
-    mydb.close()
-    if raw is not None:
-        with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        name = ''
-        for musics in data:
-            if musics['id'] != raw[2]:
-                continue
-            name = musics['title']
-            break
-        with open('yamls/translate.yaml', encoding='utf-8') as f:
-            trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
-        try:
-            translate = trans[raw[2]]
-            if translate == name:
-                translate = ''
-        except KeyError:
-            translate = ''
-        return {'musicid': raw[2], 'match': 1, 'name': name, 'translate': translate}
-    return matchname(alias)
+    # alias = alias.strip()
+    # if alias == '':
+    #     return {'musicid': 0, 'match': 0, 'name': '', 'translate': ''}
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #                        database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    # mycursor.execute('SELECT * from pjskalias where alias=%s', (alias,))
+    # raw = mycursor.fetchone()
+    # mycursor.close()
+    # mydb.close()
+    # if raw is not None:
+    #     with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+    #         data = json.load(f)
+    #     name = ''
+    #     for musics in data:
+    #         if musics['id'] != raw[2]:
+    #             continue
+    #         name = musics['title']
+    #         break
+    #     with open('yamls/translate.yaml', encoding='utf-8') as f:
+    #         trans = yaml.load(f, Loader=yaml.FullLoader)['musics']
+    #     try:
+    #         translate = trans[raw[2]]
+    #         if translate == name:
+    #             translate = ''
+    #     except KeyError:
+    #         translate = ''
+    #     return {'musicid': raw[2], 'match': 1, 'name': name, 'translate': translate}
+    # return matchname(alias)
+    return 0
 
 
 def load_data(file_path):
@@ -646,91 +647,94 @@ def get_random_character(music_id):
 
 
 def pjskset(newalias, oldalias, qqnum, username, qun, is_hide=False):
-    newalias = newalias.strip()
-    if isSingleEmoji(newalias):
-        return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
-    resp = aliastomusicid(oldalias)
-    if resp['musicid'] == 0:
-        return "找不到你要设置的歌曲，请使用正确格式：pjskset新昵称to旧昵称"
-    musicid = resp['musicid']
-    if not recordname(qqnum, 'pjskset', newalias):
-        return "该昵称可能不合规，如果判断错误请联系bot主添加"
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    sql = f"insert into pjskalias(ALIAS,MUSICID) values (%s, %s) " \
-          f"on duplicate key update musicid=%s"
-    val = (newalias, musicid, musicid)
-    mycursor.execute(sql, val)
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-
-    with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    title = ''
-    for music in data:
-        if music['id'] != musicid:
-            continue
-        title = music['title']
-    timeArray = time.localtime(time.time())
-    Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-    writelog(f'[{Time}] {qun} {username}({qqnum}): {newalias}->{title}')
-    if is_hide:
-        return f"设置成功！\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
-    else:
-        return f"设置成功！{newalias}->{title}\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
+    # newalias = newalias.strip()
+    # if isSingleEmoji(newalias):
+    #     return "由于数据库排序规则原因，不支持单个emoji字符作为歌曲昵称"
+    # resp = aliastomusicid(oldalias)
+    # if resp['musicid'] == 0:
+    #     return "找不到你要设置的歌曲，请使用正确格式：pjskset新昵称to旧昵称"
+    # musicid = resp['musicid']
+    # if not recordname(qqnum, 'pjskset', newalias):
+    #     return "该昵称可能不合规，如果判断错误请联系bot主添加"
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #                        database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    # sql = f"insert into pjskalias(ALIAS,MUSICID) values (%s, %s) " \
+    #       f"on duplicate key update musicid=%s"
+    # val = (newalias, musicid, musicid)
+    # mycursor.execute(sql, val)
+    # mydb.commit()
+    # mycursor.close()
+    # mydb.close()
+    #
+    # with open('masterdata/musics.json', 'r', encoding='utf-8') as f:
+    #     data = json.load(f)
+    # title = ''
+    # for music in data:
+    #     if music['id'] != musicid:
+    #         continue
+    #     title = music['title']
+    # timeArray = time.localtime(time.time())
+    # Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+    # writelog(f'[{Time}] {qun} {username}({qqnum}): {newalias}->{title}')
+    # if is_hide:
+    #     return f"设置成功！\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
+    # else:
+    #     return f"设置成功！{newalias}->{title}\n已记录bot文档中公开的实时日志，设置不合适的昵称将会被拉黑"
+    return None
 
 
 def pjskdel(alias, qqnum, username, qun):
-    alias = alias.strip()
-    resp = aliastomusicid(alias)
-    if resp['match'] != 1:
-        return "找不到你要设置的歌曲，请使用正确格式：pjskdel昵称"
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute("DELETE from pjskalias where alias=%s", (alias,))
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-    timeArray = time.localtime(time.time())
-    Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-    if str(qqnum) == '1103479519':
-        writelog(f'[{Time}] 管理员删除了{resp["name"]}的昵称：{alias}')
-        return "删除成功！"
-    writelog(f'[{Time}] {qun} {username}({qqnum}): 删除了{resp["name"]}的昵称：{alias}')
-    return "删除成功！\n已记录bot文档中公开的实时日志，乱删将被拉黑"
+    # alias = alias.strip()
+    # resp = aliastomusicid(alias)
+    # if resp['match'] != 1:
+    #     return "找不到你要设置的歌曲，请使用正确格式：pjskdel昵称"
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #                        database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    # mycursor.execute("DELETE from pjskalias where alias=%s", (alias,))
+    # mydb.commit()
+    # mycursor.close()
+    # mydb.close()
+    # timeArray = time.localtime(time.time())
+    # Time = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+    # if str(qqnum) == '1103479519':
+    #     writelog(f'[{Time}] 管理员删除了{resp["name"]}的昵称：{alias}')
+    #     return "删除成功！"
+    # writelog(f'[{Time}] {qun} {username}({qqnum}): 删除了{resp["name"]}的昵称：{alias}')
+    # return "删除成功！\n已记录bot文档中公开的实时日志，乱删将被拉黑"
+    return None
 
 
 def pjskalias(alias, musicid=None):
-    from imageutils import text2image
-    if musicid is None:
-        resp = aliastomusicid(alias)
-        if resp['musicid'] == 0:
-            return "找不到你说的歌曲哦"
-        musicid = resp['musicid']
-        if resp['translate'] == '':
-            returnstr = f"{resp['name']}\n匹配度:{round(resp['match'], 4)}\n"
-        else:
-            returnstr = f"{resp['name']} ({resp['translate']})\n匹配度:{round(resp['match'], 4)}\n"
-    else:
-        returnstr = ''
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute('SELECT * from pjskalias where musicid=%s', (musicid,))
-    respdata = mycursor.fetchall()
-    mycursor.close()
-    mydb.close()
-    for raw in respdata:
-        returnstr = returnstr + raw[1] + "，"
-    if len(returnstr[:-1]) > 170:
-        infopic = text2image(text=returnstr[:-1] + '\n昵称均为用户添加，与bot和bot主无关\n\n', max_width=800, padding=(30, 30))
-        infopic.save(f'piccache/{musicid}alias.png')
-        return f"[CQ:image,file=file:///{os.getcwd()}/piccache/{musicid}alias.png,cache=0]"
-    else:
-        return returnstr[:-1] + '\n昵称均为用户添加，与bot和bot主无关'
+    # from imageutils import text2image
+    # if musicid is None:
+    #     resp = aliastomusicid(alias)
+    #     if resp['musicid'] == 0:
+    #         return "找不到你说的歌曲哦"
+    #     musicid = resp['musicid']
+    #     if resp['translate'] == '':
+    #         returnstr = f"{resp['name']}\n匹配度:{round(resp['match'], 4)}\n"
+    #     else:
+    #         returnstr = f"{resp['name']} ({resp['translate']})\n匹配度:{round(resp['match'], 4)}\n"
+    # else:
+    #     returnstr = ''
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #                        database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    # mycursor.execute('SELECT * from pjskalias where musicid=%s', (musicid,))
+    # respdata = mycursor.fetchall()
+    # mycursor.close()
+    # mydb.close()
+    # for raw in respdata:
+    #     returnstr = returnstr + raw[1] + "，"
+    # if len(returnstr[:-1]) > 170:
+    #     infopic = text2image(text=returnstr[:-1] + '\n昵称均为用户添加，与bot和bot主无关\n\n', max_width=800, padding=(30, 30))
+    #     infopic.save(f'piccache/{musicid}alias.png')
+    #     return f"[CQ:image,file=file:///{os.getcwd()}/piccache/{musicid}alias.png,cache=0]"
+    # else:
+    #     return returnstr[:-1] + '\n昵称均为用户添加，与bot和bot主无关'
+    return None
 
 
 def pjskalias2(alias, musicid=None):
@@ -745,19 +749,19 @@ def pjskalias2(alias, musicid=None):
             returnstr = f"{resp['name']} ({resp['translate']})\n匹配度:{round(resp['match'], 4)}\n"
     else:
         returnstr = ''
-    mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
-                           database='pjsk', charset='utf8mb4')
-    mycursor = mydb.cursor()
-    mycursor.execute('SELECT * from pjskalias where musicid=%s', (musicid,))
-    respdata = mycursor.fetchall()
-    mycursor.close()
-    mydb.close()
-    count = 0
-    data = []
-    for raw in respdata:
-        count += 1
-        data.append({'id': count, 'alias': raw[1]})
-    return data
+    # mydb = pymysql.connect(host=host, port=port, user='pjsk', password=password,
+    #                        database='pjsk', charset='utf8mb4')
+    # mycursor = mydb.cursor()
+    # mycursor.execute('SELECT * from pjskalias where musicid=%s', (musicid,))
+    # respdata = mycursor.fetchall()
+    # mycursor.close()
+    # mydb.close()
+    # count = 0
+    # data = []
+    # for raw in respdata:
+    #     count += 1
+    #     data.append({'id': count, 'alias': raw[1]})
+    # return data
 
 
 def txt2html(txt):
@@ -799,13 +803,14 @@ def writelog(text=None):
 
 
 def logtohtml(dir):
-    with open(dir, 'r', encoding='utf-8') as f:
-        log = f.read()
-    today = datetime.datetime.today()
-    with open(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", 'w', encoding='utf-8') as f:
-        f.write(txt2html(log))
-    if env == 'prod':
-        uploadLogR2(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", f"logs/{today.year}{str(today.month).zfill(2)}.html")
+    # with open(dir, 'r', encoding='utf-8') as f:
+    #     log = f.read()
+    # today = datetime.datetime.today()
+    # with open(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", 'w', encoding='utf-8') as f:
+    #     f.write(txt2html(log))
+    # if env == 'prod':
+    #     uploadLogR2(f"{loghtml}{today.year}{str(today.month).zfill(2)}.html", f"logs/{today.year}{str(today.month).zfill(2)}.html")
+    pass
 
 
 def musiclength(musicid, fillerSec=0):

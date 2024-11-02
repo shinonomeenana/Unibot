@@ -13,6 +13,7 @@ from typing import Optional, Dict, List, Tuple, Union
 from modules.chara import aliastocharaid
 from modules.otherpics import analysisunitid, cardthumnail
 from modules.texttoimg import union
+from modules.assetdlhelper import load_asset_from_unipjsk
 
 
 botpath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -246,8 +247,8 @@ def drawEventHandbook(
     if event_type != 'marathon':
         with open(masterdatadir + 'cheerfulCarnivalTeams.json', 'r', encoding='utf-8') as f:
             allteams = json.load(f)
-        with open(f'{botpath}/yamls/translate.yaml', encoding='utf-8') as f:
-            trans = yaml.load(f, Loader=yaml.FullLoader)
+        # with open(f'{botpath}/yamls/translate.yaml', encoding='utf-8') as f:
+        #     trans = yaml.load(f, Loader=yaml.FullLoader)
     font30 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', size=30)
     font20 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', size=20)
     font10 = ImageFont.truetype('fonts/SourceHanSansCN-Medium.otf', size=10)
@@ -346,7 +347,10 @@ def drawEventHandbook(
         _team_pad = 5
 
         # 生成banner图
-        bannerpic = Image.open(f'{assetpath}/ondemand/event_story/{each["assetbundleName"]}/screen_image/banner_event_story.png')
+        # bannerpic_path = f'{assetpath}/ondemand/event_story/{each["assetbundleName"]}/screen_image/banner_event_story.png'
+        # print(bannerpic_path)
+        asset_cache_path = load_asset_from_unipjsk(f'ondemand/event_story/{each["assetbundleName"]}/screen_image/banner_event_story.png')
+        bannerpic = Image.open(asset_cache_path)
         bannerpic = bannerpic.resize((_banner_width, int(_banner_width / bannerpic.width * bannerpic.height)))
         event_img.paste(bannerpic, (_left_offset, 0), bannerpic)
 
@@ -379,17 +383,19 @@ def drawEventHandbook(
         if each['eventType'] == 'cheerful_carnival':
             teams_info = filter(lambda x: x['eventId'] == each['id'], allteams)
             for _i, team_info in enumerate(teams_info):
-                team_img = Image.open(f'{assetpath}/ondemand/event/{each["assetbundleName"]}/team_image/{team_info["assetbundleName"]}.png')
+                asset_cache_path = load_asset_from_unipjsk(f'ondemand/event/{each["assetbundleName"]}/team_image/{team_info["assetbundleName"]}.png')
+                team_img = Image.open(asset_cache_path)
                 team_img = team_img.resize((_team_size, _team_size))
                 team_bk_img = Image.new('RGBA', (_team_size + _team_pad * 2, _team_size + _team_pad * 2))
                 _color = "#00bbdd" if _i % 2 else "#ff8833"
                 _draw = ImageDraw.Draw(team_bk_img)
                 _draw.rounded_rectangle((0, 0, _team_size + _team_pad, _team_size + _team_pad), 10, _color, light_grey, 3)
                 team_bk_img.paste(team_img, (_team_pad - 2, _team_pad - 2), team_img)
-                try:
-                    team_name = trans['cheerfulCarnivalTeams'][team_info['id']]
-                except KeyError:
-                    team_name = team_info['teamName']
+                team_name = team_info['teamName']
+                # try:
+                #     team_name = trans['cheerfulCarnivalTeams'][team_info['id']]
+                # except KeyError:
+                #     team_name = team_info['teamName']
                 pos = (_left_offset+_banner_width+_interval*2+256+_i*(_team_size+2*_team_pad+_interval*3), 0)
                 event_img.paste(team_bk_img, (pos[0] + _interval, pos[1]), team_bk_img)
                 if _i != 0:

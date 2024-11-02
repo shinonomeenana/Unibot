@@ -17,6 +17,7 @@ from modules.otherpics import (
     analysisunitid,
     event as EventInfo
 )
+from modules.assetdlhelper import load_asset_from_unipjsk
 try:
     import ujson as json
 except:
@@ -254,7 +255,7 @@ class CardInfo(object):
                     ).strftime('%Y/%m/%d %H:%M:%S')
                     return
 
-    def getinfo(self, cardid: int):
+    def getinfo(self, cardid: int, groupid: 0):
         """
         根据卡面id获取卡面信息
         """
@@ -324,24 +325,24 @@ class CardInfo(object):
         if self.limitType:
             self.isLimited = True
 
-        # 尝试获取翻译信息
-        with open(f'{botpath}/yamls/translate.yaml', encoding='utf-8') as f:
-            trans = yaml.load(f, Loader=yaml.FullLoader)
-        # 招募语
-        try:
-            self.gachaPhrase['CN'] = trans['card_phrase'][self.id]
-        except:
-            pass
-        # 技能名称
-        try:
-            self.cardSkillName['CN'] = trans['skill_name'][self.id]
-        except:
-            pass
-        # 技能效果
-        try:
-            self.cardSkillDes['CN'] = trans['skill_desc'][self.skillId]
-        except:
-            pass
+        # # 尝试获取翻译信息
+        # with open(f'{botpath}/yamls/translate.yaml', encoding='utf-8') as f:
+        #     trans = yaml.load(f, Loader=yaml.FullLoader)
+        # # 招募语
+        # try:
+        #     self.gachaPhrase['CN'] = trans['card_phrase'][self.id]
+        # except:
+        #     pass
+        # # 技能名称
+        # try:
+        #     self.cardSkillName['CN'] = trans['skill_name'][self.id]
+        # except:
+        #     pass
+        # # 技能效果
+        # try:
+        #     self.cardSkillDes['CN'] = trans['skill_desc'][self.skillId]
+        # except:
+        #     pass
 
         for key in self.cardSkillDes.keys():
             self.cardSkillDes[key] = cardskill(self.skillId, skills, self.cardSkillDes[key])
@@ -366,7 +367,7 @@ class CardInfo(object):
             except:
                 pass
 
-    def toimg(self) -> 'Image':
+    def toimg(self, groupid: 0) -> 'Image':
         """
         生成卡面的详细信息图
         """
@@ -492,7 +493,8 @@ class CardInfo(object):
         single_costume_pics = []
         for key in self.assets['costume'].keys():
             for i in self.assets['costume'][key]:
-                tmp = Image.open(f'{assetpath}/startapp/thumbnail/costume/{i}.png').resize((180, 180))
+                asset_cache_path = load_asset_from_unipjsk(f'startapp/thumbnail/costume/{i}.png')
+                tmp = Image.open(asset_cache_path).resize((180, 180))
                 _type = {'hair': '发型', 'head': '发饰', 'body': '服装'}
                 single_costume_pics.append(
                     union([tmp, t2i(_type[key])], type='row', length=0, interval=10)
@@ -538,7 +540,8 @@ class CardInfo(object):
         # 生成gacha大图gacha_img
         gacha_img = None
         if self.gacha.id != 0:
-            bannerpic = Image.open(f"{assetpath}/startapp/home/banner/banner_gacha{self.gacha.id}/banner_gacha{self.gacha.id}.png")
+            asset_cache_path = load_asset_from_unipjsk(f'startapp/home/banner/banner_gacha{self.gacha.id}/banner_gacha{self.gacha.id}.png')
+            bannerpic = Image.open(asset_cache_path)
             bannerpic = bannerpic.resize((left_width, int(left_width / bannerpic.width * bannerpic.height)))
             timepic = union(
                 [t2i('开始时间：' + self.gacha.startAt, font_size=25),
@@ -577,7 +580,8 @@ class CardInfo(object):
         # 生成event大图event_img
         event_img = None
         if self.event.id != 0:
-            bannerpic = Image.open(f"{assetpath}/ondemand/event_story/{self.event.assetbundleName}/screen_image/banner_event_story.png")
+            asset_cache_path = load_asset_from_unipjsk(f'ondemand/event_story/{self.event.assetbundleName}/screen_image/banner_event_story.png')
+            bannerpic = Image.open(asset_cache_path)
             bannerpic = bannerpic.resize((left_width, int(left_width / bannerpic.width * bannerpic.height)))
             eventtype = {"marathon": "马拉松(累积点数)", "cheerful_carnival": "欢乐嘉年华(5v5)"}.get(self.event.eventType, "")
             eventnamepic = union(
@@ -635,10 +639,8 @@ class CardInfo(object):
         music_img = None
         if self.music.id != 0:
             # 图、名称、时间
-            jacketpic = Image.open(
-                fr"{assetpath}/startapp/music/jacket/jacket_s_{str(self.music.id).zfill(3)}/"
-                fr"jacket_s_{str(self.music.id).zfill(3)}.png"
-            ).resize((280, 280))
+            asset_cache_path = load_asset_from_unipjsk(fr'startapp/music/jacket/jacket_s_{str(self.music.id).zfill(3)}/jacket_s_{str(self.music.id).zfill(3)}.png')
+            jacketpic = Image.open(asset_cache_path).resize((280, 280))
 
             musicnamepic = t2i(self.music.title, font_size=50, max_width=left_width)
             timepic = t2i('上线时间：' + datetime.datetime.fromtimestamp(
@@ -732,7 +734,7 @@ class CardInfo(object):
         badge_img = Image.open(f'{botpath}/pics/cardinfo_badge.png')
         badge_img = badge_img.resize((right_img.width // 2, int(badge_img.height / badge_img.width * right_img.width // 2)))
         info_img.paste(badge_img, (info_pad[0], int(info_pad[1] / 3 * 2 - badge_img.height)), mask=badge_img.split()[-1])
-        watermark_img = t2i('Code by Yozora (Github @cYanosora)\nGenerated by Unibot', font_size=35, font_color=style_color)
+        watermark_img = t2i(f'Code by Yozora (Github @cYanosora)', font_size=35, font_color=style_color)
         info_img.paste(
             watermark_img,
             (info_img.width - watermark_img.width - info_pad[0],

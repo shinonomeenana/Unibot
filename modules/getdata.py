@@ -9,7 +9,7 @@ import requests
 from requests import ReadTimeout
 
 from modules.config import apiurls, enapiurls, twapiurls, krapiurls, proxies, \
-                            rank_query_ban_servers, suite_uploader_path
+                            rank_query_ban_servers
 
 
 class maintenanceIn(Exception):
@@ -121,14 +121,14 @@ def callapi(url, server='jp', query_type='unknown', is_force_update=False, chara
                     return {
                             "rankings": []
                         }
-            if '/profile' in url and query_type != 'daibu' and not is_force_update:
-                userid = url[url.find('user/') + 5:url.find('/profile')]
-                if os.path.exists(f'{suite_uploader_path}{userid}.json'):
-                    with open(f'{suite_uploader_path}{userid}.json', 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                    return data
-                elif query_type in ['b30', 'jindu', 'rank']:
-                    raise QueryBanned(server)
+            # if '/profile' in url and query_type != 'daibu' and not is_force_update:
+            #     userid = url[url.find('user/') + 5:url.find('/profile')]
+            #     if os.path.exists(f'{suite_uploader_path}{userid}.json'):
+            #         with open(f'{suite_uploader_path}{userid}.json', 'r', encoding='utf-8') as f:
+            #             data = json.load(f)
+            #         return data
+            #     elif query_type in ['b30', 'jindu', 'rank']:
+            #         raise QueryBanned(server)
         elif server == 'tw':
             if '/ranking?targetRank' in url:
                 targetRank = int(url[url.find('targetRank=') + len('targetRank='):])

@@ -8,6 +8,7 @@ from PIL import Image, ImageFont, ImageDraw
 from modules.config import env
 from modules.getdata import LeakContent
 from modules.sk import currentevent
+from modules.assetdlhelper import load_asset_from_unipjsk
 
 botpath = os.path.abspath(os.path.join(path.dirname(__file__), ".."))
 assetpath = botpath + '/data/assets/sekai/assetbundle/resources'
@@ -99,7 +100,8 @@ def cardthumnail(cardid, istrained=False, cards=None, limitedbadge=False):
         if card['id'] == cardid:
             if card['cardRarityType'] != 'rarity_3' and card['cardRarityType'] != 'rarity_4':
                 suffix = 'normal'
-            pic = Image.open(f'{assetpath}/startapp/thumbnail/chara/{card["assetbundleName"]}_{suffix}.png')
+            asset_cache_path = load_asset_from_unipjsk(f'startapp/thumbnail/chara/{card["assetbundleName"]}_{suffix}.png')
+            pic = Image.open(asset_cache_path)
             pic = pic.resize((156, 156))
             cardFrame = Image.open(f'{botpath}/chara/cardFrame_{card["cardRarityType"]}.png')
             r, g, b, mask = cardFrame.split()
@@ -167,7 +169,8 @@ def cardlarge(cardid, istrained=False, cards=None):
         if card['id'] == cardid:
             if card['cardRarityType'] != 'rarity_3' and card['cardRarityType'] != 'rarity_4':
                 suffix = 'normal'
-            pic = Image.open(f'{assetpath}/startapp/character/member/{card["assetbundleName"]}/card_{suffix}.png')
+            asset_cache_path = load_asset_from_unipjsk(f'startapp/character/member/{card["assetbundleName"]}/card_{suffix}.png')
+            pic = Image.open(asset_cache_path)
             pic = pic.resize((1024, 576))
             cardFrame = Image.open(f'{botpath}/chara/cardFrame_L_{card["cardRarityType"]}.png')
             r, g, b, mask = cardFrame.split()
